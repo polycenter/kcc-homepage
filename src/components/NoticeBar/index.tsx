@@ -36,7 +36,7 @@ const NoticeBgWrap = styled.div`
   opacity: 0.08;
 `
 
-const Text = styled.span`
+const Text = styled.div`
   padding: 0;
   font-family: URWDIN-Regular;
   font-size: 12px;
@@ -45,19 +45,22 @@ const Text = styled.span`
   cursor: pointer;
   width: 750px;
   max-width: 750px;
+  height: 20px;
+  line-height: 20px;
   text-overflow: ellipsis;
   overflow: hidden;
-  opacity: 1;
   white-space: nowrap;
   &:hover {
     text-decoration: underline;
   }
 `
 
-const Date = styled.span`
+const Date = styled.div`
   font-family: URWDIN-Regular;
   font-size: 12px;
   color: #fff;
+  height: 20px;
+  line-height: 20px;
   margin-left: 8px;
 `
 
@@ -72,11 +75,11 @@ const NoticeBar: React.FunctionComponent<NoticeBarProps> = () => {
   const { t } = useTranslation()
 
   const [announcementList, setAnnoucementList] = React.useState<Announcement[]>([
-    {
-      title: 'Loading...',
+    /*  {
+      title: '...',
       pubDate: '',
       link: '',
-    },
+    }, */
   ])
 
   const getAnnouncemet = async () => {
@@ -93,7 +96,7 @@ const NoticeBar: React.FunctionComponent<NoticeBarProps> = () => {
   }
 
   React.useEffect(() => {
-    getAnnouncemet()
+    // getAnnouncemet()
   }, [])
 
   const nav2Announcement = (route: string) => {
@@ -106,7 +109,13 @@ const NoticeBar: React.FunctionComponent<NoticeBarProps> = () => {
     return announcementList.map((item, index) => {
       return (
         <div key={index}>
-          <RowBetween style={{ width: 'auto', marginTop: '11px', alignItems: 'cetner' }}>
+          <RowBetween
+            style={{
+              width: 'auto',
+              marginTop: '10px',
+              alignItems: 'cetner',
+            }}
+          >
             <Text onClick={nav2Announcement.bind(null, item.link)}>{item.title}</Text>
             <Date>{item.pubDate}</Date>
           </RowBetween>
@@ -129,10 +138,10 @@ const NoticeBar: React.FunctionComponent<NoticeBarProps> = () => {
 
   return (
     <NoticeBarWrap>
-      <NoticeBgWrap />
-      <SoundFilled style={{ color: theme.colors.primary }} />
+      {/* <NoticeBgWrap /> */}
+      {/*  <SoundFilled style={{ color: theme.colors.primary }} /> */}
       <div style={{ maxWidth: '940px', height: '40px', overflow: 'hidden' }}>
-        <Slider {...settings}>{List}</Slider>
+        <Slider {...settings}>{/* List */}</Slider>
       </div>
     </NoticeBarWrap>
   )
