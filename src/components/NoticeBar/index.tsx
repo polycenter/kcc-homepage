@@ -75,11 +75,11 @@ const NoticeBar: React.FunctionComponent<NoticeBarProps> = () => {
   const { t } = useTranslation()
 
   const [announcementList, setAnnoucementList] = React.useState<Announcement[]>([
-    {
-      title: 'Loading...',
+    /*  {
+      title: '...',
       pubDate: '',
       link: '',
-    },
+    }, */
   ])
 
   const getAnnouncemet = async () => {
@@ -96,7 +96,7 @@ const NoticeBar: React.FunctionComponent<NoticeBarProps> = () => {
   }
 
   React.useEffect(() => {
-    getAnnouncemet()
+    // getAnnouncemet()
   }, [])
 
   const nav2Announcement = (route: string) => {
@@ -138,10 +138,10 @@ const NoticeBar: React.FunctionComponent<NoticeBarProps> = () => {
 
   return (
     <NoticeBarWrap>
-      <NoticeBgWrap />
-      <SoundFilled style={{ color: theme.colors.primary }} />
+      {/* <NoticeBgWrap /> */}
+      {/*  <SoundFilled style={{ color: theme.colors.primary }} /> */}
       <div style={{ maxWidth: '940px', height: '40px', overflow: 'hidden' }}>
-        <Slider {...settings}>{List}</Slider>
+        <Slider {...settings}>{/* List */}</Slider>
       </div>
     </NoticeBarWrap>
   )
