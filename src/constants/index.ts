@@ -38,6 +38,26 @@ export const KCC = {
       route: 'https://discord.com/invite/H5ucJydSyd',
     },
   ],
+  MILESTONES: [
+    {
+      date: '2021-04-28',
+      title: 'Milestone 1',
+    },
+    {
+      date: '2021-06-16',
+      title: 'Milestone 2',
+      icon: require('../assets/images/home/milestone-icon@2x.png').default,
+    },
+    {
+      date: '2021-06-16',
+      title: 'Milestone 3',
+      icon: require('../assets/images/home/milestone-icon@2x.png').default,
+    },
+    {
+      date: '',
+      title: 'Milestone Last',
+    },
+  ],
   PARTNER_LIST: [
     {
       name: '',

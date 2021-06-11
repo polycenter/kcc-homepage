@@ -106,7 +106,7 @@ const NoticeBar: React.FunctionComponent<NoticeBarProps> = () => {
     return announcementList.map((item, index) => {
       return (
         <div key={index}>
-          <RowBetween style={{ width: 'auto', marginTop: '10px', alignItems: 'cetner' }}>
+          <RowBetween style={{ width: 'auto', marginTop: '11px', alignItems: 'cetner' }}>
             <Text onClick={nav2Announcement.bind(null, item.link)}>{item.title}</Text>
             <Date>{item.pubDate}</Date>
           </RowBetween>
