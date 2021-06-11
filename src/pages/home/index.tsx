@@ -119,7 +119,7 @@ export const MailSubText = styled.span`
 `
 
 const BaseSubText = styled.span`
-  width: 600px;
+  width: auto;
   height: 24px;
   font-size: 16px;
   font-family: URWDIN-Regular, URWDIN;
@@ -400,10 +400,11 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
         <BaseWrap style={{ padding: '88px 0 65px 0' }}>
           <ColumnCenter>
             <TitleText>{t('Our Milestones')}</TitleText>
+            <ParagraphText>{t('Milestone Subtitlle')}</ParagraphText>
             <CenterRow
               gap="8px"
               justify="space-between"
-              style={{ alignItems: 'flex-start', margin: '140px 0 60px 0', padding: '0px 60px', position: 'relative' }}
+              style={{ alignItems: 'flex-start', margin: '60px 0 80px 0', padding: '0px 60px', position: 'relative' }}
             >
               {MilestoneList}
               <Progress
