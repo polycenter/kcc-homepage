@@ -140,7 +140,7 @@ const GrantsPage: React.FunctionComponent<GrantsPageProps> = () => {
       {/* content */}
 
       <CoverWrap>
-        <BaseWrap style={{ paddingTop: '120px' }}>
+        <BaseWrap style={{ paddingTop: '120px', position: 'relative', zIndex: 3 }}>
           <CenterRow justify="space-between">
             <Column>
               <ParagraphText style={{ width: '480px' }}>{t('Grant Introduce 1')}</ParagraphText>
@@ -172,7 +172,7 @@ const GrantsPage: React.FunctionComponent<GrantsPageProps> = () => {
             >
               <ColumnCenter>
                 <NumberText>2+</NumberText>
-                <SubTitle style={{ marginTop: '24px' }}>{t('Project Type')}</SubTitle>
+                <SubTitle style={{ marginTop: '24px' }}>{t('Directions')}</SubTitle>
               </ColumnCenter>
             </ColumnCenter>
             <AutoColumn style={{ width: '610px' }}>
@@ -204,7 +204,7 @@ const GrantsPage: React.FunctionComponent<GrantsPageProps> = () => {
         <BaseWrap style={{ padding: '0px 0  100px 0', position: 'relative', zIndex: 2 }}>
           <ColumnCenter>
             <TitleText>{t('Open Grants Program')}</TitleText>
-            <MailSubText style={{ width: 'auto', textAlign: 'left' }}>
+            <MailSubText style={{ width: 'auto', textAlign: 'center' }}>
               {t('Grant Payment Amount')}
               <br />
               {t('Grant Payment')}

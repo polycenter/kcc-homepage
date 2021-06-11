@@ -1,9 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
-import { Button, Input, message } from 'antd'
+import { Button, Input, message, Progress, Steps, Timeline } from 'antd'
 import axios from 'axios'
-import { RightOutlined } from '@ant-design/icons'
+import { RightOutlined, SendOutlined, TrophyOutlined } from '@ant-design/icons'
 
 import Column from '../../components/Column/index'
 import { ParagraphText, TitleText } from '../../components/Common'
@@ -17,6 +17,7 @@ import { KCC } from '../../constants/index'
 import ContactCard from '../../components/ContactCard/index'
 import { CenterRow } from '../../components/Row/index'
 import { theme } from '../../constants/theme'
+import DotComponent from '../../components/Dot/index'
 
 export interface HomePageProps {}
 
@@ -125,7 +126,7 @@ const BaseSubText = styled.span`
   font-weight: 400;
   color: #fff;
   line-height: 24px;
-  text-align: left;
+  text-align: center;
 `
 
 const PartnerListWrap = styled.div`
@@ -223,6 +224,11 @@ const MailWrap = styled(BaseWrap)`
   position: relative;
   top: -43px;
 `
+const ProgressWrap = styled.div`
+  position: absolute;
+  width:100%:
+  height:20px;
+`
 
 const HomePage: React.FunctionComponent<HomePageProps> = () => {
   const CharacteristicsComponent = Characteristics.map((item, index) => {
@@ -287,6 +293,39 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
   const navToDocs = () => {
     window.open(KCC.DOCS_URL, '_blank')
   }
+
+  const MilestoneIconWrap = styled.div`
+    text-align: center;
+    width: 100%;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 6;
+  `
+  const MilestoneDateText = styled.div`
+    font-size: 20px;
+    font-family: URWDIN-Regular, URWDIN;
+    font-weight: 400;
+    color: #49ffa1;
+    line-height: 32px;
+  `
+  const MilestoneTitle = styled(MilestoneDateText)`
+    color: #ffffff;
+  `
+
+  const MilestoneList = KCC.MILESTONES.map((item, index) => {
+    const Icon =
+      index === 0 || index === 3 ? <DotComponent shining={index === 3} /> : <img src={item.icon} width="48px" />
+    return (
+      <Column>
+        <MilestoneIconWrap>{Icon}</MilestoneIconWrap>
+        <MilestoneDateText style={{ marginTop: '10px' }}>{item.date}</MilestoneDateText>
+        <MilestoneTitle>{t(`${item.title}`)}</MilestoneTitle>
+      </Column>
+    )
+  })
 
   return (
     <>
@@ -361,8 +400,23 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
         <BaseWrap style={{ padding: '88px 0 65px 0' }}>
           <ColumnCenter>
             <TitleText>{t('Our Milestones')}</TitleText>
-            <CenterRow gap="8px" justify="center" style={{ marginTop: '44px', paddingLeft: '3px' }}>
-              <ParagraphText>MileStone</ParagraphText>
+            <CenterRow
+              gap="8px"
+              justify="space-between"
+              style={{ alignItems: 'flex-start', margin: '140px 0 60px 0', padding: '0px 60px', position: 'relative' }}
+            >
+              {MilestoneList}
+              <Progress
+                style={{ width: '100%', position: 'absolute', zIndex: 3, left: '0px', top: '4px' }}
+                strokeColor={{
+                  '0%': '#49FFA1',
+                  '100%': '#09402A',
+                }}
+                strokeWidth={4}
+                percent={75}
+                status="active"
+                trailColor="#09402A"
+              />
             </CenterRow>
           </ColumnCenter>
         </BaseWrap>
@@ -371,13 +425,12 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
 
       {/* Partner */}
       <HomePageWrap>
-        <BaseWrap style={{ padding: '0px 0 65px 0' }}>
+        {/*   <BaseWrap style={{ padding: '0px 0 65px 0' }}>
           <ColumnCenter>
             <TitleText>{t('Partner')}</TitleText>
             <PartnerListWrap>{PartnerListComponent}</PartnerListWrap>
           </ColumnCenter>
-          {/*         <DivideLine style={{ marginTop: '80px', opacity: 0.24 }} /> */}
-        </BaseWrap>
+        </BaseWrap> */}
 
         {/* Join the KCC Community */}
         <BaseWrap style={{ padding: '0px 0 65px 0', position: 'relative', zIndex: 2 }}>
