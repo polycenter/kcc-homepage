@@ -308,7 +308,7 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
     font-size: 20px;
     font-family: URWDIN-Regular, URWDIN;
     font-weight: 400;
-    color: #49ffa1;
+    color: #00ff9b;
     line-height: 32px;
   `
   const MilestoneTitle = styled(MilestoneDateText)`
@@ -317,9 +317,9 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
 
   const MilestoneList = KCC.MILESTONES.map((item, index) => {
     const Icon =
-      index === 0 || index === 3 ? <DotComponent shining={index === 3} /> : <img src={item.icon} width="48px" />
+      index === 0 || index === 3 ? <DotComponent shining={index === 3} /> : <img src={item.icon} width="32px" />
     return (
-      <Column>
+      <Column style={{ justifyContent: 'center', alignItems: 'center' }}>
         <MilestoneIconWrap>{Icon}</MilestoneIconWrap>
         <MilestoneDateText style={{ marginTop: '10px' }}>{item.date}</MilestoneDateText>
         <MilestoneTitle>{t(`${item.title}`)}</MilestoneTitle>
@@ -393,7 +393,7 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
         <BaseWrap style={{ paddingTop: '88px' }}>
           <TitleText>{t('Our Characteristics')}</TitleText>
           <div style={{ paddingTop: '70px' }}>{CharacteristicsComponent}</div>
-          <DivideLine style={{ marginTop: '80px' }} />
+          {/* <DivideLine style={{ marginTop: '80px' }} />*/}
         </BaseWrap>
 
         {/* MileStone */}
@@ -409,11 +409,11 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
               <Progress
                 style={{ width: '100%', position: 'absolute', zIndex: 3, left: '0px', top: '4px' }}
                 strokeColor={{
-                  '0%': '#49FFA1',
+                  '0%': '#126748',
                   '100%': '#09402A',
                 }}
                 strokeWidth={4}
-                percent={75}
+                percent={95}
                 status="active"
                 trailColor="#09402A"
               />
