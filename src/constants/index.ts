@@ -49,7 +49,7 @@ export const KCC = {
       icon: require('../assets/images/home/milestone-icon@2x.png').default,
     },
     {
-      date: '2021-06-16',
+      date: '2021-06-18',
       title: 'Milestone 3',
       icon: require('../assets/images/home/milestone-icon@2x.png').default,
     },
