@@ -3,7 +3,7 @@ import { initReactI18next } from 'react-i18next'
 import store from '../state'
 
 // loaded language
-const LanguageList = ['zh-CN', 'en']
+const LanguageList = ['zh-CN', 'en', 'es-ES']
 
 // load language templates
 const templates = require.context('../locales/', true, /\.json$/)
