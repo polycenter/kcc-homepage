@@ -110,10 +110,10 @@ const AppFooter: React.FunctionComponent<AppFooterProps> = () => {
             style={{
               width: '355px',
               justifyContent: 'flex-start',
-              alignItems: 'flex-start',
+              alignItems: 'center',
             }}
           >
-            <KccLogo styles={{ width: '190px', textAlign: 'left' }} />
+            <KccLogo styles={{ width: '190px', textAlign: 'left', marginTop: '-20px' }} />
           </CenterRow>
           <RowBetween>{FooterNavList}</RowBetween>
         </Row>
