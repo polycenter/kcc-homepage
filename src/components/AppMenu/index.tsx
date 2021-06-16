@@ -4,7 +4,6 @@ import { NavItemType, NavItemChildrenType, NavItemGroupType, MENU_LIST } from '.
 import { NavLink, useHistory } from 'react-router-dom'
 import { DownOutlined, MenuOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
-import { isMobile } from 'react-device-detect'
 
 import Row from '../Row/index'
 import Column from '../Column'
@@ -13,6 +12,7 @@ import { Menu } from 'antd'
 
 import './index.less'
 import { theme } from '../../constants/theme'
+import { useResponsive } from '../../utils/responsive'
 
 export interface AppMenuProps {
   style?: CSSProperties
@@ -200,6 +200,8 @@ const AppMenu: React.FunctionComponent<AppMenuProps> = ({ style }) => {
   })
 
   const M_MENU_CSS: CSSProperties = {}
+
+  const { isMobile } = useResponsive()
 
   return (
     <MenuWrap>
