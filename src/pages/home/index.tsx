@@ -1,15 +1,14 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
-import { Button, Input, message, Progress, Steps, Timeline } from 'antd'
+import { Button, Input, message, Progress } from 'antd'
 import axios from 'axios'
-import { RightOutlined, SendOutlined, TrophyOutlined } from '@ant-design/icons'
+import { RightOutlined } from '@ant-design/icons'
 
 import Column from '../../components/Column/index'
 import { ParagraphText, TitleText } from '../../components/Common'
 import Row, { RowBetween } from '../../components/Row/index'
 import SloganPicture from '../../components/SloganPicture'
-import { DivideLine } from '../../components/Common/index'
 import NoticeBar from '../../components/NoticeBar'
 
 import { ColumnCenter } from '../../components/Column/index'
@@ -149,7 +148,7 @@ const PartnerItemWrap = styled.div`
 const SubscribeWrap = styled.div`
   &:hover {
     .sub-button {
-      border: 1px solid #000;
+      border: 1px solid #000 !important;
     }
     .sub-text {
       color: #000;
@@ -220,7 +219,8 @@ const JoinButtonCover = styled.div`
 
 const MailWrap = styled(BaseWrap)`
   padding: 75px 0 100px 0;
-  background: ${theme.colors.primary};
+  // background: ${theme.colors.primary};
+  background: #1db07f;
   position: relative;
   top: -43px;
 `
@@ -474,7 +474,7 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
                   <Button
                     className="sub-button"
                     type="primary"
-                    style={{ marginLeft: '20px', background: '#000' }}
+                    style={{ marginLeft: '20px', background: '#000', border: 'none' }}
                     onClick={subscribe}
                     disabled={disable}
                     loading={disable}

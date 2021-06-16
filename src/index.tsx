@@ -7,6 +7,7 @@ import './utils/i18n'
 import Providers from './Providers'
 import ApplicationUpdater from './state/application/updater'
 
+import 'normalize.css'
 import './index.less'
 
 ReactDOM.render(
