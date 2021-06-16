@@ -13,6 +13,8 @@ import { Menu } from 'antd'
 import './index.less'
 import { theme } from '../../constants/theme'
 import { useResponsive } from '../../utils/responsive'
+import { useEffect } from 'react'
+import { isMobile } from 'react-device-detect'
 
 export interface AppMenuProps {
   style?: CSSProperties
@@ -198,18 +200,30 @@ const AppMenu: React.FunctionComponent<AppMenuProps> = ({ style }) => {
   const MenuListDom = MENU_LIST.map((item) => {
     return genNavList(item)
   })
-
-  const M_MENU_CSS: CSSProperties = {}
-
   const { isMobile } = useResponsive()
+
+  const M_MENU_CSS: CSSProperties = isMobile
+    ? {
+        border: `1px solid ${theme.colors.primary}`,
+        color: `${theme.colors.primary} !important`,
+      }
+    : {}
+
+  const [openKeys, setOpenKeys] = React.useState<string[]>([])
+
+  React.useEffect(() => {
+    if (isMobile) {
+      setOpenKeys(() => ['Developers'])
+    }
+  }, [isMobile])
 
   return (
     <MenuWrap>
       <Menu
-        // openKeys={['Developers']}
+        // openKeys={openKeys}
         selectedKeys={[]}
         mode={isMobile ? 'inline' : 'horizontal'}
-        style={{ border: 'none', background: 'transparent', color: theme.colors.primary, ...style }}
+        style={{ border: 'none', background: 'transparent', color: theme.colors.primary, ...style, ...M_MENU_CSS }}
       >
         {MenuListDom}
       </Menu>
