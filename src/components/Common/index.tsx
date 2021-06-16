@@ -1,6 +1,24 @@
 import styled from 'styled-components'
 import { theme } from '../../constants/theme'
 
+export const MobileView = styled.div`
+  @media (max-width: 768px) {
+    display: block;
+  }
+  @media (min-width: 768px) {
+    display: none;
+  }
+`
+
+export const BrowserView = styled.div`
+  @media (max-width: 768px) {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    display: block;
+  }
+`
+
 export const TitleText = styled.span`
   font-family: URWDIN-Demi;
   // font-family: moon;

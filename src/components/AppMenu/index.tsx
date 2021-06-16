@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { CSSProperties } from 'react'
 import styled from 'styled-components'
 import { NavItemType, NavItemChildrenType, NavItemGroupType, MENU_LIST } from '../../constants/menuList'
 import { NavLink, useHistory } from 'react-router-dom'
-import { DownOutlined } from '@ant-design/icons'
+import { DownOutlined, MenuOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
+import { isMobile } from 'react-device-detect'
 
 import Row from '../Row/index'
 import Column from '../Column'
@@ -13,12 +14,23 @@ import { Menu } from 'antd'
 import './index.less'
 import { theme } from '../../constants/theme'
 
-export interface AppMenuProps {}
+export interface AppMenuProps {
+  style?: CSSProperties
+}
 
 const MenuWrap = styled.div`
   margin-left: 40px;
   position: relative;
   z-index: 2;
+  @media (max-width: 768px) {
+    margin-left: 0px;
+    justify-align: flex-end;
+    position: absolute;
+    top: 80px;
+    left: 0px;
+    width: 100%;
+    background: #000;
+  }
 `
 
 const { SubMenu } = Menu
@@ -94,7 +106,7 @@ const NavItem: React.FunctionComponent<NavItemChildrenType> = (props) => {
   )
 }
 
-const AppMenu: React.FunctionComponent<AppMenuProps> = () => {
+const AppMenu: React.FunctionComponent<AppMenuProps> = ({ style }) => {
   const { t } = useTranslation()
 
   const genNavList = (navItem: NavItemType) => {
@@ -187,13 +199,15 @@ const AppMenu: React.FunctionComponent<AppMenuProps> = () => {
     return genNavList(item)
   })
 
+  const M_MENU_CSS: CSSProperties = {}
+
   return (
     <MenuWrap>
       <Menu
         // openKeys={['Developers']}
         selectedKeys={[]}
-        mode="horizontal"
-        style={{ border: 'none', background: 'transparent', color: theme.colors.primary }}
+        mode={isMobile ? 'inline' : 'horizontal'}
+        style={{ border: 'none', background: 'transparent', color: theme.colors.primary, ...style }}
       >
         {MenuListDom}
       </Menu>

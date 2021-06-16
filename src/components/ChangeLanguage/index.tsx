@@ -10,13 +10,21 @@ import { AppState, AppDispatch } from '../../state/index'
 import { changeTheme, changeLanguage } from '../../state/application/actions'
 import { useLanguage } from '../../state/application/hooks'
 import { theme } from '../../constants/theme'
+import { useResponsive } from '../../utils/responsive'
 
 import './index.less'
 
 export interface ChangeLanguageProps {}
 
 const MenuWrap = styled.div`
-  justify-self: flex-end;
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  flex: 1;
+  text-align: right;
+  @media (max-width: 768px) {
+    padding-left: 10px;
+  }
 `
 
 const LanguageItem = styled.div``
@@ -34,12 +42,9 @@ const Text = styled.div`
     color: #fff;
   }
 `
-const Image = styled.img`
-  height: 20px;
-  width: auto;
-`
 
-const LanguageButton = styled(Button)`
+const LanguageButton = styled.div`
+  cursor: pointer;
   width: 94px;
   height: 26px;
   line-height: none;
@@ -47,14 +52,25 @@ const LanguageButton = styled(Button)`
   border-radius: 4px;
   font-size: 12px;
   outline: none;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
   border: 1px solid ${() => theme.colors.primary};
   background: transparent;
-  &:hvoer {
+  &:hover {
     bacground: transparent !important;
+  }
+  @media (max-width: 768px) {
+    border: none;
+    width: 70px;
+    margin-right: 10px;
   }
 `
 
 const ChangeLanguage: React.FunctionComponent<ChangeLanguageProps> = () => {
+  const { isMobile } = useResponsive()
+  console.log('isMobile', isMobile)
   const { i18n } = useTranslation()
 
   const [show, setShow] = useState(false)
@@ -71,7 +87,7 @@ const ChangeLanguage: React.FunctionComponent<ChangeLanguageProps> = () => {
   const hidePopover = () => {
     timer = setTimeout(() => {
       setShow(() => false)
-    }, 500)
+    }, 300)
   }
 
   const selectChange = (code: string) => {
@@ -105,7 +121,7 @@ const ChangeLanguage: React.FunctionComponent<ChangeLanguageProps> = () => {
       <Popover placement="bottom" content={selectOptions} visible={show}>
         <LanguageButton style={{ color: theme.colors.primary }}>
           {currentLanguage}
-          <DownOutlined style={{ fontSize: '10px' }} />
+          <DownOutlined style={{ fontSize: isMobile ? '14px' : '10px', marginLeft: isMobile ? '2px' : '6px' }} />
         </LanguageButton>
       </Popover>
     </MenuWrap>

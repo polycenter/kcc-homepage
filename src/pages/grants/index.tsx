@@ -98,6 +98,7 @@ const ParagraphIcon = styled.img`
 `
 const SmallText = styled.div`
   font-size: 16px;
+  color: #fff;
 `
 
 const BottomCoverImage = styled.img`
@@ -181,6 +182,10 @@ const GrantsPage: React.FunctionComponent<GrantsPageProps> = () => {
                 {/*  <ParagraphIcon src={require('../../')} /> */}
               </Row>
               <ParagraphText style={{ marginTop: '10px' }}>{t(`Grant Introduce 2`)}</ParagraphText>
+              <SmallText style={{ marginTop: '5px' }}>
+                -{' '}
+                {t(`We are particularly interested in funding projects that build out dapp on KuCoin Community Chain`)}
+              </SmallText>
 
               <Row style={{ marginTop: '44px' }}>
                 <ParagraphTitle>{t(`Research`)}</ParagraphTitle>
