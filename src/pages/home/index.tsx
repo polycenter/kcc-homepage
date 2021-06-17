@@ -527,10 +527,10 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
                 <Column style={{ marginLeft: '50px' }}>
                   <TitleText
                     style={{
-                      width: '460px',
+                      width: 'auto',
                       textAlign: 'left',
-                      whiteSpace: 'nowrap',
-                      fontSize: i18n.language === 'en' ? '44px' : '48px',
+                      whiteSpace: 'inherit',
+                      fontSize: i18n.language === 'en' ? '38px' : '40px',
                     }}
                   >
                     {t('Why KuCoin Community Chain')}
@@ -679,7 +679,7 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
             <MailSubText style={{ textAlign: isMobile ? 'left' : 'center' }}>{t('Send Updaets Text')}</MailSubText>
             {subscribed ? (
               <Row style={{ width: '100%', marginTop: '16px' }}>
-                <MailSubText style={{ fontSize: '24px', textAlign: isMobile ? 'left' : 'center' }}>
+                <MailSubText style={{ fontSize: isMobile ? '12px' : '24px', textAlign: isMobile ? 'left' : 'center' }}>
                   {t(`Thank you for subscribing`)}
                 </MailSubText>
               </Row>

@@ -5,6 +5,7 @@ import { AutoRow, RowBetween } from '../Row/index'
 import axios from 'axios'
 import { message } from 'antd'
 import { useTranslation } from 'react-i18next'
+import moment from 'moment'
 
 import Slider from 'react-slick'
 
@@ -65,17 +66,19 @@ const Text = styled.div`
   }
   @media (max-width: 768px) {
     height: 20px;
-    width: 100%;
+    flex: 1;
   }
 `
 
-const Date = styled.div`
+const DateText = styled.div`
   font-family: URWDIN-Regular;
   font-size: 12px;
   color: #fff;
   height: 20px;
   line-height: 20px;
   margin-left: 8px;
+  width: 120px;
+  text-align: right;
 `
 
 interface Announcement {
@@ -85,8 +88,19 @@ interface Announcement {
   thumbnail?: string
 }
 
+/* export function formatDate(timestamp: number) {
+  const now = new Date(timestamp)
+  var year = now.getFullYear()
+  var month = now.getMonth() + 1
+  var date = now.getDate()
+  var hour = now.getHours()
+  var minute = now.getMinutes()
+  var second = now.getSeconds()
+  return year + '-' + month + '-' + date + ' ' + hour + ':' + minute + ':' + second
+} */
+
 const NoticeBar: React.FunctionComponent<NoticeBarProps> = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   const [announcementList, setAnnoucementList] = React.useState<Announcement[]>([
     {
@@ -101,9 +115,30 @@ const NoticeBar: React.FunctionComponent<NoticeBarProps> = () => {
       const res = await axios({
         url: KCC.MEDIA_API,
       })
-      const list = [...res?.data?.items?.splice(0, 3)]
+      const list = [...res?.data?.items]
       console.log(list)
-      setAnnoucementList(() => list)
+      // filter by language
+      let announcment: any[] = []
+      if (i18n.language === 'zh-CN') {
+        for (let i = 0; i < list.length; i++) {
+          if (list[i].categories.includes('zh')) {
+            const t = new Date(list[i]?.pubDate).getTime() + 1000 * 60 * 60 * 8
+            const temp: any = { ...list[i] }
+            temp.pubDate = t && moment(new Date(t)).format('YYYY-MM-DD HH:mm:ss')
+            announcment.push(temp)
+          }
+        }
+      } else {
+        for (let i = 0; i < list.length; i++) {
+          console.log(list[i].categories)
+          if (!list[i].categories.includes('zh')) {
+            announcment.push(list[i])
+          }
+        }
+      }
+      const arr = announcment.length > 3 ? announcment.splice(0, 3) : announcment
+      console.log('arr', arr)
+      setAnnoucementList(() => arr)
     } catch {
       message.error(t(`Get Announcement Faied.`))
     }
@@ -111,7 +146,7 @@ const NoticeBar: React.FunctionComponent<NoticeBarProps> = () => {
 
   React.useEffect(() => {
     getAnnouncemet()
-  }, [])
+  }, [i18n.language])
 
   const nav2Announcement = (route: string) => {
     if (route) {
@@ -125,17 +160,17 @@ const NoticeBar: React.FunctionComponent<NoticeBarProps> = () => {
         <div key={index}>
           <RowBetween
             style={{
-              width: 'auto',
+              width: '100%',
               marginTop: '10px',
               alignItems: 'cetner',
             }}
           >
             <Text onClick={nav2Announcement.bind(null, item.link)}>
               {item.title}
-              <MobileView style={{ display: 'inline' }}> {item.pubDate}</MobileView>
+              <MobileView> {item.pubDate}</MobileView>
             </Text>
             <BrowserView>
-              <Date>{item.pubDate}</Date>
+              <DateText>{item.pubDate}</DateText>
             </BrowserView>
           </RowBetween>
         </div>

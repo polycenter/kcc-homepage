@@ -15,6 +15,7 @@ import { theme } from '../../constants/theme'
 import { useResponsive } from '../../utils/responsive'
 import { useEffect } from 'react'
 import { isMobile } from 'react-device-detect'
+import { BrowserView, MobileView } from '../Common'
 
 export interface AppMenuProps {
   style?: CSSProperties
@@ -28,7 +29,7 @@ const MenuWrap = styled.div`
     margin-left: 0px;
     justify-align: flex-end;
     position: absolute;
-    top: 80px;
+    top: 70px;
     left: 0px;
     width: 100%;
     background: #000;
@@ -83,6 +84,7 @@ const TitleWrap = styled(Column)`
 
 const NavItem: React.FunctionComponent<NavItemChildrenType> = (props) => {
   const { t } = useTranslation()
+  const { isMobile } = useResponsive()
 
   const router = useHistory()
 
@@ -110,6 +112,18 @@ const NavItem: React.FunctionComponent<NavItemChildrenType> = (props) => {
 
 const AppMenu: React.FunctionComponent<AppMenuProps> = ({ style }) => {
   const { t } = useTranslation()
+
+  const { isMobile } = useResponsive()
+
+  const [openKeys, setOpenKeys] = React.useState<string[]>([])
+
+  const showSubMenu = (navItem: any) => {
+    if (openKeys.length && openKeys[0] === navItem.name) {
+      setOpenKeys(() => [])
+    } else {
+      setOpenKeys(() => [navItem.name])
+    }
+  }
 
   const genNavList = (navItem: NavItemType) => {
     // no children
@@ -140,7 +154,7 @@ const AppMenu: React.FunctionComponent<AppMenuProps> = ({ style }) => {
           key={navItem.name}
           className="sub-menu"
           title={
-            <Row style={{ alignItems: 'center' }}>
+            <Row style={{ alignItems: 'center' }} onClick={showSubMenu.bind(null, navItem)}>
               <NavTitle>
                 {t(`${navItem.name}`)}{' '}
                 <DownOutlined className="arrow-icon" style={{ fontSize: '10px', paddingTop: '-6px' }} />
@@ -181,7 +195,7 @@ const AppMenu: React.FunctionComponent<AppMenuProps> = ({ style }) => {
           key={navItem.name}
           className="sub-menu"
           title={
-            <Row style={{ alignItems: 'center' }}>
+            <Row style={{ alignItems: 'center' }} onClick={showSubMenu.bind(null, navItem)}>
               <NavTitle>
                 {t(`${navItem.name}`)}{' '}
                 <DownOutlined className="arrow-icon" style={{ fontSize: '10px', paddingTop: '-10px' }} />
@@ -200,33 +214,45 @@ const AppMenu: React.FunctionComponent<AppMenuProps> = ({ style }) => {
   const MenuListDom = MENU_LIST.map((item) => {
     return genNavList(item)
   })
-  const { isMobile } = useResponsive()
 
   const M_MENU_CSS: CSSProperties = isMobile
     ? {
         border: `1px solid ${theme.colors.primary}`,
         color: `${theme.colors.primary} !important`,
+        zIndex: 999,
+        background: '#000',
       }
     : {}
-
-  const [openKeys, setOpenKeys] = React.useState<string[]>([])
 
   React.useEffect(() => {
     if (isMobile) {
       setOpenKeys(() => ['Developers'])
+    } else {
+      setOpenKeys(() => [])
     }
   }, [isMobile])
 
   return (
     <MenuWrap>
-      <Menu
-        // openKeys={openKeys}
-        selectedKeys={[]}
-        mode={isMobile ? 'inline' : 'horizontal'}
-        style={{ border: 'none', background: 'transparent', color: theme.colors.primary, ...style, ...M_MENU_CSS }}
-      >
-        {MenuListDom}
-      </Menu>
+      <MobileView>
+        <Menu
+          openKeys={openKeys}
+          selectedKeys={[]}
+          mode={isMobile ? 'inline' : 'horizontal'}
+          style={{ border: 'none', background: 'transparent', color: theme.colors.primary, ...style, ...M_MENU_CSS }}
+        >
+          {MenuListDom}
+        </Menu>
+      </MobileView>
+      <BrowserView>
+        <Menu
+          selectedKeys={[]}
+          mode={isMobile ? 'inline' : 'horizontal'}
+          style={{ border: 'none', background: 'transparent', color: theme.colors.primary, ...style }}
+        >
+          {MenuListDom}
+        </Menu>
+      </BrowserView>
     </MenuWrap>
   )
 }
