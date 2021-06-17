@@ -1,6 +1,13 @@
 import styled from 'styled-components'
 import { theme } from '../../constants/theme'
 
+export const MDivider = styled.div`
+  width: calc(100% - 48px);
+  height: 1px;
+  margin: 0 auto;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+`
+
 export const MobileView = styled.div`
   @media (max-width: 768px) {
     display: block;
@@ -21,15 +28,15 @@ export const BrowserView = styled.div`
 
 export const TitleText = styled.span`
   font-family: URWDIN-Demi;
-  // font-family: moon;
   font-size: 48px;
   color: ${theme.colors.primary};
   text-align: center;
   @media (max-width: 768px) {
     width: 100%;
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 500;
-    line-height: 44px;
+    line-height: 36px;
+    text-align: left;
   }
 `
 export const ParagraphText = styled.div`
@@ -39,6 +46,11 @@ export const ParagraphText = styled.div`
   color: #ffffff;
   line-height: 32px;
   font-weight: 400;
+  @media (max-width: 768px) {
+    width: 100%;
+    font-size: 12px;
+    line-height: 20px;
+  }
 `
 
 export const DivideLine = styled.div`

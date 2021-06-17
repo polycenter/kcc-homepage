@@ -6,7 +6,7 @@ import axios from 'axios'
 import { RightOutlined } from '@ant-design/icons'
 
 import Column from '../../components/Column/index'
-import { BrowserView, MobileView, ParagraphText, TitleText } from '../../components/Common'
+import { BrowserView, MDivider, MobileView, ParagraphText, TitleText } from '../../components/Common'
 import Row, { RowBetween } from '../../components/Row/index'
 import SloganPicture from '../../components/SloganPicture'
 import NoticeBar from '../../components/NoticeBar'
@@ -30,6 +30,7 @@ export const HomePageWrap = styled.div`
   background: #000;
   height: auto;
   z-index: 1;
+  margin: 0;
 `
 
 const BannerCoverWrap = styled.img`
@@ -66,6 +67,9 @@ export const BannerContentWrap = styled.div`
   background: transparent;
   position: relative;
   z-index: 1;
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `
 export const BannerTitle = styled.span`
   line-height: 64px;
@@ -84,12 +88,14 @@ export const BannerTitle = styled.span`
 `
 export const BannerDescription = styled.span`
   font-family: URWDIN-Regular;
-  // font-family: ftb;
   font-size: 20px;
   color: #fff;
   line-height: 32px;
   margin-top: 24px;
   max-width: 640px;
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `
 
 export const BaseWrap = styled(Column)`
@@ -143,6 +149,12 @@ export const MailSubText = styled.span`
   font-weight: 400;
   color: #000;
   line-height: 24px;
+  @media (max-width: 768px) {
+    font-size: 12px;
+    text-align: left;
+    width: 100%;
+    margin-top: 10px;
+  }
 `
 
 const BaseSubText = styled.span`
@@ -154,6 +166,10 @@ const BaseSubText = styled.span`
   color: #fff;
   line-height: 24px;
   text-align: center;
+  @media (max-width: 768px) {
+    text-align: left;
+    font-size: 14px;
+  }
 `
 
 const PartnerListWrap = styled.div`
@@ -224,6 +240,9 @@ const IntroduceCover1 = styled.img`
   right: 0;
   top: 0px;
   z-index: 1;
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `
 
 const IntroduceCover2 = styled.img`
@@ -233,6 +252,9 @@ const IntroduceCover2 = styled.img`
   bottom: 0;
   left: 0px;
   z-index: 1;
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `
 
 const JoinButtonCover = styled.div`
@@ -251,6 +273,11 @@ const MailWrap = styled(BaseWrap)`
   background: #1db07f;
   position: relative;
   top: -43px;
+  @media (max-width: 768px) {
+    margin: 0 24px;
+    width: calc(100% - 48px);
+    padding: 32px 24px 24px 24px;
+  }
 `
 const ProgressWrap = styled.div`
   position: absolute;
@@ -258,21 +285,71 @@ const ProgressWrap = styled.div`
   height:20px;
 `
 
+const TitleLeftLine = styled.div`
+  width: 4px;
+  height: 22px;
+  background: #49ffa1;
+  position: absolute;
+  left: -24px;
+  top: 4px;
+`
+
+const ContactWrap = styled(RowBetween)`
+  margin-top: 70px;
+  @media (max-width: 768px) {
+    margin-top: 120px;
+    flex-flow: row wrap;
+    justify-content: center;
+    padding-bottom: 60px;
+    max-width: 340px;
+  }
+`
+
 const HomePage: React.FunctionComponent<HomePageProps> = () => {
+  const { isMobile } = useResponsive()
+
   const CharacteristicsComponent = Characteristics.map((item, index) => {
+    let dir = ''
+    if (isMobile) {
+      dir = index % 2 === 1 ? 'left' : 'right'
+    } else {
+      dir = index % 2 === 0 ? 'left' : 'right'
+    }
     return (
       <SloganPicture
         key={index}
-        width="240px"
+        width={isMobile ? '108px' : '240px'}
         url={item.image}
         description={item.description}
-        direction={index % 2 === 0 ? 'left' : 'right'}
+        direction={dir}
       />
     )
   })
 
   const ContactListComponent = KCC.CONTACT_LIST.map((item, index) => {
-    return <ContactCard key={index} {...item} />
+    let key = {}
+    const coloredBorder = '1px solid rgba(255,255,255,0.1)'
+    if (index === 1 && isMobile) {
+      key = {
+        borderLeft: coloredBorder,
+        borderBottom: coloredBorder,
+      }
+    }
+    if (index === 2 && isMobile) {
+      key = {
+        borderTop: coloredBorder,
+        borderRight: coloredBorder,
+        position: 'relative',
+        top: '-1px',
+        right: '-1px',
+      }
+    }
+    // less 320px,remove
+    const width = document.body.clientWidth ?? document.documentElement.clientWidth
+    if (width < 374) {
+      key = {}
+    }
+    return <ContactCard key={index} {...item} styles={key} />
   })
 
   const PartnerListComponent = KCC.PARTNER_LIST.map((item, index) => {
@@ -331,6 +408,11 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
     align-items: center;
     position: relative;
     z-index: 6;
+    @media (max-width: 768px) {
+      width: 32px;
+      heigth: auto;
+      left: -56px;
+    }
   `
   const MilestoneDateText = styled.div`
     font-size: 20px;
@@ -338,24 +420,63 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
     font-weight: 400;
     color: #00ff9b;
     line-height: 32px;
+    @media (max-width: 768px) {
+      font-size: 14px;
+      line-height: 34px;
+    }
   `
   const MilestoneTitle = styled(MilestoneDateText)`
     color: #ffffff;
   `
 
+  const MileStoneWrap = styled(CenterRow)`
+    align-items: flex-start;
+    justify-content: space-between;
+    margin: 60px 0 80px 0;
+    padding: 0px 60px;
+    position: relative;
+    @media (max-width: 768px) {
+      height: 450px;
+      flex-flow: column nowrap;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+  `
+
   const MilestoneList = KCC.MILESTONES.map((item, index) => {
     const Icon =
       index === 0 || index === 3 ? <DotComponent shining={index === 3} /> : <img src={item.icon} width="32px" />
+
+    if (isMobile) {
+      return (
+        <Row
+          style={{
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+            width: '180px',
+          }}
+        >
+          <MilestoneIconWrap>{Icon}</MilestoneIconWrap>
+          <div>
+            <MilestoneDateText style={{ marginTop: '10px' }}>{item.date}</MilestoneDateText>
+            <MilestoneTitle>{t(`${item.title}`)}</MilestoneTitle>
+          </div>
+        </Row>
+      )
+    }
     return (
-      <Column style={{ justifyContent: 'center', alignItems: 'center' }}>
+      <ColumnCenter
+        style={{
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+        }}
+      >
         <MilestoneIconWrap>{Icon}</MilestoneIconWrap>
         <MilestoneDateText style={{ marginTop: '10px' }}>{item.date}</MilestoneDateText>
         <MilestoneTitle>{t(`${item.title}`)}</MilestoneTitle>
-      </Column>
+      </ColumnCenter>
     )
   })
-
-  const { isMobile } = useResponsive()
 
   return (
     <>
@@ -420,7 +541,7 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
               </RowBetween>
             </BrowserView>
 
-            <MobileView style={{ padding: '0 24px', border: '1px solid red' }}>
+            <MobileView style={{ padding: '0 24px' }}>
               <ColumnCenter style={{ alignItems: 'center' }}>
                 <ImageWrap>
                   <img
@@ -428,61 +549,93 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
                     style={{ width: '100%', height: 'auto' }}
                   />
                 </ImageWrap>
-                <Column style={{ marginTop: '28px' }}>
+                <Column style={{ marginTop: '28px', position: 'relative' }}>
+                  <TitleLeftLine />
                   <TitleText
                     style={{
-                      width: '460px',
+                      width: '100%',
                       textAlign: 'left',
-                      whiteSpace: 'nowrap',
                       fontSize: '24px',
                       color: '#fff',
-                      borderLeft: `4px solid ${theme.colors.primary}`,
+                      marginBottom: '12px',
                     }}
                   >
                     {t('Why KuCoin Community Chain')}
                   </TitleText>
-                  <ParagraphText style={{ width: 'auto' }}>{t(`KCC First Introduction`)}</ParagraphText>
-                  <ParagraphText style={{ width: 'auto' }}>{t(`KCC Second Introduction`)}</ParagraphText>
+                  <ParagraphText style={{ width: '100%' }}>{t(`KCC First Introduction`)}</ParagraphText>
+                  <ParagraphText style={{ width: '100%' }}>{t(`KCC Second Introduction`)}</ParagraphText>
                 </Column>
               </ColumnCenter>
             </MobileView>
-            {/*  <DivideLine style={{ marginTop: '80px', opacity: 0.24 }} /> */}
           </BaseWrap>
         </IntroduceCoverWrap>
+        <MobileView>
+          <MDivider />
+        </MobileView>
       </HomePageWrap>
 
       {/* CharacteristicsComponent */}
       <HomePageWrap>
         <IntroduceCover1 src={require('../../assets/images/home/introduction-right-cover@2x.png').default} />
-        <BaseWrap style={{ paddingTop: '88px' }}>
-          <TitleText>{t('Our Characteristics')}</TitleText>
-          <div style={{ paddingTop: '70px' }}>{CharacteristicsComponent}</div>
+        <BaseWrap style={{ paddingTop: isMobile ? '50px' : '88px' }}>
+          <TitleText style={{ paddingLeft: isMobile ? '24px' : '0px' }}>{t('Our Characteristics')}</TitleText>
+          <div style={{ padding: isMobile ? '42px 24px 0px 24px' : '70px 0 0 0' }}>{CharacteristicsComponent}</div>
           {/* <DivideLine style={{ marginTop: '80px' }} />*/}
+          <MobileView>
+            <MDivider />
+          </MobileView>
         </BaseWrap>
 
         {/* MileStone */}
-        <BaseWrap style={{ padding: '88px 0 65px 0' }}>
+        <BaseWrap style={{ padding: isMobile ? '47px 24px 0px 24px' : '88px 0 65px 0' }}>
           <ColumnCenter>
             <TitleText>{t('Our Milestones')}</TitleText>
             <ParagraphText>{t('Milestone Subtitlle')}</ParagraphText>
-            <CenterRow
-              gap="8px"
-              justify="space-between"
-              style={{ alignItems: 'flex-start', margin: '60px 0 80px 0', padding: '0px 60px', position: 'relative' }}
-            >
+            <MileStoneWrap gap="8px">
               {MilestoneList}
-              <Progress
-                style={{ width: '100%', position: 'absolute', zIndex: 3, left: '0px', top: '4px' }}
-                strokeColor={{
-                  '0%': '#126748',
-                  '100%': '#09402A',
-                }}
-                strokeWidth={4}
-                percent={95}
-                status="active"
-                trailColor="#09402A"
-              />
-            </CenterRow>
+              <BrowserView>
+                <Progress
+                  style={{ width: '100%', position: 'absolute', zIndex: 3, left: '0px', top: '12px' }}
+                  strokeColor={{
+                    '0%': '#126748',
+                    '100%': '#09402A',
+                  }}
+                  showInfo={false}
+                  strokeWidth={4}
+                  percent={95}
+                  status="active"
+                  trailColor="#09402A"
+                />
+              </BrowserView>
+              <MobileView>
+                <Row
+                  style={{
+                    position: 'absolute',
+                    transform: 'rotate(90deg)',
+                    transformOrigin: 'top left',
+                    zIndex: 3,
+                    width: '400px',
+                    left: '40px',
+                    top: '20px',
+                  }}
+                >
+                  <Progress
+                    style={{
+                      width: '100%',
+                    }}
+                    strokeColor={{
+                      '0%': '#126748',
+                      '100%': '#09402A',
+                    }}
+                    showInfo={false}
+                    strokeWidth={4}
+                    percent={100}
+                    status="active"
+                    trailColor="#09402A"
+                  />
+                </Row>
+              </MobileView>
+            </MileStoneWrap>
           </ColumnCenter>
         </BaseWrap>
         <IntroduceCover2 src={require('../../assets/images/home/introduce-cover-2.png').default} />
@@ -498,7 +651,9 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
         </BaseWrap> */}
 
         {/* Join the KCC Community */}
-        <BaseWrap style={{ padding: '0px 0 65px 0', position: 'relative', zIndex: 2 }}>
+        <BaseWrap
+          style={{ padding: isMobile ? '46px 24px 0px 24px' : '0px 0 65px 0', position: 'relative', zIndex: 2 }}
+        >
           <ColumnCenter>
             <TitleText>{t('Join The KCC Community')}</TitleText>
             <BaseSubText>
@@ -506,7 +661,7 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
               <br />
               {t(`Join KCC Ttile`)}
             </BaseSubText>
-            <RowBetween style={{ marginTop: '70px' }}>{ContactListComponent}</RowBetween>
+            <ContactWrap>{ContactListComponent}</ContactWrap>
           </ColumnCenter>
         </BaseWrap>
         <JoinButtonCover />
@@ -518,16 +673,24 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
       <HomePageWrap>
         <MailWrap>
           <ColumnCenter>
-            <TitleText style={{ color: '#000' }}>{t('Subscribe Title')}</TitleText>
-            <MailSubText>{t('Send Updaets Text')}</MailSubText>
+            <TitleText style={{ color: '#000', textAlign: isMobile ? 'left' : 'center' }}>
+              {t('Subscribe Title')}
+            </TitleText>
+            <MailSubText style={{ textAlign: isMobile ? 'left' : 'center' }}>{t('Send Updaets Text')}</MailSubText>
             {subscribed ? (
-              <Row style={{ width: 'auto', marginTop: '16px' }}>
-                <MailSubText style={{ fontSize: '24px', textAlign: 'center' }}>
+              <Row style={{ width: '100%', marginTop: '16px' }}>
+                <MailSubText style={{ fontSize: '24px', textAlign: isMobile ? 'left' : 'center' }}>
                   {t(`Thank you for subscribing`)}
                 </MailSubText>
               </Row>
             ) : (
-              <Row style={{ width: '400px', marginTop: '16px' }}>
+              <Row
+                style={{
+                  width: isMobile ? '100%' : '400px',
+                  marginTop: isMobile ? '38px' : '16px',
+                  flexFlow: isMobile ? 'row wrap' : 'row nowrap',
+                }}
+              >
                 <Input
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -538,7 +701,12 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
                   <Button
                     className="sub-button"
                     type="primary"
-                    style={{ marginLeft: '20px', background: '#000', border: 'none' }}
+                    style={{
+                      marginTop: isMobile ? '26px' : '0px',
+                      marginLeft: isMobile ? '0px' : '20px',
+                      background: '#000',
+                      border: 'none',
+                    }}
                     onClick={subscribe}
                     disabled={disable}
                     loading={disable}

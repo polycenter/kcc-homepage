@@ -7,6 +7,8 @@ import { RowBetween, CenterRow } from '../Row/index'
 import { FOOTER_LIST } from '../../constants/footerList'
 import KccLogo from '../Logo/KccLogo'
 import { useHistory } from 'react-router'
+import { BrowserView, MobileView } from '../Common'
+import MFooter from './MFooter'
 
 export interface AppFooterProps {}
 
@@ -17,10 +19,19 @@ const AppFooterWrap = styled.div`
   align-items: center;
   height: 320px;
   background: #000;
+  @media (max-width: 768px) {
+    width: 100%;
+    height: auto;
+    tex-align: center;
+  }
 `
 const AppFooterContentWrap = styled.div`
   width: 940px;
   padding-top: 43px;
+  @media (max-width: 768px) {
+    width: 100%;
+    padding-top: 0px;
+  }
 `
 
 const ChainText = styled.div`
@@ -36,11 +47,6 @@ const FooterTitle = styled.span`
   font-size: 20px;
   color: #ffffff;
   line-height: 32px;
-`
-
-const FooterLogoImg = styled.img`
-  width: 35px;
-  height: 40px;
 `
 
 const FooterNavListWrap = styled(Column)`
@@ -68,6 +74,13 @@ const CopyRightText = styled.div`
   font-size: 14px;
   color: #ffffff;
   border-top: 1px solid #fff;
+  @media (max-width: 768px) {
+    border-top: none;
+    text-align: center;
+    height: auto;
+    font-size: 12px;
+    margin-top: 0px;
+  }
 `
 
 const AppFooter: React.FunctionComponent<AppFooterProps> = () => {
@@ -105,18 +118,23 @@ const AppFooter: React.FunctionComponent<AppFooterProps> = () => {
   return (
     <AppFooterWrap>
       <AppFooterContentWrap>
-        <Row>
-          <CenterRow
-            style={{
-              width: '355px',
-              justifyContent: 'flex-start',
-              alignItems: 'center',
-            }}
-          >
-            <KccLogo styles={{ width: '190px', textAlign: 'left', marginTop: '-20px' }} />
-          </CenterRow>
-          <RowBetween>{FooterNavList}</RowBetween>
-        </Row>
+        <BrowserView>
+          <Row>
+            <CenterRow
+              style={{
+                width: '355px',
+                justifyContent: 'flex-start',
+                alignItems: 'center',
+              }}
+            >
+              <KccLogo styles={{ width: '190px', textAlign: 'left', marginTop: '-20px' }} />
+            </CenterRow>
+            <RowBetween>{FooterNavList}</RowBetween>
+          </Row>
+        </BrowserView>
+        <MobileView style={{ padding: '0 24px' }}>
+          <MFooter />
+        </MobileView>
         <CopyRightText>CopyRight © 2017 - {`${new Date().getFullYear()}`} kcc.io All Rights Reserved.</CopyRightText>
       </AppFooterContentWrap>
     </AppFooterWrap>

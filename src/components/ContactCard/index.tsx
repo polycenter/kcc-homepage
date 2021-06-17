@@ -10,12 +10,21 @@ export interface ContactCardProps {
   icon: string
   app: string
   route: string
+  styles: any
 }
 
 const ContactCardWrap = styled(ColumnCenter)`
   align-items: center;
   justify-content: flex-start;
   height: 160px;
+  @media (max-width: 768px) {
+    justify-content: center;
+    max-width: 163px;
+    max-height: 163px;
+  }
+  @media (max-width: 320px) {
+    border: none;
+  }
 `
 
 const AppIcon = styled.img`
@@ -66,7 +75,7 @@ const ContactCard: React.FunctionComponent<ContactCardProps> = (props) => {
   }
 
   return (
-    <ContactCardWrap>
+    <ContactCardWrap style={props.styles}>
       <ColumnCenter>
         <AppIcon src={props.icon} onClick={nav2Target} />
         <AppText>{t(props.app)}</AppText>

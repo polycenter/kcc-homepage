@@ -122,6 +122,9 @@ const ChangeLanguage: React.FunctionComponent<ChangeLanguageProps> = () => {
         <LanguageButton
           onMouseEnter={showPop}
           onMouseLeave={hidePopover}
+          onClick={() => {
+            setShow(() => !show)
+          }}
           style={{ color: theme.colors.primary, fontSize: isMobile ? '14px' : '12px' }}
         >
           {currentLanguage}
