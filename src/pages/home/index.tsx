@@ -6,7 +6,7 @@ import axios from 'axios'
 import { RightOutlined } from '@ant-design/icons'
 
 import Column from '../../components/Column/index'
-import { ParagraphText, TitleText } from '../../components/Common'
+import { BrowserView, MobileView, ParagraphText, TitleText } from '../../components/Common'
 import Row, { RowBetween } from '../../components/Row/index'
 import SloganPicture from '../../components/SloganPicture'
 import NoticeBar from '../../components/NoticeBar'
@@ -17,6 +17,7 @@ import ContactCard from '../../components/ContactCard/index'
 import { CenterRow } from '../../components/Row/index'
 import { theme } from '../../constants/theme'
 import DotComponent from '../../components/Dot/index'
+import { useResponsive } from '../../utils/responsive'
 
 export interface HomePageProps {}
 
@@ -36,6 +37,8 @@ const BannerCoverWrap = styled.img`
   position: absolute;
 `
 
+const MHomeBanner = require('../../assets/images/home/m-banner-bg@2x.png').default
+
 export const BannerWrap = styled.div`
   padding-top: 80px;
   height: 460px;
@@ -45,6 +48,14 @@ export const BannerWrap = styled.div`
   align-items: center;
   background: url(${BannerBgImage}) top center no-repeat;
   background-size: auto 100%;
+  @media (max-width: 768px) {
+    padding: 0 24px;
+    padding-top: 0px;
+    height: auto;
+    min-height: 520px;
+    background: url(${MHomeBanner}) top right no-repeat;
+    background-size: auto 100%;
+  }
 `
 export const BannerContentWrap = styled.div`
   display: flex;
@@ -64,6 +75,12 @@ export const BannerTitle = styled.span`
   font-weight: 500;
   color: ${theme.colors.primary};
   line-height: 64px;
+  @media (max-width: 768px) {
+    width: 271px;
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 44px;
+  }
 `
 export const BannerDescription = styled.span`
   font-family: URWDIN-Regular;
@@ -78,14 +95,25 @@ export const BannerDescription = styled.span`
 export const BaseWrap = styled(Column)`
   width: 940px;
   margin: 0 auto;
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `
 
 const ImageWrap = styled(Row)`
+  display: flex;
   width: 360px;
   height: 238px;
-  border-radius: 24px;
   align-items: center;
   justify-content: center;
+  @media (max-width: 720px) {
+    padding: 20px;
+    display: flex;
+    width: 100%;
+    height: auto;
+    align-items: center;
+    justify-content: center;
+  }
 `
 
 const Characteristics = [
@@ -327,6 +355,8 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
     )
   })
 
+  const { isMobile } = useResponsive()
+
   return (
     <>
       <HomePageWrap>
@@ -342,7 +372,12 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
             <ButtonText>
               <Button
                 type="primary"
-                style={{ marginTop: '24px', width: '145px', height: '36px', color: '#000' }}
+                style={{
+                  marginTop: '24px',
+                  width: isMobile ? '160px' : '145px',
+                  height: isMobile ? '48px' : '36px',
+                  color: '#000',
+                }}
                 onClick={navToDocs}
               >
                 <span className="text">{t(`Get Start Now`)}</span>
@@ -360,28 +395,57 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
           <NoticeBar />
           <IntroduceCoverImageWrap src={IntroduceCoverImage} height="400px" width="50%" />
           <BaseWrap style={{ padding: '80px 0', position: 'relative', zIndex: 1 }}>
-            <RowBetween style={{ alignItems: 'center', paddingTop: '68px' }}>
-              <ImageWrap>
-                <img
-                  src={require('../../assets/images/home/home-why-pic@2x.png').default}
-                  style={{ width: '380px', height: 'auto' }}
-                />
-              </ImageWrap>
-              <Column style={{ marginLeft: '50px' }}>
-                <TitleText
-                  style={{
-                    width: '460px',
-                    textAlign: 'left',
-                    whiteSpace: 'nowrap',
-                    fontSize: i18n.language === 'en' ? '44px' : '48px',
-                  }}
-                >
-                  {t('Why KuCoin Community Chain')}
-                </TitleText>
-                <ParagraphText style={{ width: 'auto' }}>{t(`KCC First Introduction`)}</ParagraphText>
-                <ParagraphText style={{ width: 'auto' }}>{t(`KCC Second Introduction`)}</ParagraphText>
-              </Column>
-            </RowBetween>
+            <BrowserView>
+              <RowBetween style={{ alignItems: 'center', paddingTop: '68px' }}>
+                <ImageWrap>
+                  <img
+                    src={require('../../assets/images/home/home-why-pic@2x.png').default}
+                    style={{ width: '380px', height: 'auto' }}
+                  />
+                </ImageWrap>
+                <Column style={{ marginLeft: '50px' }}>
+                  <TitleText
+                    style={{
+                      width: '460px',
+                      textAlign: 'left',
+                      whiteSpace: 'nowrap',
+                      fontSize: i18n.language === 'en' ? '44px' : '48px',
+                    }}
+                  >
+                    {t('Why KuCoin Community Chain')}
+                  </TitleText>
+                  <ParagraphText style={{ width: 'auto' }}>{t(`KCC First Introduction`)}</ParagraphText>
+                  <ParagraphText style={{ width: 'auto' }}>{t(`KCC Second Introduction`)}</ParagraphText>
+                </Column>
+              </RowBetween>
+            </BrowserView>
+
+            <MobileView style={{ padding: '0 24px', border: '1px solid red' }}>
+              <ColumnCenter style={{ alignItems: 'center' }}>
+                <ImageWrap>
+                  <img
+                    src={require('../../assets/images/home/home-why-pic@2x.png').default}
+                    style={{ width: '100%', height: 'auto' }}
+                  />
+                </ImageWrap>
+                <Column style={{ marginTop: '28px' }}>
+                  <TitleText
+                    style={{
+                      width: '460px',
+                      textAlign: 'left',
+                      whiteSpace: 'nowrap',
+                      fontSize: '24px',
+                      color: '#fff',
+                      borderLeft: `4px solid ${theme.colors.primary}`,
+                    }}
+                  >
+                    {t('Why KuCoin Community Chain')}
+                  </TitleText>
+                  <ParagraphText style={{ width: 'auto' }}>{t(`KCC First Introduction`)}</ParagraphText>
+                  <ParagraphText style={{ width: 'auto' }}>{t(`KCC Second Introduction`)}</ParagraphText>
+                </Column>
+              </ColumnCenter>
+            </MobileView>
             {/*  <DivideLine style={{ marginTop: '80px', opacity: 0.24 }} /> */}
           </BaseWrap>
         </IntroduceCoverWrap>

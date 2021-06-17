@@ -25,6 +25,12 @@ export const TitleText = styled.span`
   font-size: 48px;
   color: ${theme.colors.primary};
   text-align: center;
+  @media (max-width: 768px) {
+    width: 100%;
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 44px;
+  }
 `
 export const ParagraphText = styled.div`
   font-family: URWDIN-Regular, PingFangSC-Regular, PingFang SC;
