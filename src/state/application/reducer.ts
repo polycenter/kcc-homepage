@@ -1,16 +1,18 @@
 import { createReducer } from '@reduxjs/toolkit'
-import { updateBlockNumber, changeLanguage, changeTheme } from './actions'
+import { updateBlockNumber, changeLanguage, changeTheme, changeMobileMenuShow } from './actions'
 
 export interface ApplicationState {
   blockNumber: { [chainId: number]: number }
   darkMode: boolean
   language: string
+  mobileMenuShow: boolean
 }
 
 const initialState: ApplicationState = {
   blockNumber: {},
   darkMode: false,
   language: 'en',
+  mobileMenuShow: false,
 }
 
 export default createReducer(initialState, (builder) =>
@@ -38,5 +40,9 @@ export default createReducer(initialState, (builder) =>
       } else {
         state.language = 'en'
       }
+    })
+    .addCase(changeMobileMenuShow, (state, action) => {
+      const { show } = action.payload
+      state.mobileMenuShow = show
     })
 )
