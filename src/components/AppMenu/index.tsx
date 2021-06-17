@@ -16,6 +16,8 @@ import { useResponsive } from '../../utils/responsive'
 import { useEffect } from 'react'
 import { isMobile } from 'react-device-detect'
 import { BrowserView, MobileView } from '../Common'
+import { useDispatch } from 'react-redux'
+import { changeMobileMenuShow } from '../../state/application/actions'
 
 export interface AppMenuProps {
   style?: CSSProperties
@@ -86,6 +88,8 @@ const NavItem: React.FunctionComponent<NavItemChildrenType> = (props) => {
   const { t } = useTranslation()
   const { isMobile } = useResponsive()
 
+  const dispatch = useDispatch()
+
   const router = useHistory()
 
   const nav2Target = (route: string | undefined) => {
@@ -95,6 +99,9 @@ const NavItem: React.FunctionComponent<NavItemChildrenType> = (props) => {
       }
       if (route.startsWith('http')) {
         window.open(route, '_blank')
+      }
+      if (isMobile) {
+        dispatch(changeMobileMenuShow({ show: false }))
       }
     }
   }
@@ -115,6 +122,8 @@ const AppMenu: React.FunctionComponent<AppMenuProps> = ({ style }) => {
 
   const { isMobile } = useResponsive()
 
+  const dispatch = useDispatch()
+
   const [openKeys, setOpenKeys] = React.useState<string[]>([])
 
   const showSubMenu = (navItem: any) => {
@@ -130,7 +139,14 @@ const AppMenu: React.FunctionComponent<AppMenuProps> = ({ style }) => {
     if (!navItem.hasChildren && navItem?.route) {
       return (
         <Menu.Item key={navItem.name}>
-          <NavLink to={navItem.route} activeClassName="selected" style={{ color: theme.colors.primary }}>
+          <NavLink
+            to={navItem.route}
+            onClick={() => {
+              dispatch(changeMobileMenuShow({ show: false }))
+            }}
+            activeClassName="selected"
+            style={{ color: theme.colors.primary }}
+          >
             <NavTitle>{t(`${navItem.name}`)}</NavTitle>
           </NavLink>
         </Menu.Item>
@@ -144,7 +160,7 @@ const AppMenu: React.FunctionComponent<AppMenuProps> = ({ style }) => {
       const lists = subMenuList?.map((item) => {
         return (
           <Menu.Item key={item.title} style={{ height: 'auto', lineHeight: '25px', color: theme.colors.primary }}>
-            <NavItem {...item} />
+            <NavItem {...item} setOpenKeys={setOpenKeys} />
           </Menu.Item>
         )
       })
@@ -176,7 +192,7 @@ const AppMenu: React.FunctionComponent<AppMenuProps> = ({ style }) => {
         const groupItemDom = groupMember.map((groupChild) => {
           return (
             <Menu.Item key={groupChild.title} style={{ height: 'auto', lineHeight: '25px' }}>
-              <NavItem {...groupChild} />
+              <NavItem {...groupChild} setOpenKeys={setOpenKeys} />
             </Menu.Item>
           )
         })

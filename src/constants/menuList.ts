@@ -13,6 +13,7 @@ export interface NavItemChildrenType {
   subTitle: string
   route: string
   icon: string
+  setOpenKeys?: any
 }
 
 export interface NavItemGroupType {

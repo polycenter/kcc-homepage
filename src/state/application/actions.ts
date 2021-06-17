@@ -15,3 +15,8 @@ export const changeTheme =
   createAction<{
     isDark: boolean
   }>('app/changeTheme')
+
+export const changeMobileMenuShow =
+  createAction<{
+    show: boolean
+  }>('app/changeMobileMenuShow')
