@@ -6,7 +6,7 @@ import KccLogo from '../Logo/KccLogo'
 import { isMobile } from 'react-device-detect'
 import { MobileView, BrowserView } from '../Common'
 import { theme } from '../../constants/theme'
-import { MenuOutlined, CloseOutlined } from '@ant-design/icons'
+import { MenuOutlined, CloseOutlined, CloseCircleOutlined } from '@ant-design/icons'
 
 const AppHeaderWrap = styled.div`
   display: flex;
@@ -49,7 +49,7 @@ const AppHeader: React.FunctionComponent = () => {
           </BrowserView>
         </HeaderLeftWrap>
         <ChangeLanguage />
-        <MobileView>
+        <MobileView style={{ width: '24px' }}>
           {!mobileMenuShow ? (
             <MenuOutlined
               style={{ fontSize: '18px', color: theme.colors.primary }}
@@ -58,8 +58,8 @@ const AppHeader: React.FunctionComponent = () => {
               }}
             />
           ) : (
-            <CloseOutlined
-              style={{ fontSize: '18px', color: theme.colors.primary }}
+            <CloseCircleOutlined
+              style={{ fontSize: '20px', color: theme.colors.primary }}
               onClick={() => {
                 setMobileMenuShow(false)
               }}
