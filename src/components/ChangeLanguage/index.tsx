@@ -13,6 +13,7 @@ import { theme } from '../../constants/theme'
 import { useResponsive } from '../../utils/responsive'
 
 import './index.less'
+import { BrowserView, MobileView } from '../Common'
 
 export interface ChangeLanguageProps {}
 
@@ -119,17 +120,30 @@ const ChangeLanguage: React.FunctionComponent<ChangeLanguageProps> = () => {
   return (
     <MenuWrap>
       <Popover placement="bottom" content={selectOptions} visible={show}>
-        <LanguageButton
-          onMouseEnter={showPop}
-          onMouseLeave={hidePopover}
-          onClick={() => {
-            setShow(() => !show)
-          }}
-          style={{ color: theme.colors.primary, fontSize: isMobile ? '14px' : '12px' }}
-        >
-          {currentLanguage}
-          <DownOutlined style={{ fontSize: '10px', marginLeft: isMobile ? '2px' : '6px' }} />
-        </LanguageButton>
+        <BrowserView>
+          <LanguageButton
+            onMouseEnter={showPop}
+            onMouseLeave={hidePopover}
+            onClick={() => {
+              setShow(() => !show)
+            }}
+            style={{ color: theme.colors.primary, fontSize: isMobile ? '14px' : '12px' }}
+          >
+            {currentLanguage}
+            <DownOutlined style={{ fontSize: '10px', marginLeft: isMobile ? '2px' : '6px' }} />
+          </LanguageButton>
+        </BrowserView>
+        <MobileView>
+          <LanguageButton
+            onClick={() => {
+              setShow(() => !show)
+            }}
+            style={{ color: theme.colors.primary, fontSize: isMobile ? '14px' : '12px' }}
+          >
+            {currentLanguage}
+            <DownOutlined style={{ fontSize: '10px', marginLeft: isMobile ? '2px' : '6px' }} />
+          </LanguageButton>
+        </MobileView>
       </Popover>
     </MenuWrap>
   )
