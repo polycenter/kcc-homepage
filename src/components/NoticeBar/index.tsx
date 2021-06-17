@@ -14,6 +14,8 @@ import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import './index.less'
 import { theme } from '../../constants/theme'
+import { MobileView } from '../Common'
+import { BrowserView } from '../Common/index'
 
 export interface NoticeBarProps {}
 
@@ -26,6 +28,14 @@ const NoticeBarWrap = styled(AutoRow)`
   justify-content: center;
   position: relative;
   z-index: 2;
+  @media (max-width: 768px) {
+    height: 44px;
+    margin: 0 24px;
+    padding: 12px;
+    width: calc(100% - 48px);
+    transform: translateY(-50%);
+    background: #242525;
+  }
 `
 
 const NoticeBgWrap = styled.div`
@@ -52,6 +62,10 @@ const Text = styled.div`
   white-space: nowrap;
   &:hover {
     text-decoration: underline;
+  }
+  @media (max-width: 768px) {
+    height: 20px;
+    width: 100%;
   }
 `
 
@@ -116,8 +130,13 @@ const NoticeBar: React.FunctionComponent<NoticeBarProps> = () => {
               alignItems: 'cetner',
             }}
           >
-            <Text onClick={nav2Announcement.bind(null, item.link)}>{item.title}</Text>
-            <Date>{item.pubDate}</Date>
+            <Text onClick={nav2Announcement.bind(null, item.link)}>
+              {item.title}
+              <MobileView style={{ display: 'inline' }}> {item.pubDate}</MobileView>
+            </Text>
+            <BrowserView>
+              <Date>{item.pubDate}</Date>
+            </BrowserView>
           </RowBetween>
         </div>
       )

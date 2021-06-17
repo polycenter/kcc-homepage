@@ -117,9 +117,13 @@ const ChangeLanguage: React.FunctionComponent<ChangeLanguageProps> = () => {
     )
   })
   return (
-    <MenuWrap onMouseEnter={showPop} onMouseLeave={hidePopover}>
+    <MenuWrap>
       <Popover placement="bottom" content={selectOptions} visible={show}>
-        <LanguageButton style={{ color: theme.colors.primary, fontSize: isMobile ? '14px' : '12px' }}>
+        <LanguageButton
+          onMouseEnter={showPop}
+          onMouseLeave={hidePopover}
+          style={{ color: theme.colors.primary, fontSize: isMobile ? '14px' : '12px' }}
+        >
           {currentLanguage}
           <DownOutlined style={{ fontSize: '10px', marginLeft: isMobile ? '2px' : '6px' }} />
         </LanguageButton>
