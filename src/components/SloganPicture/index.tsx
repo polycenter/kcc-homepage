@@ -14,6 +14,9 @@ export interface PictureProps {
 const PictureWrap = styled(Row)<{ direction: string }>`
   align-items: center;
   justify-content: ${({ direction }) => (direction === 'left' ? 'space-between' : 'space-between')};
+  @media (max-width: 768px) {
+    margin-bottom: 60px;
+  }
 `
 const ImageDescription = styled(ParagraphText)<{ direction: string }>`
   order: ${({ direction }) => (direction === 'left' ? 1 : 2)};
@@ -22,6 +25,11 @@ const ImageDescription = styled(ParagraphText)<{ direction: string }>`
   text-align: left;
   font-size: 20px;
   padding-left: ${({ direction }) => (direction === 'left' ? '0px' : '80px')};
+  @media (max-width: 768px) {
+    font-size: 16px;
+    padding-left: ${({ direction }) => (direction === 'left' ? '0px' : '16px')};
+    padding-right: ${({ direction }) => (direction === 'right' ? '0px' : '16px')};
+  }
 `
 
 const Image = styled.img<{ width: string; direction: string }>`
