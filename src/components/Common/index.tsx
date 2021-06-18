@@ -57,4 +57,8 @@ export const DivideLine = styled.div`
   width: 100%;
   height: 1px;
   background: ${theme.colors.primary};
+  @media (max-width: 768px) {
+    width: calc(100% - 48px);
+    margin: 0 24px;
+  }
 `

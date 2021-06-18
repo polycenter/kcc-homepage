@@ -5,11 +5,12 @@ import { BannerContentWrap, BannerDescription, BannerTitle, BannerWrap } from '.
 import { useTranslation } from 'react-i18next'
 import { BaseWrap, ButtonText } from '../home/index'
 import Row, { CenterRow } from '../../components/Row/index'
-import { DivideLine, ParagraphText, TitleText } from '../../components/Common'
+import { BrowserView, DivideLine, MobileView, ParagraphText, TitleText } from '../../components/Common'
 import Column, { ColumnCenter } from '../../components/Column'
 import { AutoColumn } from '../../components/Column/index'
 import { theme } from '../../constants/theme'
 import { KCC } from '../../constants/index'
+import { useResponsive } from '../../utils/responsive'
 
 export interface GrantsPageProps {}
 
@@ -21,6 +22,9 @@ const MailSubText = styled.div`
   font-weight: 400;
   color: #fff;
   line-height: 24px;
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
 `
 
 const GrantsPageWrap = styled.div`
@@ -64,6 +68,11 @@ export const GrantBannerWrap = styled.div`
   align-items: center;
   background-size: auto 100%;
   z-index: 3;
+  @media (max-width: 768px) {
+    width: 100%;
+    padding: 120px 24px 0 24px;
+    height: 520px;
+  }
 `
 
 const NumberText = styled.div`
@@ -91,6 +100,18 @@ const ParagraphTitle = styled.div`
   font-weight: 400;
   color: #fff;
   line-height: 32px;
+  @media (max-width: 768px) {
+    width: auto;
+    &::before {
+      content: '';
+      width: 3px;
+      height: 18px;
+      background: ${theme.colors.primary};
+      position: absolute;
+      left: 0px;
+      margin-top: 5px;
+    }
+  }
 `
 const ParagraphIcon = styled.img`
   margin-left: 20px;
@@ -99,6 +120,9 @@ const ParagraphIcon = styled.img`
 const SmallText = styled.div`
   font-size: 16px;
   color: #fff;
+  @media (max-width: 768px) {
+    font-size: 12px;
+  }
 `
 
 const BottomCoverImage = styled.img`
@@ -109,6 +133,7 @@ const BottomCoverImage = styled.img`
 
 const GrantsPage: React.FunctionComponent<GrantsPageProps> = () => {
   const { t } = useTranslation()
+  const { isMobile } = useResponsive()
 
   const nav2Grants = () => {
     window.open(KCC.GRANTS, '_blank')
@@ -117,11 +142,16 @@ const GrantsPage: React.FunctionComponent<GrantsPageProps> = () => {
   return (
     <GrantsPageWrap>
       {/* banner */}
-      <GrantBgCover
-        src={require('../../assets/images/grant/grant-banner-bg@2x.png').default}
-        width="auto"
-        height="460px"
-      />
+      <BrowserView>
+        <GrantBgCover
+          src={require('../../assets/images/grant/grant-banner-bg@2x.png').default}
+          width="auto"
+          height="460px"
+        />
+      </BrowserView>
+      <MobileView>
+        <GrantBgCover src={require('../../assets/images/grant/m-banner-bg.png').default} width="auto" height="520px" />
+      </MobileView>
       <GrantBannerWrap>
         <BannerContentWrap>
           <BannerTitle>{t('Grant Program')}</BannerTitle>
@@ -131,7 +161,15 @@ const GrantsPage: React.FunctionComponent<GrantsPageProps> = () => {
             )}
           </BannerDescription>
           <ButtonText>
-            <Button type="primary" style={{ marginTop: '24px', width: '145px', height: '36px' }} onClick={nav2Grants}>
+            <Button
+              type="primary"
+              style={{
+                marginTop: isMobile ? '87px' : '24px',
+                width: isMobile ? '160px' : '145px',
+                height: isMobile ? '48px' : '36px',
+              }}
+              onClick={nav2Grants}
+            >
               <span className="text">{t('Apply Now')}</span>
             </Button>
           </ButtonText>
@@ -141,12 +179,31 @@ const GrantsPage: React.FunctionComponent<GrantsPageProps> = () => {
       {/* content */}
 
       <CoverWrap>
-        <BaseWrap style={{ paddingTop: '120px', position: 'relative', zIndex: 3 }}>
-          <CenterRow justify="space-between">
-            <Column>
-              <ParagraphText style={{ width: '480px' }}>{t('Grant Introduce 1')}</ParagraphText>
-              <ParagraphText style={{ width: '480px' }}>{t('Grant Type 1')}</ParagraphText>
-              <ParagraphText style={{ width: '480px' }}>{t('Grant Type 2')}</ParagraphText>
+        <BaseWrap style={{ paddingTop: isMobile ? '16px' : '120px', position: 'relative', zIndex: 3 }}>
+          <CenterRow
+            justify={isMobile ? 'center' : 'space-between'}
+            style={{
+              flexFlow: isMobile ? 'column wrap' : 'row nowrap',
+              alignItems: 'center',
+              justifyContent: isMobile ? 'center' : 'space-between',
+              padding: isMobile ? '0 24px' : '0',
+            }}
+          >
+            <Column
+              style={{
+                order: isMobile ? 1 : 0,
+                marginTop: isMobile ? '50px' : '0',
+              }}
+            >
+              <ParagraphText style={{ width: isMobile ? 'auto' : '480px', fontSize: '14px' }}>
+                {t('Grant Introduce 1')}
+              </ParagraphText>
+              <ParagraphText style={{ width: isMobile ? 'auto' : '480px', fontSize: '14px' }}>
+                {t('Grant Type 1')}
+              </ParagraphText>
+              <ParagraphText style={{ width: isMobile ? 'auto' : '480px', fontSize: '14px' }}>
+                {t('Grant Type 2')}
+              </ParagraphText>
             </Column>
 
             <ColumnCenter
@@ -155,17 +212,28 @@ const GrantsPage: React.FunctionComponent<GrantsPageProps> = () => {
                 height: '240px',
                 background: 'rgba(151, 208, 195, 0.21)',
                 justifyContent: 'center',
-                padding: '0px 0',
+                padding: '0px 0px',
+                order: isMobile ? 0 : 1,
               }}
             >
               <NumberText>10+</NumberText>
               <SubTitle style={{ marginTop: '24px' }}>{t('Project Type')}</SubTitle>
             </ColumnCenter>
           </CenterRow>
-          <CenterRow justify="space-between" style={{ marginTop: '94px', alignItems: 'stretch' }}>
+          <CenterRow
+            justify="space-between"
+            style={{
+              marginTop: '94px',
+              alignItems: isMobile ? 'center' : 'stretch',
+              justifyContent: isMobile ? 'center' : 'space-between',
+              flexFlow: isMobile ? 'column wrap' : 'row nowrap',
+              padding: isMobile ? '0 24px' : '0',
+            }}
+          >
             <ColumnCenter
               style={{
                 width: '240px',
+                height: isMobile ? '240px' : 'auto',
                 background: 'rgba(151, 208, 195, 0.21)',
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -176,22 +244,24 @@ const GrantsPage: React.FunctionComponent<GrantsPageProps> = () => {
                 <SubTitle style={{ marginTop: '24px' }}>{t('Directions')}</SubTitle>
               </ColumnCenter>
             </ColumnCenter>
-            <AutoColumn style={{ width: '610px' }}>
+            <AutoColumn style={{ width: isMobile ? 'auto' : '610px', marginTop: isMobile ? '24px' : '0' }}>
               <Row>
                 <ParagraphTitle>{t(`Development`)}</ParagraphTitle>
                 {/*  <ParagraphIcon src={require('../../')} /> */}
               </Row>
-              <ParagraphText style={{ marginTop: '10px' }}>{t(`Grant Introduce 2`)}</ParagraphText>
+              <ParagraphText style={{ marginTop: '10px', fontSize: isMobile ? '14px' : '20px' }}>
+                {t(`Grant Introduce 2`)}
+              </ParagraphText>
               <SmallText style={{ marginTop: '5px' }}>
                 -{' '}
                 {t(`We are particularly interested in funding projects that build out dapp on KuCoin Community Chain`)}
               </SmallText>
 
-              <Row style={{ marginTop: '44px' }}>
+              <Row style={{ marginTop: isMobile ? '75px' : '44px' }}>
                 <ParagraphTitle>{t(`Research`)}</ParagraphTitle>
                 {/*  <ParagraphIcon src={require('../../')} /> */}
               </Row>
-              <ParagraphText style={{ marginTop: '10px' }}>
+              <ParagraphText style={{ marginTop: '10px', fontSize: isMobile ? '14px' : '20px' }}>
                 {t(
                   `KCS Foundation funds research projects that advance and explore protocols in the  Blockchain Technology Stack`
                 )}
@@ -204,20 +274,26 @@ const GrantsPage: React.FunctionComponent<GrantsPageProps> = () => {
             </AutoColumn>
           </CenterRow>
         </BaseWrap>
-        <DivideLine style={{ margin: '100px 0px', opacity: 0.24 }} />
+        <DivideLine style={{ margin: isMobile ? '100px 24px 32px 24px' : '100px 0px', opacity: 0.24 }} />
         {/* mail */}
-        <BaseWrap style={{ padding: '0px 0  100px 0', position: 'relative', zIndex: 2 }}>
+        <BaseWrap
+          style={{ padding: isMobile ? '0 24px 40px 24px' : '0px 0  100px 0', position: 'relative', zIndex: 2 }}
+        >
           <ColumnCenter>
             <TitleText>{t('Open Grants Program')}</TitleText>
-            <MailSubText style={{ width: 'auto', textAlign: 'center' }}>
+            <MailSubText style={{ width: 'auto', textAlign: isMobile ? 'left' : 'center' }}>
               {t('Grant Payment Amount')}
               <br />
               {t('Grant Payment')}
             </MailSubText>
           </ColumnCenter>
-          <CenterRow justify="center" style={{ marginTop: '42px' }}>
+          <CenterRow justify={isMobile ? 'flex-start' : 'center'} style={{ marginTop: isMobile ? '80px' : '42px' }}>
             <ButtonText>
-              <Button type="primary" style={{ width: '145px', height: '36px' }} onClick={nav2Grants}>
+              <Button
+                type="primary"
+                style={{ width: isMobile ? '160px' : '145px', height: isMobile ? '48px' : '36px' }}
+                onClick={nav2Grants}
+              >
                 <span className="text"> {t('Apply Now')}</span>
               </Button>
             </ButtonText>
