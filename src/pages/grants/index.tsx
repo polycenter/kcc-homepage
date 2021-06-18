@@ -195,13 +195,13 @@ const GrantsPage: React.FunctionComponent<GrantsPageProps> = () => {
                 marginTop: isMobile ? '50px' : '0',
               }}
             >
-              <ParagraphText style={{ width: isMobile ? 'auto' : '480px', fontSize: '14px' }}>
+              <ParagraphText style={{ width: isMobile ? 'auto' : '480px', fontSize: isMobile ? '14px' : '20px' }}>
                 {t('Grant Introduce 1')}
               </ParagraphText>
-              <ParagraphText style={{ width: isMobile ? 'auto' : '480px', fontSize: '14px' }}>
+              <ParagraphText style={{ width: isMobile ? 'auto' : '480px', fontSize: isMobile ? '14px' : '20px' }}>
                 {t('Grant Type 1')}
               </ParagraphText>
-              <ParagraphText style={{ width: isMobile ? 'auto' : '480px', fontSize: '14px' }}>
+              <ParagraphText style={{ width: isMobile ? 'auto' : '480px', fontSize: isMobile ? '14px' : '20px' }}>
                 {t('Grant Type 2')}
               </ParagraphText>
             </Column>
