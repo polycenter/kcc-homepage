@@ -1,11 +1,10 @@
 import React from 'react'
 import { useEffect } from 'react'
-import { isMobile as mobile } from 'react-device-detect'
+import { isMobile as mobile, isIPad13 } from 'react-device-detect'
 export function useResponsive() {
   const MobileWidth = 768
   const [isMobile, setIsModile] = React.useState(false)
   const calc = () => {
-    console.log('calcing')
     const width = document.body.clientWidth ?? document.documentElement.clientWidth
     if (width <= MobileWidth) {
       setIsModile(true)
@@ -21,5 +20,5 @@ export function useResponsive() {
     }
   }, [])
 
-  return { isMobile: isMobile ?? mobile }
+  return { isMobile: isMobile || mobile || isIPad13 }
 }

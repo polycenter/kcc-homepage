@@ -73,6 +73,9 @@ export const GrantBannerWrap = styled.div`
     padding: 120px 24px 0 24px;
     height: 520px;
   }
+  @media (max-width: 1200px) {
+    width: 100%;
+  }
 `
 
 const NumberText = styled.div`
@@ -145,12 +148,12 @@ const GrantsPage: React.FunctionComponent<GrantsPageProps> = () => {
       <BrowserView>
         <GrantBgCover
           src={require('../../assets/images/grant/grant-banner-bg@2x.png').default}
-          width="auto"
-          height="460px"
+          width="100%"
+          height="auto"
         />
       </BrowserView>
       <MobileView>
-        <GrantBgCover src={require('../../assets/images/grant/m-banner-bg.png').default} width="auto" height="520px" />
+        <GrantBgCover src={require('../../assets/images/grant/m-banner-bg.png').default} width="100%" height="auto" />
       </MobileView>
       <GrantBannerWrap>
         <BannerContentWrap>
