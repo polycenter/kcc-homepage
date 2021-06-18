@@ -104,9 +104,9 @@ export const BaseWrap = styled(Column)`
   @media (max-width: 768px) {
     width: 100%;
   }
-  @media (max-width: 1200px) {
-    padding: 0 24px;
+  @media (max-width: 1200px) and (min-width: 769px) {
     width: 100%;
+    padding: 0 24px;
   }
 `
 
