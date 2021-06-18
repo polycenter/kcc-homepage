@@ -3,6 +3,7 @@ import { DownOutlined } from '@ant-design/icons'
 import styled from 'styled-components'
 import { FOOTER_LIST } from '../../constants/footerList'
 import { useHistory } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 const { Panel } = Collapse
 
@@ -30,6 +31,8 @@ const NavText = styled.div`
 export default function MFooter() {
   const router = useHistory()
 
+  const { t } = useTranslation()
+
   const nav2Target = (route: string | undefined) => {
     if (route) {
       if (route.startsWith('/')) {
@@ -46,13 +49,13 @@ export default function MFooter() {
     const subList = children.map((item, k) => {
       return (
         <NavText key={k} onClick={nav2Target.bind(null, item.navRoute)}>
-          {item.navText}
+          {t(`${item.navText}`)}
         </NavText>
       )
     })
     return (
       <Panel
-        header={<HeaderText>{item.title}</HeaderText>}
+        header={<HeaderText>{t(`${item.title}`)}</HeaderText>}
         key={index}
         extra={genExtra()}
         showArrow={false}
