@@ -71,6 +71,7 @@ export const GrantBannerWrap = styled.div`
   @media (max-width: 768px) {
     width: 100%;
     padding: 120px 24px 0 24px;
+    height: 520px;
   }
 `
 
@@ -178,7 +179,7 @@ const GrantsPage: React.FunctionComponent<GrantsPageProps> = () => {
       {/* content */}
 
       <CoverWrap>
-        <BaseWrap style={{ paddingTop: isMobile ? '76px' : '120px', position: 'relative', zIndex: 3 }}>
+        <BaseWrap style={{ paddingTop: isMobile ? '16px' : '120px', position: 'relative', zIndex: 3 }}>
           <CenterRow
             justify={isMobile ? 'center' : 'space-between'}
             style={{
