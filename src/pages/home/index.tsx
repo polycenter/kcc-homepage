@@ -104,6 +104,10 @@ export const BaseWrap = styled(Column)`
   @media (max-width: 768px) {
     width: 100%;
   }
+  @media (max-width: 1200px) {
+    padding: 0 24px;
+    width: 100%;
+  }
 `
 
 const ImageWrap = styled(Row)`

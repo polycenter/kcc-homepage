@@ -32,6 +32,10 @@ const AppFooterContentWrap = styled.div`
     width: 100%;
     padding-top: 0px;
   }
+  @media (max-width: 1200px) {
+    width: 100%;
+    padding-top: 0px;
+  }
 `
 
 const ChainText = styled.div`
