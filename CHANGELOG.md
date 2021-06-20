@@ -1,4 +1,4 @@
-## 1.0.1 (2021-06-18)
+## 1.0.2 (2021-06-20)
 
 
 ### Bug Fixes
@@ -8,7 +8,12 @@
 * **button:** fix home page button hover style ([9011562](https://github.com/kucoin-community-chain/kcc-homepage/commit/9011562f1b6313cf7d741206405821ddc7a9c0bf))
 * **change-language:** fix can't change language in h5 mode ([246b332](https://github.com/kucoin-community-chain/kcc-homepage/commit/246b332d4b555cceebaa077de94d2715b585184e))
 * **english:** edit english template ([1b12519](https://github.com/kucoin-community-chain/kcc-homepage/commit/1b12519e9293cd2dc17fb998368bbafdd70b12ef))
+* **grant:** grant style ([b248f1f](https://github.com/kucoin-community-chain/kcc-homepage/commit/b248f1f2fa10e78e82125894e5f2749ec2a6cb8a))
+* **grant:** uI ([86c9a63](https://github.com/kucoin-community-chain/kcc-homepage/commit/86c9a63ccee363c3e2ea66c30630d0dc52657354))
+* **grant:** uI ([08e2c55](https://github.com/kucoin-community-chain/kcc-homepage/commit/08e2c556f5a89eca27d4bb44f678aff4de18060a))
+* **grant:** uI ([3200f57](https://github.com/kucoin-community-chain/kcc-homepage/commit/3200f572b58e9563e9f1ea3e1b699fe9e519ba28))
 * **header:** fix header wrong hover events ([e41569c](https://github.com/kucoin-community-chain/kcc-homepage/commit/e41569c50294b491caa1857656a40f251fe26f95))
+* **i18n:** footer i18n ([5b3238a](https://github.com/kucoin-community-chain/kcc-homepage/commit/5b3238ab93129d0fac90e44f8a10b40df7eac172))
 * **link:** update link ([f987e35](https://github.com/kucoin-community-chain/kcc-homepage/commit/f987e35863e3a87d9420eb9ad1bd070cf79fc4de))
 * **link:** update link ([e12b1da](https://github.com/kucoin-community-chain/kcc-homepage/commit/e12b1dad3fa3210506ebba32df23a38b4ddd4e56))
 * **menu:** fix menu style ([72533ce](https://github.com/kucoin-community-chain/kcc-homepage/commit/72533cea19d8b6700656d5e812b510eea390db98))
