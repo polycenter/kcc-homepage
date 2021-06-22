@@ -24,6 +24,7 @@ const MailSubText = styled.div`
   line-height: 24px;
   @media (max-width: 768px) {
     font-size: 14px;
+    align-self: flex-start;
   }
 `
 
@@ -136,7 +137,7 @@ const BottomCoverImage = styled.img`
 
 const GrantsPage: React.FunctionComponent<GrantsPageProps> = () => {
   const { t } = useTranslation()
-  const { isMobile } = useResponsive()
+  const { isMobile, isTablet } = useResponsive()
 
   const nav2Grants = () => {
     window.open(KCC.GRANTS, '_blank')
@@ -196,6 +197,7 @@ const GrantsPage: React.FunctionComponent<GrantsPageProps> = () => {
               style={{
                 order: isMobile ? 1 : 0,
                 marginTop: isMobile ? '50px' : '0',
+                alignSelf: isMobile ? 'flex-start' : 'center',
               }}
             >
               <ParagraphText style={{ width: isMobile ? 'auto' : '480px', fontSize: isMobile ? '14px' : '20px' }}>
@@ -247,7 +249,13 @@ const GrantsPage: React.FunctionComponent<GrantsPageProps> = () => {
                 <SubTitle style={{ marginTop: '24px' }}>{t('Directions')}</SubTitle>
               </ColumnCenter>
             </ColumnCenter>
-            <AutoColumn style={{ width: isMobile ? 'auto' : '610px', marginTop: isMobile ? '24px' : '0' }}>
+            <AutoColumn
+              style={{
+                width: isMobile ? 'auto' : '610px',
+                marginTop: isMobile ? '24px' : '0',
+                paddingLeft: isTablet ? '24px' : '0px',
+              }}
+            >
               <Row>
                 <ParagraphTitle>{t(`Development`)}</ParagraphTitle>
                 {/*  <ParagraphIcon src={require('../../')} /> */}

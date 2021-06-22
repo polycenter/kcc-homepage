@@ -24,6 +24,9 @@ const AppFooterWrap = styled.div`
     height: auto;
     tex-align: center;
   }
+  @media (max-width: 1200px) and (min-width: 769px) {
+    height: auto;
+  }
 `
 const AppFooterContentWrap = styled.div`
   width: 940px;
@@ -32,9 +35,9 @@ const AppFooterContentWrap = styled.div`
     width: 100%;
     padding-top: 0px;
   }
-  @media (max-width: 1200px) {
+  @media (max-width: 1200px) and (min-width: 769px) {
     width: 100%;
-    padding-top: 0px;
+    padding: 24px 24px 0px 24px;
   }
 `
 
@@ -83,7 +86,12 @@ const CopyRightText = styled.div`
     text-align: center;
     height: auto;
     font-size: 12px;
-    margin-top: 0px;
+    margin-top: 24px;
+  }
+  @media (max-width: 1200px) and (min-width: 769px) {
+    width: 100%;
+    height: auto;
+    margin-top: 24px;
   }
 `
 

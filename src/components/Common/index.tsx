@@ -12,7 +12,7 @@ export const MobileView = styled.div`
   @media (max-width: 768px) {
     display: block;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 769px) {
     display: none;
   }
 `
@@ -21,7 +21,7 @@ export const BrowserView = styled.div`
   @media (max-width: 768px) {
     display: none;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 769px) {
     display: block;
   }
 `

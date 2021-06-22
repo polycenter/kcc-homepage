@@ -70,6 +70,9 @@ export const BannerContentWrap = styled.div`
   @media (max-width: 768px) {
     width: 100%;
   }
+  @media (max-width: 1200px) and (min-width: 769px) {
+    padding: 0 24px;
+  }
 `
 export const BannerTitle = styled.span`
   line-height: 64px;
@@ -173,6 +176,9 @@ const BaseSubText = styled.span`
   @media (max-width: 768px) {
     text-align: left;
     font-size: 14px;
+  }
+  @media (max-width: 768px) {
+    align-self: flex-start;
   }
 `
 
@@ -310,7 +316,7 @@ const ContactWrap = styled(RowBetween)`
 `
 
 const HomePage: React.FunctionComponent<HomePageProps> = () => {
-  const { isMobile } = useResponsive()
+  const { isMobile, isTablet } = useResponsive()
 
   const CharacteristicsComponent = Characteristics.map((item, index) => {
     let dir = ''
@@ -520,7 +526,7 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
           <NoticeBar />
           <IntroduceCoverImageWrap src={IntroduceCoverImage} height="400px" width="50%" />
           <BaseWrap style={{ padding: '80px 0', position: 'relative', zIndex: 1 }}>
-            <BrowserView>
+            <BrowserView style={{ padding: isTablet ? '0 24px' : '0px' }}>
               <RowBetween style={{ alignItems: 'center', paddingTop: '68px' }}>
                 <ImageWrap>
                   <img
@@ -656,7 +662,11 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
 
         {/* Join the KCC Community */}
         <BaseWrap
-          style={{ padding: isMobile ? '46px 24px 0px 24px' : '0px 0 65px 0', position: 'relative', zIndex: 2 }}
+          style={{
+            padding: isMobile || isTablet ? '46px 24px 0px 24px' : '120px 0 65px 0',
+            position: 'relative',
+            zIndex: 2,
+          }}
         >
           <ColumnCenter>
             <TitleText>{t('Join The KCC Community')}</TitleText>
