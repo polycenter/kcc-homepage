@@ -1,12 +1,13 @@
-import React, { Suspense } from 'react'
+import React, { lazy, Suspense } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 
 import AppLayout from './layouts/AppLayout'
 
 import Home from './pages/home/'
-import Grants from './pages/grants/index'
 
 import './App.less'
+
+const Grants = lazy(() => import(/* grantpage */ './pages/grants/index'))
 
 export default function App() {
   return (

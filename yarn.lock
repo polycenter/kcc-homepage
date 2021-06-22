@@ -867,14 +867,7 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.10.4"
 
-"@babel/plugin-transform-react-jsx-development@^7.12.1":
-  "integrity" "sha512-BPjYV86SVuOaudFhsJR1zjgxxOhJDt6JHNoD48DxWEIxUCAMjV1ys6DYw4SDYZh0b1QsS2vfIA9t/ZsQGsDOUQ=="
-  "resolved" "https://registry.npmjs.org/@babel/plugin-transform-react-jsx-development/-/plugin-transform-react-jsx-development-7.12.17.tgz"
-  "version" "7.12.17"
-  dependencies:
-    "@babel/plugin-transform-react-jsx" "^7.12.17"
-
-"@babel/plugin-transform-react-jsx-development@^7.12.12":
+"@babel/plugin-transform-react-jsx-development@^7.12.1", "@babel/plugin-transform-react-jsx-development@^7.12.12":
   "integrity" "sha512-BPjYV86SVuOaudFhsJR1zjgxxOhJDt6JHNoD48DxWEIxUCAMjV1ys6DYw4SDYZh0b1QsS2vfIA9t/ZsQGsDOUQ=="
   "resolved" "https://registry.npmjs.org/@babel/plugin-transform-react-jsx-development/-/plugin-transform-react-jsx-development-7.12.17.tgz"
   "version" "7.12.17"
@@ -1193,45 +1186,10 @@
     "core-js-pure" "^3.0.0"
     "regenerator-runtime" "^0.13.4"
 
-"@babel/runtime@^7.1.2", "@babel/runtime@^7.10.1", "@babel/runtime@^7.10.4", "@babel/runtime@^7.11.1", "@babel/runtime@^7.12.0", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.5", "@babel/runtime@^7.14.0", "@babel/runtime@^7.9.2":
+"@babel/runtime@^7.1.2", "@babel/runtime@^7.10.1", "@babel/runtime@^7.10.2", "@babel/runtime@^7.10.4", "@babel/runtime@^7.11.1", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.0", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.5", "@babel/runtime@^7.14.0", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
   "integrity" "sha512-JELkvo/DlpNdJ7dlyw/eY7E0suy5i5GQH+Vlxaq1nsNJ+H7f4Vtv3jMeCEgRhZZQFXTjldYfQgv2qmM6M1v5wA=="
   "resolved" "https://registry.npmjs.org/@babel/runtime/-/runtime-7.14.0.tgz"
   "version" "7.14.0"
-  dependencies:
-    "regenerator-runtime" "^0.13.4"
-
-"@babel/runtime@^7.10.2":
-  "integrity" "sha512-BogPQ7ciE6SYAUPtlm9tWbgI9+2AgqSam6QivMgXgAT+fKbgppaj4ZX15MHeLC1PVF5sNk70huBu20XxWOs8Cg=="
-  "resolved" "https://registry.npmjs.org/@babel/runtime/-/runtime-7.12.18.tgz"
-  "version" "7.12.18"
-  dependencies:
-    "regenerator-runtime" "^0.13.4"
-
-"@babel/runtime@^7.11.2":
-  "integrity" "sha512-BogPQ7ciE6SYAUPtlm9tWbgI9+2AgqSam6QivMgXgAT+fKbgppaj4ZX15MHeLC1PVF5sNk70huBu20XxWOs8Cg=="
-  "resolved" "https://registry.npmjs.org/@babel/runtime/-/runtime-7.12.18.tgz"
-  "version" "7.12.18"
-  dependencies:
-    "regenerator-runtime" "^0.13.4"
-
-"@babel/runtime@^7.5.5":
-  "integrity" "sha512-BogPQ7ciE6SYAUPtlm9tWbgI9+2AgqSam6QivMgXgAT+fKbgppaj4ZX15MHeLC1PVF5sNk70huBu20XxWOs8Cg=="
-  "resolved" "https://registry.npmjs.org/@babel/runtime/-/runtime-7.12.18.tgz"
-  "version" "7.12.18"
-  dependencies:
-    "regenerator-runtime" "^0.13.4"
-
-"@babel/runtime@^7.7.2":
-  "integrity" "sha512-BogPQ7ciE6SYAUPtlm9tWbgI9+2AgqSam6QivMgXgAT+fKbgppaj4ZX15MHeLC1PVF5sNk70huBu20XxWOs8Cg=="
-  "resolved" "https://registry.npmjs.org/@babel/runtime/-/runtime-7.12.18.tgz"
-  "version" "7.12.18"
-  dependencies:
-    "regenerator-runtime" "^0.13.4"
-
-"@babel/runtime@^7.8.4":
-  "integrity" "sha512-BogPQ7ciE6SYAUPtlm9tWbgI9+2AgqSam6QivMgXgAT+fKbgppaj4ZX15MHeLC1PVF5sNk70huBu20XxWOs8Cg=="
-  "resolved" "https://registry.npmjs.org/@babel/runtime/-/runtime-7.12.18.tgz"
-  "version" "7.12.18"
   dependencies:
     "regenerator-runtime" "^0.13.4"
 
@@ -3316,21 +3274,7 @@
   dependencies:
     "babylon" "^6.18.0"
 
-"babel-jest@^26.6.0":
-  "integrity" "sha512-pl4Q+GAVOHwvjrck6jKjvmGhnO3jHX/xuB9d27f+EJZ/6k+6nMuPjorrYp7s++bKKdANwzElBWnLWaObvTnaZA=="
-  "resolved" "https://registry.npmjs.org/babel-jest/-/babel-jest-26.6.3.tgz"
-  "version" "26.6.3"
-  dependencies:
-    "@jest/transform" "^26.6.2"
-    "@jest/types" "^26.6.2"
-    "@types/babel__core" "^7.1.7"
-    "babel-plugin-istanbul" "^6.0.0"
-    "babel-preset-jest" "^26.6.2"
-    "chalk" "^4.0.0"
-    "graceful-fs" "^4.2.4"
-    "slash" "^3.0.0"
-
-"babel-jest@^26.6.3":
+"babel-jest@^26.6.0", "babel-jest@^26.6.3":
   "integrity" "sha512-pl4Q+GAVOHwvjrck6jKjvmGhnO3jHX/xuB9d27f+EJZ/6k+6nMuPjorrYp7s++bKKdANwzElBWnLWaObvTnaZA=="
   "resolved" "https://registry.npmjs.org/babel-jest/-/babel-jest-26.6.3.tgz"
   "version" "26.6.3"
@@ -6698,12 +6642,7 @@
     "inherits" "^2.0.3"
     "readable-stream" "^2.3.6"
 
-"follow-redirects@^1.0.0":
-  "integrity" "sha512-6mPTgLxYm3r6Bkkg0vNM0HTjfGrOEtsfbhagQvbxDEsEkpNhw582upBaoRZylzen6krEmxXJgt9Ju6HiI4O7BA=="
-  "resolved" "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.13.2.tgz"
-  "version" "1.13.2"
-
-"follow-redirects@^1.10.0":
+"follow-redirects@^1.0.0", "follow-redirects@^1.10.0":
   "integrity" "sha512-HWqDgT7ZEkqRzBvc2s64vSZ/hfOceEol3ac/7tKwzuvEyWx3/4UegXh5oBOIotkGsObyk3xznnSRVADBgWSQVg=="
   "resolved" "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.14.1.tgz"
   "version" "1.14.1"
@@ -8574,19 +8513,7 @@
     "jest-regex-util" "^26.0.0"
     "jest-snapshot" "^26.6.2"
 
-"jest-resolve@*":
-  "version" "26.6.0"
-  dependencies:
-    "@jest/types" "^26.6.0"
-    "chalk" "^4.0.0"
-    "graceful-fs" "^4.2.4"
-    "jest-pnp-resolver" "^1.2.2"
-    "jest-util" "^26.6.0"
-    "read-pkg-up" "^7.0.1"
-    "resolve" "^1.17.0"
-    "slash" "^3.0.0"
-
-"jest-resolve@^26.6.2":
+"jest-resolve@*", "jest-resolve@^26.6.2":
   "integrity" "sha512-sOxsZOq25mT1wRsfHcbtkInS+Ek7Q8jCHUB0ZUTP0tc/c41QHriU/NunqMfCUWsL4H3MHpvQD4QR9kSYhS7UvQ=="
   "resolved" "https://registry.npmjs.org/jest-resolve/-/jest-resolve-26.6.2.tgz"
   "version" "26.6.2"
@@ -13574,24 +13501,10 @@
   "resolved" "https://registry.npmjs.org/semver/-/semver-6.3.0.tgz"
   "version" "6.3.0"
 
-"semver@^7.1.1", "semver@^7.1.3", "semver@^7.3.4", "semver@^7.3.5", "semver@7.3.5":
+"semver@^7.1.1", "semver@^7.1.3", "semver@^7.2.1", "semver@^7.3.2", "semver@^7.3.4", "semver@^7.3.5", "semver@7.3.5":
   "integrity" "sha512-PoeGJYh8HK4BTO/a9Tf6ZG3veo/A7ZVsYrSA6J8ny9nb3B1VrpkuN+z9OE5wfE5p6H4LchYZsegiQgbJD94ZFQ=="
   "resolved" "https://registry.npmjs.org/semver/-/semver-7.3.5.tgz"
   "version" "7.3.5"
-  dependencies:
-    "lru-cache" "^6.0.0"
-
-"semver@^7.2.1":
-  "integrity" "sha512-tCfb2WLjqFAtXn4KEdxIhalnRtoKFN7nAwj0B3ZXCbQloV2tq5eDbcTmT68JJD3nRJq24/XgxtQKFIpQdtvmVw=="
-  "resolved" "https://registry.npmjs.org/semver/-/semver-7.3.4.tgz"
-  "version" "7.3.4"
-  dependencies:
-    "lru-cache" "^6.0.0"
-
-"semver@^7.3.2":
-  "integrity" "sha512-tCfb2WLjqFAtXn4KEdxIhalnRtoKFN7nAwj0B3ZXCbQloV2tq5eDbcTmT68JJD3nRJq24/XgxtQKFIpQdtvmVw=="
-  "resolved" "https://registry.npmjs.org/semver/-/semver-7.3.4.tgz"
-  "version" "7.3.4"
   dependencies:
     "lru-cache" "^6.0.0"
 
@@ -14577,7 +14490,7 @@
     "webpack-sources" "^1.4.0"
     "worker-farm" "^1.7.0"
 
-"terser-webpack-plugin@4.2.3":
+"terser-webpack-plugin@^4.2.3", "terser-webpack-plugin@4.2.3":
   "integrity" "sha512-jTgXh40RnvOrLQNgIkwEKnQ8rmHjHK4u+6UBEi+W+FPmvb+uo+chJXntKe7/3lW5mNysgSWD60KyesnhW8D6MQ=="
   "resolved" "https://registry.npmjs.org/terser-webpack-plugin/-/terser-webpack-plugin-4.2.3.tgz"
   "version" "4.2.3"

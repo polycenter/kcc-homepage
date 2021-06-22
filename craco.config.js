@@ -1,5 +1,5 @@
 const CracoLessPlugin = require('craco-less')
-
+const TerserPlugin = require('terser-webpack-plugin')
 module.exports = {
   plugins: [
     {
@@ -19,4 +19,21 @@ module.exports = {
       },
     },
   ],
+  webpack: {
+    plugins: [
+      new TerserPlugin({
+        sourceMap: true, // Must be set to true if using source-maps in production
+        terserOptions: {
+          ecma: undefined,
+          warnings: false,
+          parse: {},
+          compress: {
+            drop_console: process.env.NODE_ENV === 'production',
+            drop_debugger: false,
+            pure_funcs: process.env.NODE_ENV === 'production' ? ['console.log'] : '',
+          },
+        },
+      }),
+    ],
+  },
 }
