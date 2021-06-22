@@ -263,7 +263,7 @@ const AppMenu: React.FunctionComponent<AppMenuProps> = ({ style }) => {
       <BrowserView>
         <Menu
           selectedKeys={[]}
-          mode={isMobile ? 'inline' : 'horizontal'}
+          mode="horizontal"
           style={{ border: 'none', background: 'transparent', color: theme.colors.primary, ...style }}
         >
           {MenuListDom}
