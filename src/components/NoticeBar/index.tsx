@@ -125,7 +125,8 @@ const NoticeBar: React.FunctionComponent<NoticeBarProps> = () => {
       if (i18n.language === 'zh-CN') {
         for (let i = 0; i < list.length; i++) {
           if (list[i].categories.includes('zh')) {
-            const t = new Date(list[i]?.pubDate).getTime() + 1000 * 60 * 60 * 8
+            const validDate = list[i]?.pubDate.replace(/-/g, '/') // competible ios
+            const t = new Date(validDate).getTime() + 1000 * 60 * 60 * 8
             const temp: any = { ...list[i] }
             temp.pubDate = t && moment(new Date(t)).format('YYYY-MM-DD HH:mm:ss')
             announcment.push(temp)

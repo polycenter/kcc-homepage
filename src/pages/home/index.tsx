@@ -597,7 +597,7 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
         </BaseWrap>
 
         {/* MileStone */}
-        <BaseWrap style={{ padding: isMobile ? '47px 24px 0px 24px' : '88px 0 65px 0' }}>
+        <BaseWrap style={{ padding: isMobile || isTablet ? '47px 24px 0px 24px' : '88px 0 65px 0' }}>
           <ColumnCenter>
             <TitleText>{t('Our Milestones')}</TitleText>
             <ParagraphText>{t('Milestone Subtitlle')}</ParagraphText>
