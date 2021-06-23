@@ -188,9 +188,9 @@ const PartnerListWrap = styled.div`
   grid-template-rows: auto;
   column-gap: 16px;
   row-gap: 16px;
-  margin: auto;
-  margin-top: 20px;
+  margin: 0px 24px 24px 24px;
   @media (max-width: 1200px) {
+    padding-top: 30px;
     display: flex;
     flex-flow: row wrap;
     justify-content: flex-start;
