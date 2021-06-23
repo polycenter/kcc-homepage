@@ -11,6 +11,7 @@ import { AutoColumn } from '../../components/Column/index'
 import { theme } from '../../constants/theme'
 import { KCC } from '../../constants/index'
 import { useResponsive } from '../../utils/responsive'
+import { useEffect } from 'react'
 
 export interface GrantsPageProps {}
 
