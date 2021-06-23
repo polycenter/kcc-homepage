@@ -185,10 +185,18 @@ const BaseSubText = styled.span`
 const PartnerListWrap = styled.div`
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  grid-template-rows: repeat(2, 1fr);
+  grid-template-rows: auto;
   column-gap: 16px;
   row-gap: 16px;
   margin: auto;
+  margin-top: 20px;
+  @media (max-width: 1200px) {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-bottom: 24px;
+  }
 `
 const PartnerItemWrap = styled.div`
   display: flex;
@@ -196,7 +204,20 @@ const PartnerItemWrap = styled.div`
   width: 140px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  margin: auto;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    transform: scale(1.1);
+  }
+  @media (max-width: 768px) {
+    height: 80px;
+    width: 80px;
+  }
+  @media (min-width: 769px) and (max-width: 1200px) {
+    height: 100px;
+    width: 100px;
+  }
 `
 
 const SubscribeWrap = styled.div`
@@ -316,7 +337,7 @@ const ContactWrap = styled(RowBetween)`
 `
 
 const HomePage: React.FunctionComponent<HomePageProps> = () => {
-  const { isMobile, isTablet } = useResponsive()
+  const { isMobile, isTablet, isPC } = useResponsive()
 
   const CharacteristicsComponent = Characteristics.map((item, index) => {
     let dir = ''
@@ -363,7 +384,16 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
   })
 
   const PartnerListComponent = KCC.PARTNER_LIST.map((item, index) => {
-    return <PartnerItemWrap key={index} />
+    return (
+      <PartnerItemWrap
+        key={index}
+        onClick={() => {
+          window.open(item.route, '_blank')
+        }}
+      >
+        <img src={item.logo} width="100%" />
+      </PartnerItemWrap>
+    )
   })
 
   const { t, i18n } = useTranslation()
@@ -653,12 +683,12 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
 
       {/* Partner */}
       <HomePageWrap>
-        {/*   <BaseWrap style={{ padding: '0px 0 65px 0' }}>
+        <BaseWrap style={{ padding: !isPC ? '0px 24px 0px 24px' : '0px 0 0 ', position: 'relative', zIndex: 5 }}>
           <ColumnCenter>
             <TitleText>{t('Partner')}</TitleText>
             <PartnerListWrap>{PartnerListComponent}</PartnerListWrap>
           </ColumnCenter>
-        </BaseWrap> */}
+        </BaseWrap>
 
         {/* Join the KCC Community */}
         <BaseWrap
