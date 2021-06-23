@@ -7,7 +7,7 @@ import Home from './pages/home/'
 
 import './App.less'
 
-const Grants = lazy(() => import(/* grantpage */ './pages/grants/index'))
+const Grants = lazy(() => import(/* webpackChunkName:'grant-page' */ './pages/grants/index'))
 
 export default function App() {
   return (

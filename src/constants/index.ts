@@ -60,40 +60,14 @@ export const KCC = {
   ],
   PARTNER_LIST: [
     {
-      name: '',
-      logo: require('../assets/test.png').default,
+      name: 'KuCoin',
+      logo: require('../assets/images/home/kucoin.png').default,
+      route: 'https://www.kucoin.com/',
     },
     {
-      name: '',
-      logo: require('../assets/test.png').default,
-    },
-    {
-      name: '',
-      logo: require('../assets/test.png').default,
-    },
-    {
-      name: '',
-      logo: require('../assets/test.png').default,
-    },
-    {
-      name: '',
-      logo: require('../assets/test.png').default,
-    },
-    {
-      name: '',
-      logo: require('../assets/test.png').default,
-    },
-    {
-      name: '',
-      logo: require('../assets/test.png').default,
-    },
-    {
-      name: '',
-      logo: require('../assets/test.png').default,
-    },
-    {
-      name: '',
-      logo: require('../assets/test.png').default,
+      name: 'TokenView',
+      logo: require('../assets/images/home/tokenview.png').default,
+      route: 'https://tokenview.com/en',
     },
   ],
 }
