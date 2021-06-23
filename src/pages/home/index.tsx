@@ -188,7 +188,6 @@ const PartnerListWrap = styled.div`
   grid-template-rows: auto;
   column-gap: 16px;
   row-gap: 16px;
-  margin: 0px 24px 24px 24px;
   @media (max-width: 1200px) {
     padding-top: 30px;
     display: flex;
@@ -206,7 +205,11 @@ const PartnerItemWrap = styled.div`
   border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
+  margin-bottom: 24px;
   transition: all 0.2s ease-in-out;
+  & + & {
+    margin-left: 12px;
+  }
   &:hover {
     transform: scale(1.1);
   }
