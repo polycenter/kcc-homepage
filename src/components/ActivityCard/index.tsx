@@ -56,7 +56,7 @@ const ActivityCard: React.FunctionComponent<ActivityCardProps> = (props) => {
   return (
     <ActivityCardWrap>
       <Title>{props.title}</Title>
-      {props.valid ? <Button>{t('Participate')}</Button> : <InvalidButton>{t(`View Event`)}</InvalidButton>}
+      {props.valid ? <Button>{t('Participate Now')}</Button> : <InvalidButton>{t(`View Event`)}</InvalidButton>}
     </ActivityCardWrap>
   )
 }
