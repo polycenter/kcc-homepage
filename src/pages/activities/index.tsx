@@ -11,6 +11,7 @@ const ActivitiesPageWrap = styled(HomePageWrap)`
   padding-top: 40px;
   padding-bottom: 40px;
   height: auto;
+  min-height: calc(100vh - 320px);
   background: linear-gradient(0deg, #277453 0%, rgba(0, 0, 0, 1) 100%);
 `
 const ContentWrap = styled(BaseWrap)`
@@ -87,75 +88,44 @@ const ActivityImaga = styled.img`
 `
 
 const ActivitiesPage: React.FunctionComponent<GrantsPageProps> = () => {
-  const activities = [
-    {
+  const activities: any[] = [
+    /* {
       id: 0,
       thumbnail: '',
-      title: 'KCC生态联盟',
+      title: 'KCC生态联盟1',
       deadline: '2021-06-07 10:57:33',
       content: '',
-      valid: true,
-    },
-    {
-      id: 0,
-      thumbnail: '',
-      title: 'KCC生态联盟',
-      deadline: '2021-06-07 10:57:33',
-      content: '',
-      valid: true,
-    },
-    {
-      id: 0,
-      thumbnail: '',
-      title: 'KCC生态联盟',
-      deadline: '2021-06-07 10:57:33',
-      content: '',
-      valid: true,
-    },
-    {
-      id: 0,
-      thumbnail: '',
-      title: 'KCC生态联盟',
-      deadline: '2021-06-07 10:57:33',
-      content: '',
-      valid: true,
-    },
-    {
-      id: 0,
-      thumbnail: '',
-      title: 'KCC生态联盟',
-      deadline: '2021-06-07 10:57:33',
-      content: '',
-      valid: true,
-    },
+    }, */
   ]
 
-  const endList = [
-    {
-      id: 0,
-      thumbnail: '',
-      title: 'KCC生态联盟',
-      deadline: '2021-06-07 10:57:33',
-      content: '',
-      valid: false,
-    },
-    {
-      id: 0,
-      thumbnail: '',
-      title: 'KCC生态联盟',
-      deadline: '2021-06-07 10:57:33',
-      content: '',
-      valid: false,
-    },
-  ]
+  const [endedList, setEndedList] = React.useState([])
+  const [onGoingList, setOnGoingList] = React.useState([])
+
+  // group handle
+  React.useEffect(() => {
+    const end: any = []
+    const ongoing: any = []
+    for (let i = 0; i < activities.length; i++) {
+      const activity = { ...activities[i], valid: false }
+      const timestamp = new Date().getTime()
+      const activityTimestamp = new Date(activity.deadline.replace('-', '/')).getTime()
+      if (timestamp >= activityTimestamp) {
+        end.push(activity)
+      } else {
+        ongoing.push({ ...activity, valid: true })
+      }
+    }
+    setEndedList(() => end)
+    setOnGoingList(() => ongoing)
+  }, [])
 
   const { t } = useTranslation()
 
-  const ActivityList = activities.map((item, index) => {
+  const ActivityList = onGoingList.map((item, index) => {
     return <Card key={index} {...item} />
   })
 
-  const overList = endList.map((item, index) => {
+  const overList = endedList.map((item, index) => {
     return <Card key={index} {...item} />
   })
 
@@ -163,7 +133,7 @@ const ActivitiesPage: React.FunctionComponent<GrantsPageProps> = () => {
     <ActivitiesPageWrap>
       {/* banner */}
       <ContentWrap>
-        <Title>{t(`KCC Activities`)}</Title>
+        <Title>{t(`KCC Activity Center`)}</Title>
         <SubTitle>{t(`In Progress`)}</SubTitle>
         <ListWrap>{ActivityList}</ListWrap>
       </ContentWrap>
