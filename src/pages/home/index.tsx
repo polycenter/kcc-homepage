@@ -183,12 +183,24 @@ const BaseSubText = styled.span`
 `
 
 const PartnerListWrap = styled.div`
+  margin: 20px auto;
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(
+    ${() => {
+      if (KCC.PARTNER_LIST.length >= 6) {
+        return 6
+      }
+      return KCC.PARTNER_LIST.length
+    }},
+    140px
+  );
   grid-template-rows: auto;
   column-gap: 16px;
   row-gap: 16px;
+  justify-items: center;
+  align-items: center;
   @media (max-width: 1200px) {
+    margin: 0 auto;
     padding-top: 30px;
     display: flex;
     flex-flow: row wrap;
@@ -453,8 +465,8 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
     z-index: 6;
     @media (max-width: 768px) {
       width: 32px;
-      heigth: auto;
       left: -56px;
+      top: 0;
     }
   `
   const MilestoneDateText = styled.div`
@@ -463,9 +475,9 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
     font-weight: 400;
     color: #00ff9b;
     line-height: 32px;
+    min-width: 110px;
     @media (max-width: 768px) {
       font-size: 14px;
-      line-height: 34px;
     }
   `
   const MilestoneTitle = styled(MilestoneDateText)`
@@ -475,20 +487,24 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
   const MileStoneWrap = styled(CenterRow)`
     align-items: flex-start;
     justify-content: space-between;
-    margin: 60px 0 80px 0;
+    margin: 60px 0 60px 0;
     padding: 0px 60px;
     position: relative;
     @media (max-width: 768px) {
-      height: 450px;
       flex-flow: column nowrap;
       align-items: flex-start;
-      justify-content: space-between;
+      justify-content: flex-start;
+      margin-bottom: 40px;
     }
   `
 
   const MilestoneList = KCC.MILESTONES.map((item, index) => {
     const Icon =
-      index === 0 || index === 3 ? <DotComponent shining={index === 3} /> : <img src={item.icon} width="32px" />
+      index === 0 || index === KCC.MILESTONES.length - 1 ? (
+        <DotComponent shining={index === KCC.MILESTONES.length - 1} />
+      ) : (
+        <img src={item.icon} width="32px" />
+      )
 
     if (isMobile) {
       return (
@@ -496,7 +512,8 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
           style={{
             alignItems: 'center',
             justifyContent: 'flex-start',
-            width: '180px',
+            height: '65px',
+            position: 'relative',
           }}
         >
           <MilestoneIconWrap>{Icon}</MilestoneIconWrap>
@@ -512,6 +529,8 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
         style={{
           alignItems: 'center',
           justifyContent: 'flex-start',
+          textAlign: 'center',
+          width: '180px',
         }}
       >
         <MilestoneIconWrap>{Icon}</MilestoneIconWrap>
@@ -630,7 +649,7 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
         </BaseWrap>
 
         {/* MileStone */}
-        <BaseWrap style={{ padding: isMobile || isTablet ? '47px 24px 0px 24px' : '88px 0 65px 0' }}>
+        <BaseWrap style={{ padding: isMobile || isTablet ? '47px 24px 0px 24px' : '88px 0 0px 0' }}>
           <ColumnCenter>
             <TitleText>{t('Our Milestones')}</TitleText>
             <ParagraphText>{t('Milestone Subtitlle')}</ParagraphText>
@@ -659,7 +678,7 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
                     zIndex: 3,
                     width: '400px',
                     left: '40px',
-                    top: '20px',
+                    top: '0px',
                   }}
                 >
                   <Progress

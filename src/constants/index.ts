@@ -54,6 +54,11 @@ export const KCC = {
       icon: require('../assets/images/home/milestone-icon@2x.png').default,
     },
     {
+      date: '2021-06-25',
+      title: 'KCC Ambassador Program',
+      icon: require('../assets/images/home/milestone-icon@2x.png').default,
+    },
+    {
       date: '',
       title: 'Milestone Last',
     },
