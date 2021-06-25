@@ -577,7 +577,7 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
         <IntroduceCoverWrap>
           <NoticeBar />
           <IntroduceCoverImageWrap src={IntroduceCoverImage} height="400px" width="50%" />
-          <BaseWrap style={{ padding: '80px 0', position: 'relative', zIndex: 1 }}>
+          <BaseWrap style={{ padding: isMobile ? '30px 0' : '80px 0', position: 'relative', zIndex: 1 }}>
             <BrowserView style={{ padding: isTablet ? '0 24px' : '0px' }}>
               <RowBetween style={{ alignItems: 'center', paddingTop: '68px' }}>
                 <ImageWrap>
