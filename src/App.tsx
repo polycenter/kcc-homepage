@@ -4,6 +4,7 @@ import FullLoading from './components/FullLoading'
 import AppLayout from './layouts/AppLayout'
 
 import Home from './pages/home/'
+import NotFound from './pages/error'
 
 import './App.less'
 
@@ -19,6 +20,7 @@ export default function App() {
             <Route path="/" exact={true} component={Home} />
             <Route path="/community/grants" exact={true} component={Grants} />
             <Route path="/community/activity" exact={true} component={Activity} />
+            <Route path="*" component={NotFound} />
           </Switch>
         </AppLayout>
       </HashRouter>

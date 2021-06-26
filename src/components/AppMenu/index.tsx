@@ -250,12 +250,17 @@ const AppMenu: React.FunctionComponent<AppMenuProps> = ({ style }) => {
 
   return (
     <MenuWrap>
-      <MobileView>
+      <MobileView style={{ border: '1px solid #fff' }}>
         <Menu
           openKeys={openKeys}
           selectedKeys={[]}
           mode={isMobile ? 'inline' : 'horizontal'}
-          style={{ border: 'none', background: 'transparent', color: theme.colors.primary, ...style, ...M_MENU_CSS }}
+          style={{
+            background: 'transparent',
+            color: theme.colors.primary,
+            ...style,
+            ...M_MENU_CSS,
+          }}
         >
           {MenuListDom}
         </Menu>
@@ -264,7 +269,7 @@ const AppMenu: React.FunctionComponent<AppMenuProps> = ({ style }) => {
         <Menu
           selectedKeys={[]}
           mode="horizontal"
-          style={{ border: 'none', background: 'transparent', color: theme.colors.primary, ...style }}
+          style={{ background: 'transparent', color: theme.colors.primary, border: 'none', ...style }}
         >
           {MenuListDom}
         </Menu>

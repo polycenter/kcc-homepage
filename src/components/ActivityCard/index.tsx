@@ -3,11 +3,11 @@ import Column from '../Column'
 import { useTranslation } from 'react-i18next'
 
 export interface ActivityCardProps {
-  id: number
-  title: string
   deadline: string
-  thumbnail?: string
-  content?: string
+  thumbnail_en: string
+  thumbnail_ch: string
+  url_en?: string
+  url_ch?: string
   valid?: boolean
 }
 
@@ -28,8 +28,8 @@ export const Button = styled.div`
   color: #000;
   text-align: center;
   line-height: 32px;
-  margin-top: 56px;
   cursor: pointer;
+  box-shadow: 1px 1px 5px #000;
   @media (max-width: 1200px) {
     opacity: 1;
   }
@@ -39,26 +39,45 @@ const InvalidButton = styled(Button)`
   color: #fff;
 `
 
-const ActivityCardWrap = styled(Column)`
+const ActivityCardWrap = styled(Column)<{ lng: string; enBg: string; chBg: string }>`
   width: 280px;
   height: 208px;
-  background: rgba(151, 208, 195, 0.21);
+  background: ${({ lng, enBg, chBg }) => {
+    console.log('lng=', lng)
+    if (lng === 'zh-CN') {
+      return `url(${chBg}) top center no-repeat`
+    }
+    return `url(${enBg}) top center no-repeat`
+  }};
+  background-size: 100% 100%;
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
   transition: all 0.3s ease-in-out;
+  box-shadow: 1px 1px 5px #222;
   &:hover ${Button} {
     opacity: 1;
   }
 `
 
 const ActivityCard: React.FunctionComponent<ActivityCardProps> = (props) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+
+  const nav2Activity = () => {
+    if (i18n.language === 'zh-CN') {
+      window.open(props.url_ch, '_blank')
+    } else {
+      window.open(props.url_en, '_blank')
+    }
+  }
   return (
-    <ActivityCardWrap>
-      <Title>{props.title}</Title>
-      {props.valid ? <Button>{t('Participate now')}</Button> : <InvalidButton>{t(`View Event`)}</InvalidButton>}
+    <ActivityCardWrap lng={i18n.language} enBg={props.thumbnail_en} chBg={props.thumbnail_ch}>
+      {props.valid ? (
+        <Button onClick={nav2Activity}>{t('Participate now')}</Button>
+      ) : (
+        <InvalidButton onClick={nav2Activity}>{t(`View Event`)}</InvalidButton>
+      )}
     </ActivityCardWrap>
   )
 }

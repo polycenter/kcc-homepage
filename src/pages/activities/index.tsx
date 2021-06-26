@@ -68,6 +68,7 @@ const SubTitle = styled.div`
   font-weight: 400;
   color: #fff;
   line-height: 32px;
+  margin-top: 30px;
   @media (max-width: 768px) {
     font-size: 18px;
   }
@@ -89,13 +90,15 @@ const ActivityImaga = styled.img`
 
 const ActivitiesPage: React.FunctionComponent<GrantsPageProps> = () => {
   const activities: any[] = [
-    /* {
-      id: 0,
-      thumbnail: '',
-      title: 'KCC生态联盟1',
-      deadline: '2021-06-07 10:57:33',
-      content: '',
-    }, */
+    {
+      thumbnail_ch: require('../../assets/images/activity/activity-1-ch.png').default,
+      thumbnail_en: require('../../assets/images/activity/activity-1-en.png').default,
+      deadline: '2022-01-07 10:57:33',
+      url_ch:
+        'https://kucoincommunitychain.medium.com/kcc%E5%A4%A7%E4%BD%BF%E8%AE%A1%E5%88%92-%E6%AD%A3%E5%BC%8F%E5%90%AF%E5%8A%A8-%E5%9B%9E%E6%8A%A5%E4%B8%B0%E5%8E%9A-%E6%9C%9F%E5%BE%85%E4%B8%93%E4%B8%9A%E7%9A%84%E6%82%A8%E5%8A%A0%E5%85%A5-f75791ffc6b9',
+      url_en:
+        'https://kucoincommunitychain.medium.com/the-kcc-ambassador-program-is-now-officially-initiated-783c4073c445',
+    },
   ]
 
   const [endedList, setEndedList] = React.useState([])
@@ -137,10 +140,12 @@ const ActivitiesPage: React.FunctionComponent<GrantsPageProps> = () => {
         <SubTitle>{t(`In Progress`)}</SubTitle>
         <ListWrap>{ActivityList}</ListWrap>
       </ContentWrap>
-      <ContentWrap>
-        <SubTitle>{t(`The Event Is Over`)}</SubTitle>
-        <ListWrap>{overList}</ListWrap>
-      </ContentWrap>
+      {endedList.length ? (
+        <ContentWrap>
+          <SubTitle>{t(`The Event Is Over`)}</SubTitle>
+          <ListWrap>{overList}</ListWrap>
+        </ContentWrap>
+      ) : null}
     </ActivitiesPageWrap>
   )
 }
