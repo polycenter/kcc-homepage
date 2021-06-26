@@ -250,7 +250,7 @@ const AppMenu: React.FunctionComponent<AppMenuProps> = ({ style }) => {
 
   return (
     <MenuWrap>
-      <MobileView style={{ border: '1px solid #fff' }}>
+      <MobileView>
         <Menu
           openKeys={openKeys}
           selectedKeys={[]}
