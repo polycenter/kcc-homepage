@@ -3,13 +3,13 @@ import styled from 'styled-components'
 import AppMenu from '../AppMenu'
 import ChangeLanguage from '../ChangeLanguage/index'
 import KccLogo from '../Logo/KccLogo'
-import { isMobile } from 'react-device-detect'
 import { MobileView, BrowserView } from '../Common'
 import { theme } from '../../constants/theme'
 import { MenuOutlined, CloseOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import { useMobileMenuShow } from '../../state/application/hooks'
 import { useDispatch } from 'react-redux'
 import { changeMobileMenuShow } from '../../state/application/actions'
+import { useResponsive } from '../../utils/responsive'
 
 const AppHeaderWrap = styled.div`
   display: flex;
@@ -33,10 +33,10 @@ const HeaderLeftWrap = styled.div`
   align-items: center;
 `
 
-const AppHeaderContent = styled(HeaderLeftWrap)`
-  justify-content: ${() => (isMobile ? 'flex-end' : 'flex-space')};
+const AppHeaderContent = styled(HeaderLeftWrap)<{ isMobile: boolean }>`
+  justify-content: ${({ isMobile }) => (isMobile ? 'flex-end' : 'flex-space')};
   width: 100%;
-  max-width: 1200px;
+  // max-width: 1200px;
 `
 
 const AppHeader: React.FunctionComponent = () => {
@@ -44,17 +44,19 @@ const AppHeader: React.FunctionComponent = () => {
 
   const show = useMobileMenuShow()
 
+  const { isMobile } = useResponsive()
+
   const dispatch = useDispatch()
 
   return (
     <AppHeaderWrap>
-      <AppHeaderContent>
-        <HeaderLeftWrap>
-          <KccLogo styles={{ width: '100px', textAlign: 'left' }} />
-          <BrowserView>
-            <AppMenu />
-          </BrowserView>
-        </HeaderLeftWrap>
+      <AppHeaderContent isMobile={isMobile}>
+        <BrowserView>
+          <HeaderLeftWrap>
+            <KccLogo styles={{ width: '100px', textAlign: 'left' }} />
+            <AppMenu style={{ width: '600px' }} />
+          </HeaderLeftWrap>
+        </BrowserView>
         <ChangeLanguage />
         <MobileView style={{ width: '24px' }}>
           {!show ? (

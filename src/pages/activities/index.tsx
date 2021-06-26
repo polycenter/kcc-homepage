@@ -68,6 +68,7 @@ const SubTitle = styled.div`
   font-weight: 400;
   color: #fff;
   line-height: 32px;
+  margin-top: 30px;
   @media (max-width: 768px) {
     font-size: 18px;
   }
