@@ -52,7 +52,7 @@
   "About KCC": "Sobre nosotros",
   "Announcement": "Anuncio",
   "Proof of Assets": "Prueba de Activos",
-  "Disclaimer": "Descargo de responsabilidad",
+  "Disclaimers": "Descargos de responsabilidad",
   "Development Tool": "Herramientas",
   "Contact Us": "Contactar",
   "Technical Support": "Soporte Técnico",
@@ -95,5 +95,6 @@
   "In Progress": "En marcha",
   "View Event": "Aprende más",
   "The Event Is Over": "Terminado",
-  "KCC Ambassador Program": "Programa de embajadores de KCC"
+  "KCC Ambassador Program": "Programa de embajadores de KCC",
+  "Risk Statement": "Declaración de riesgo"
 }

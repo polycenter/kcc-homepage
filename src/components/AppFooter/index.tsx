@@ -9,6 +9,7 @@ import KccLogo from '../Logo/KccLogo'
 import { useHistory } from 'react-router'
 import { BrowserView, MobileView } from '../Common'
 import MFooter from './MFooter'
+import { KCC } from '../../constants'
 
 export interface AppFooterProps {}
 
@@ -96,17 +97,29 @@ const CopyRightText = styled.div`
 `
 
 const AppFooter: React.FunctionComponent<AppFooterProps> = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   const router = useHistory()
 
-  const nav2Target = (route: string | undefined) => {
+  const nav2Target = ({ navText, navRoute }: { navText: string; navRoute: string }) => {
+    let route = navRoute
     if (route) {
       if (route.startsWith('/')) {
         router.push(route)
-      }
-      if (route.startsWith('http')) {
+      } else if (route.startsWith('http')) {
         window.open(route, '_blank')
+      } else if (route.startsWith('id')) {
+        const translateLanguageTable: any = {
+          en: 'en-us',
+          'zh-CN': 'zh-cn',
+          'es-ES': 'es-es',
+          'de-DE': 'de-de',
+        }
+        // Open the corresponding document address according to the current language
+        const anchor = t(navText).trimLeft().trimRight().replaceAll(' ', '-').toLowerCase()
+        const url = `${KCC.DOCS_URL}${translateLanguageTable[i18n.language]}/?id=${anchor}`
+        console.log('url', url)
+        window.open(url, '_blank')
       }
     }
   }
@@ -114,7 +127,7 @@ const AppFooter: React.FunctionComponent<AppFooterProps> = () => {
   const FooterNavList = FOOTER_LIST.map((item, index) => {
     const children = item.children.map((nav, index) => {
       return (
-        <FooterNavText key={index} onClick={nav2Target.bind(null, nav.navRoute)}>
+        <FooterNavText key={index} onClick={nav2Target.bind(null, nav)}>
           {t(nav.navText)}
         </FooterNavText>
       )

@@ -13,8 +13,9 @@ export const KCC = {
   MAIL_SUBSCRIBE_PROXY: 'https://mailsubscribe.kcc.io/mailchimp-subscribe',
   TWITTER: 'https://twitter.com/KCCOfficialTW',
   TELEGRAM: 'https://t.me/KCCOfficialEnglishCommunity',
-  DISCLAIMER: 'https://docs.kcc.io/#/en-us/?id=disclaimers',
-  FAQ: 'https://docs.kcc.io/#/en-us/?id=faq',
+  RISK_STATMENT: 'id=risk-statement',
+  DISCLAIMER: 'id=disclaimers',
+  FAQ: 'id=faq',
   GRANTS: 'https://github.com/kucoin-community-chain/kcc-grants',
   CONTACT_LIST: [
     {

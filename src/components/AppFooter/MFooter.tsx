@@ -4,14 +4,9 @@ import styled from 'styled-components'
 import { FOOTER_LIST } from '../../constants/footerList'
 import { useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { KCC } from '../../constants'
 
 const { Panel } = Collapse
-
-const text = `
-  A dog is a type of domesticated animal.
-  Known for its loyalty and faithfulness,
-  it can be found as a welcome guest in many households across the world.
-`
 
 const genExtra = () => <DownOutlined style={{ color: '#fff', fontSize: '10px' }} />
 
@@ -31,15 +26,27 @@ const NavText = styled.div`
 export default function MFooter() {
   const router = useHistory()
 
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
-  const nav2Target = (route: string | undefined) => {
+  const nav2Target = ({ navText, navRoute }: { navText: string; navRoute: string }) => {
+    let route = navRoute
     if (route) {
       if (route.startsWith('/')) {
         router.push(route)
-      }
-      if (route.startsWith('http')) {
+      } else if (route.startsWith('http')) {
         window.open(route, '_blank')
+      } else if (route.startsWith('id')) {
+        const translateLanguageTable: any = {
+          en: 'en-us',
+          'zh-CN': 'zh-cn',
+          'es-ES': 'es-es',
+          'de-DE': 'de-de',
+        }
+        // Open the corresponding document address according to the current language
+        const anchor = t(navText).trimLeft().trimRight().replaceAll(' ', '-').toLowerCase()
+        const url = `${KCC.DOCS_URL}${translateLanguageTable[i18n.language]}/?id=${anchor}`
+        console.log('url', url)
+        window.open(url, '_blank')
       }
     }
   }
@@ -48,7 +55,7 @@ export default function MFooter() {
     const children = item.children
     const subList = children.map((item, k) => {
       return (
-        <NavText key={k} onClick={nav2Target.bind(null, item.navRoute)}>
+        <NavText key={k} onClick={nav2Target.bind(null, item)}>
           {t(`${item.navText}`)}
         </NavText>
       )

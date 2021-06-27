@@ -52,7 +52,7 @@
   "About KCC": "About Us",
   "Announcement": "Announcement",
   "Proof of Assets": "Proof of Assets",
-  "Disclaimer": "Disclaimer",
+  "Disclaimers": "Disclaimers",
   "Development Tool": "Tools",
   "Contact Us": "Contact",
   "Technical Support": "Technical Support",
@@ -95,5 +95,6 @@
   "In Progress": "Ongoing",
   "View Event": "Learn more",
   "The Event Is Over": "Ended",
-  "KCC Ambassador Program": "KCC Ambassdor Program"
+  "KCC Ambassador Program": "KCC Ambassdor Program",
+  "Risk Statement": "Risk Statement"
 }
