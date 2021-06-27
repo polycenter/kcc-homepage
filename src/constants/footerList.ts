@@ -9,12 +9,16 @@ export const FOOTER_LIST = [
         navText: 'Announcement',
         navRoute: KCC.MEDIA_URL,
       },
+      {
+        navText: 'Risk Statement',
+        navRoute: KCC.RISK_STATMENT,
+      },
       /* {
         navText: 'Proof of Assets',
         navRoute: '',
       }, */
       {
-        navText: 'Disclaimer',
+        navText: 'Disclaimers',
         navRoute: KCC.DISCLAIMER,
       },
     ],

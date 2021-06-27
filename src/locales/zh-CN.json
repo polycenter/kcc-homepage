@@ -52,7 +52,7 @@
   "About KCC": "关于KCC",
   "Announcement": "公告",
   "Proof of Assets": "资产证明",
-  "Disclaimer": "免责声明",
+  "Disclaimers": "免责声明",
   "Development Tool": "开发工具",
   "Contact Us": "联系我们",
   "Technical Support": "技术支持",
@@ -94,5 +94,6 @@
   "In Progress": "进行中",
   "View Event": "查看活动",
   "The Event Is Over": "活动已结束",
-  "KCC Ambassador Program": "KCC大使计划"
+  "KCC Ambassador Program": "KCC大使计划",
+  "Risk Statement": "风险提示"
 }
