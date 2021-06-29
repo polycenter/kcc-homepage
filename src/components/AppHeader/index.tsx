@@ -20,10 +20,10 @@ const AppHeaderWrap = styled.div`
   width: 100%;
   padding: 0px 20px;
   position: absolute;
-  z-index: 2;
   top: 0;
   left: 0;
   background: transparent;
+  z-index: 99;
 `
 
 const HeaderLeftWrap = styled.div`

@@ -4,7 +4,7 @@ export interface BridgeListPageProps {}
 const BridgeListPage: React.FunctionComponent<BridgeListPageProps> = () => {
   return (
     <>
-      <div>detail</div>
+      <div>list</div>
     </>
   )
 }
