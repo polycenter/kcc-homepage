@@ -10,7 +10,7 @@ type MergedState = {
   }
 }
 const PERSISTED_KEYS: string[] = ['application']
-const loadedState = load({ states: PERSISTED_KEYS }) as MergedState
+const loadedState = load({ states: PERSISTED_KEYS }) as any
 
 if (loadedState.application) {
   loadedState.application = { ...loadedState.application, darkMode: getThemeCache() }
