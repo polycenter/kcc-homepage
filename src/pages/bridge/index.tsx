@@ -9,6 +9,7 @@ import '../../styles/transition.css'
 export interface BridgePageProps {}
 
 const BridgeWrap = styled.div`
+  padding-top: 80px;
   background: #000;
   color: #fff;
   min-height: 400px;

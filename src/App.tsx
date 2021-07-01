@@ -9,6 +9,9 @@ import Home from './pages/home/'
 import NotFound from './pages/error'
 
 import './App.less'
+import { useWeb3React } from '@web3-react/core'
+import { ConnectorNames } from './constants/wallet'
+import useAuth from './hooks/useAuth'
 
 const Grants = lazy(() => import(/* webpackChunkName:'Grant' */ './pages/grants/index'))
 const Activity = lazy(() => import(/* webpackChunkName:'Activity' */ './pages/activities/index'))
@@ -52,6 +55,13 @@ export default function App() {
   ]
 
   const location = useLocation()
+  const { active, activate, account } = useWeb3React()
+  const { login } = useAuth()
+  React.useEffect(() => {
+    if (active && !account) {
+      login(ConnectorNames.Injected)
+    }
+  }, [active, account])
 
   return (
     <Suspense fallback={<FullLoading />}>

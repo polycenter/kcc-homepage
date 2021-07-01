@@ -11,8 +11,10 @@ import { injected } from '../../connectors'
 import { useEagerConnect, useInactiveListener } from '../../hooks'
 import { network } from '../../connectors/index'
 import FullLoading from '../FullLoading'
+import { useDispatch } from 'react-redux'
+import { updateErrorInfo } from '../../state/wallet/actions'
 
-enum ConnectorNames {
+export enum ConnectorNames {
   Injected = 'Injected',
 }
 
@@ -45,16 +47,25 @@ export function getLibrary(provider: any): Web3Provider {
 
 export default function Web3ReactManager(props: any) {
   // handle logic to recognize the connector currently being activated
-  const { active } = useWeb3React()
+  const { active, account } = useWeb3React()
   const { active: networkActive, error: networkError, activate: activateNetwork } = useWeb3React()
 
   const triedEager = useEagerConnect()
+
+  const dispatch = useDispatch()
 
   useEffect(() => {
     if (triedEager && !networkActive && !networkError && !active) {
       activateNetwork(network)
     }
   }, [triedEager, networkActive, networkError, activateNetwork, active])
+
+  useEffect(() => {
+    if (account) {
+      console.log('account', account)
+      dispatch(updateErrorInfo({ hasError: false, errorInfo: '' }))
+    }
+  }, [account])
 
   // handle logic to eagerly connect to the injected ethereum provider, if it exists and has granted access already
 

@@ -3,9 +3,12 @@ import { load, save } from 'redux-localstorage-simple'
 import { getThemeCache } from '../utils/theme'
 
 import application from './application/reducer'
+import wallet from './wallet/reducer'
+
+type ModuleTypes = 'application' | 'wallet'
 
 type MergedState = {
-  application: {
+  [key in ModuleTypes]: {
     [key: string]: any
   }
 }
@@ -19,6 +22,7 @@ if (loadedState.application) {
 const store = configureStore({
   reducer: {
     application,
+    wallet,
   },
   middleware: [...getDefaultMiddleware({ thunk: false }), save({ states: PERSISTED_KEYS, debounce: 500 })],
   preloadedState: loadedState,

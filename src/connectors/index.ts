@@ -2,10 +2,8 @@ import { Web3Provider } from '@ethersproject/providers'
 import { InjectedConnector } from '@web3-react/injected-connector'
 import { NetworkConnector } from './NetworkConnector'
 
-export enum ConnectorNames {
-  Injected = 'injected',
-  WalletConnect = 'walletconnect',
-}
+import { ConnectorNames } from '../constants/wallet'
+import { networks } from '../constants/networks'
 
 // rpc
 const NETWORK_URL = process.env.REACT_APP_NETWORK_URL
@@ -28,8 +26,9 @@ export function getNetworkLibrary(): Web3Provider {
 }
 
 // support chain
+const chainIds = Reflect.ownKeys(networks).map((n) => Number(n))
 export const injected = new InjectedConnector({
-  supportedChainIds: [321, 322],
+  supportedChainIds: chainIds,
 })
 
 // mainnet only
@@ -45,7 +44,7 @@ export const walletlink = new WalletLinkConnector({
   url: NETWORK_URL,
   appName: 'Uniswap',
   appLogoUrl:
-    'https://mpng.pngfly.com/20181202/bex/kisspng-emoji-domain-unicorn-pin-badges-sticker-unicorn-tumblr-emoji-unicorn-iphoneemoji-5c046729264a77.5671679315437924251569.jpg', // uniswap logo 图片
+    '...', // uniswap logo 图片
 }) */
 
 export const connectorsByName: any = {

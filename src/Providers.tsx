@@ -3,7 +3,7 @@ import { ConfigProvider } from 'antd'
 import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
 import { Provider } from 'react-redux'
 import store from './state'
-import { NetworkContextName } from './constants'
+import { NetworkContextName } from './constants/wallet'
 import { getLibrary } from './components/Web3ReactManager'
 import { HashRouter } from 'react-router-dom'
 

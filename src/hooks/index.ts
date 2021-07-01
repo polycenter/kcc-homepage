@@ -5,18 +5,15 @@ import { useWeb3React as useWeb3ReactCore } from '@web3-react/core'
 import { Web3ReactContextInterface } from '@web3-react/core/dist/types'
 import { useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
+import { useDispatch } from 'react-redux'
 import { injected } from '../connectors'
-import { NetworkContextName } from '../constants'
-
-export enum ChainId {
-  MAINNET = 322,
-  KCCTESTNET = 321,
-}
+import { NetworkContextName } from '../constants/wallet'
+import { updateErrorInfo } from '../state/wallet/actions'
 
 const connectorLocalStorageKey = 'connectorId'
 
 /*  */
-export function useActiveWeb3React(): Web3ReactContextInterface<Web3Provider> & { chainId?: ChainId } {
+export function useActiveWeb3React(): Web3ReactContextInterface<Web3Provider> & { chainId?: any } {
   const context = useWeb3ReactCore<Web3Provider>()
   const contextNetwork = useWeb3ReactCore<Web3Provider>(NetworkContextName)
   return context.active ? context : contextNetwork
@@ -61,7 +58,7 @@ export function useEagerConnect() {
  */
 export function useInactiveListener(suppress = false) {
   const { active, error, activate } = useWeb3ReactCore() // specifically using useWeb3React because of what this hook does
-
+  const dispatch = useDispatch()
   useEffect(() => {
     const { ethereum } = window
 

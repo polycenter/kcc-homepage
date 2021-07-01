@@ -44,7 +44,7 @@ const Text = styled.div`
   }
 `
 
-const LanguageButton = styled.div`
+export const LanguageButton = styled.div`
   cursor: pointer;
   width: 94px;
   height: 26px;
