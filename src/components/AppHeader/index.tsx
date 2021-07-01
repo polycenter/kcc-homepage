@@ -10,6 +10,8 @@ import { useMobileMenuShow } from '../../state/application/hooks'
 import { useDispatch } from 'react-redux'
 import { changeMobileMenuShow } from '../../state/application/actions'
 import { useResponsive } from '../../utils/responsive'
+import UnlockButton from '../ConnectWalletButton'
+import { useRouteMatch, useHistory, withRouter } from 'react-router-dom'
 
 const AppHeaderWrap = styled.div`
   display: flex;
@@ -39,14 +41,23 @@ const AppHeaderContent = styled(HeaderLeftWrap)<{ isMobile: boolean }>`
   // max-width: 1200px;
 `
 
-const AppHeader: React.FunctionComponent = () => {
+const ButtonGroup = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+`
+
+const AppHeader: React.FunctionComponent = (props: any) => {
   // const [mobileMenuShow, setMobileMenuShow] = React.useState(false)
 
   const show = useMobileMenuShow()
-
   const { isMobile } = useResponsive()
 
   const dispatch = useDispatch()
+
+  const walletButtonShow = React.useMemo(() => {
+    return props.location.pathname.startsWith('/bridge')
+  }, [props.location.pathname])
 
   return (
     <AppHeaderWrap>
@@ -58,7 +69,11 @@ const AppHeader: React.FunctionComponent = () => {
           </BrowserView>
         </HeaderLeftWrap>
 
-        <ChangeLanguage />
+        <ButtonGroup>
+          <ChangeLanguage />
+          {walletButtonShow ? <UnlockButton /> : null}
+        </ButtonGroup>
+
         <MobileView style={{ width: '24px' }}>
           {!show ? (
             <MenuOutlined
@@ -83,4 +98,4 @@ const AppHeader: React.FunctionComponent = () => {
   )
 }
 
-export default AppHeader
+export default withRouter(AppHeader)

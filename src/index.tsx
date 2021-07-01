@@ -10,6 +10,15 @@ import ApplicationUpdater from './state/application/updater'
 import 'normalize.css'
 import './index.less'
 
+if ('ethereum' in window) {
+  // @ts-ignore
+  window.ethereum.autoRefreshOnNetworkChange = false
+}
+
+window.addEventListener('error', () => {
+  localStorage.removeItem('redux_localstorage_simple_lists')
+})
+
 ReactDOM.render(
   <React.StrictMode>
     <Providers>

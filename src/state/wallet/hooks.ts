@@ -1,0 +1,16 @@
+import { useSelector } from 'react-redux'
+
+// import { addPopup, PopupContent, removePopup, toggleWalletModal, toggleSettingsMenu } from './actions'
+import { AppState } from '../index'
+
+export function useWalletErrorInfo(): { hasError: boolean; errorInfo: string } {
+  return useSelector((state: AppState) => {
+    return { hasError: state.wallet.hasError, errorInfo: state.wallet.errorInfo }
+  })
+}
+
+// get the list of active popups
+/* export function useActivePopups(): AppState['application']['popupList'] {
+  const list = useSelector((state: AppState) => state.application.popupList)
+  return useMemo(() => list.filter(item => item.show), [list])
+} */

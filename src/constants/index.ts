@@ -1,5 +1,3 @@
-export const NetworkContextName = 'NETWORK'
-
 export const KCC = {
   FULLNAME: 'KuCoin Community Chain',
   ABBR: 'KCC',
