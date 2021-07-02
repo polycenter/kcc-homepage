@@ -34,7 +34,8 @@ const TokenIcon = styled.img`
 `
 
 const TokenText = styled.div`
-  padding-top: 0px;
+  font-family: URWDIN-Regular, URWDIN;
+  padding-top: 4px;
   font-size: 16px;
   font-weight: 400;
   color: #01081e;
@@ -44,8 +45,8 @@ const TokenName = styled.div`
   font-size: 14px;
   font-weight: 400;
   color: #01081e;
-  text-align: left;
   height: 16px;
+  text-align: left;
 `
 
 const TokenListModal = styled.div`
@@ -55,7 +56,7 @@ const TokenListModal = styled.div`
   background: #fff;
   border-radius: 8px;
   width: 100%;
-  height: auto;
+  height: 100%;
   top: 0px;
   left: 0;
 `
@@ -82,7 +83,7 @@ const TokenDescriptionWrap = styled.div`
 `
 
 const ListWrap = styled.div`
-  height: 400px;
+  height: 500px;
   overflow: scroll;
 `
 const SelectItem = styled(TokenWrap)`
@@ -140,6 +141,21 @@ const list = [
   },
   {
     id: 9,
+    name: 'KCS',
+    fullName: 'TetherUs',
+  },
+  {
+    id: 10,
+    name: 'KCS',
+    fullName: 'TetherUs',
+  },
+  {
+    id: 11,
+    name: 'KCS',
+    fullName: 'TetherUs',
+  },
+  {
+    id: 12,
     name: 'KCS',
     fullName: 'TetherUs',
   },
@@ -204,7 +220,7 @@ const SelectToken: React.SFC<SelectTokenProps> = () => {
         <TokenIcon />
         <TokenText>USDT</TokenText>
       </TokenWrap>
-      <RightOutlined style={{ color: '#01081e' }} />
+      <RightOutlined style={{ fontSize: '10px', color: '#01081e' }} />
       {show ? (
         <TokenListModal>
           <SelectTokenWrap>
