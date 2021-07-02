@@ -62,3 +62,12 @@ export const DivideLine = styled.div`
     margin: 0 24px;
   }
 `
+
+export const ModalTitle = styled.div`
+  height: 36px;
+  font-size: 20px;
+  font-family: URWDIN-Medium, URWDIN;
+  font-weight: 500;
+  color: #000621;
+  line-height: 36px;
+`
