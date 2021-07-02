@@ -16,18 +16,19 @@ const BridgeWrap = styled.div`
   position: relative;
   background: #000;
   color: #fff;
-  min-height: calc(100vh - 320px);
-  background: url(${TopBg}) center -140% no-repeat, #000;
+  min-height: calc(100vh - 200px);
+  background: url(${TopBg}) center -280px no-repeat, #000;
   background-size: 640px auto;
 `
 
 const NavBg = styled.div`
   height: 80px;
   width: 100%;
-  background: #000;
+  background: rgba(0, 0, 0, 1);
 `
 
 const Content = styled.div`
+  padding-top: 40px;
   position: relative;
   z-index: 2;
 `
