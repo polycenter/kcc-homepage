@@ -1897,6 +1897,14 @@
   dependencies:
     "@json-rpc-tools/types" "^1.6.1"
 
+"@metamask/logo@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@metamask/logo/-/logo-3.0.1.tgz#9c0758d9abc56345c5e4ed01cac22a6d2d452793"
+  integrity sha512-EV1BqyUI/GX1X9pTIydBRZ94c7Zx4Vlsl6V/zIOqk8Zw9mhlLG46lRQSBCq8syCvuGeKVMj/1LYsf/sNVf/SsA==
+  dependencies:
+    gl-mat4 "1.1.4"
+    gl-vec3 "1.0.3"
+
 "@metamask/safe-event-emitter@2.0.0", "@metamask/safe-event-emitter@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/safe-event-emitter/-/safe-event-emitter-2.0.0.tgz#af577b477c683fad17c619a78208cede06f9605c"
@@ -7866,6 +7874,16 @@ gitconfiglocal@^1.0.0:
   integrity sha1-QdBF84UaXqiPA/JMocYXgRRGS5s=
   dependencies:
     ini "^1.3.2"
+
+gl-mat4@1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/gl-mat4/-/gl-mat4-1.1.4.tgz#1e895b55892e56a896867abd837d38f37a178086"
+  integrity sha1-HolbVYkuVqiWhnq9g30483oXgIY=
+
+gl-vec3@1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/gl-vec3/-/gl-vec3-1.0.3.tgz#110fd897d0729f6398307381567d0944941bf22b"
+  integrity sha1-EQ/Yl9Byn2OYMHOBVn0JRJQb8is=
 
 glob-base@^0.3.0:
   version "0.3.0"

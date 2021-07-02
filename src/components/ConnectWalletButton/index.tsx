@@ -10,7 +10,8 @@ import { ConnectorNames } from '../../constants/wallet'
 import { shortAddress } from '../../utils/format'
 import { useTranslation } from 'react-i18next'
 import { useWalletErrorInfo } from '../../state/wallet/hooks'
-
+import LogoutModal from '../LogoutModal'
+import WalletListModal from '../WalletListModal'
 const ConnectButton = styled(LanguageButton)`
   width: auto;
   color: ${theme.colors.primary};
@@ -30,39 +31,63 @@ const ErrorButton = styled(ConnectButton)`
     color: #fff;
   }
 `
+const WalletIcon = styled.img`
+  width: 18px;
+  height: 14px;
+  margin-right: 10px;
+`
 
 const UnlockButton: React.FunctionComponent = () => {
   const { t } = useTranslation()
   const { account } = useWeb3React()
 
+  const [logoutModalShow, setLogoutModalShow] = React.useState<boolean>(false)
+  const [walletListModalShow, setWalletListModalShow] = React.useState<boolean>(false)
+
   const { errorInfo, hasError } = useWalletErrorInfo()
 
-  const { login, logout } = useAuth()
-
-  const connect = () => {
-    login(ConnectorNames.Injected)
+  const hideLogout = (show: boolean) => {
+    setLogoutModalShow(() => show)
   }
 
+  const connect = () => {
+    // login(ConnectorNames.Injected)
+    setWalletListModalShow(() => true)
+  }
+
+  let btn: any = null
+
   if (hasError) {
-    return (
+    btn = (
       <ErrorButton>
         <Text>{t(`${errorInfo}`)}</Text>
       </ErrorButton>
     )
-  }
-
-  if (account) {
-    return (
-      <ConnectButton>
+  } else if (account) {
+    btn = (
+      <ConnectButton
+        onClick={() => {
+          setLogoutModalShow(() => true)
+        }}
+      >
         <Text>{shortAddress(account)}</Text>
+      </ConnectButton>
+    )
+  } else {
+    btn = (
+      <ConnectButton onClick={connect}>
+        <WalletIcon src={require('../../assets/images/bridge/wanllet@2x.png').default} />
+        <Text>{t(`Connect Wallet`)}</Text>
       </ConnectButton>
     )
   }
 
   return (
-    <ConnectButton onClick={connect}>
-      <Text>{t(`Connect Wallet`)}</Text>
-    </ConnectButton>
+    <>
+      {btn}
+      <LogoutModal visible={logoutModalShow} toggleVisible={hideLogout} />
+      <WalletListModal visible={walletListModalShow} toggleVisible={setWalletListModalShow} />
+    </>
   )
 }
 

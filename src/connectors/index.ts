@@ -26,7 +26,8 @@ export function getNetworkLibrary(): Web3Provider {
 }
 
 // support chain
-const chainIds = Reflect.ownKeys(networks).map((n) => Number(n))
+export const chainIds = Reflect.ownKeys(networks).map((n) => Number(n))
+export type ChainId = keyof typeof networks
 export const injected = new InjectedConnector({
   supportedChainIds: chainIds,
 })

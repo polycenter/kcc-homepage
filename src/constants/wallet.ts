@@ -5,3 +5,11 @@ export enum ConnectorNames {
   Injected = 'injected',
   WalletConnect = 'walletconnect',
 }
+
+export const WalletList: any[] = [
+  // {
+  //  id: 0,
+  // name: 'MetaMask',
+  // logo: require('../assets/images/bridge/selected-bg.png').default,
+  //},
+]

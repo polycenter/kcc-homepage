@@ -1,5 +1,4 @@
 import React, { lazy, Suspense } from 'react'
-import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import { Route, Switch, useLocation } from 'react-router-dom'
 
 import Web3ReactManager, { getLibrary } from './components/Web3ReactManager'
@@ -8,9 +7,7 @@ import AppLayout from './layouts/AppLayout'
 import Home from './pages/home/'
 import NotFound from './pages/error'
 
-import './App.less'
 import { useWeb3React } from '@web3-react/core'
-import { ConnectorNames } from './constants/wallet'
 import useAuth from './hooks/useAuth'
 
 const Grants = lazy(() => import(/* webpackChunkName:'Grant' */ './pages/grants/index'))
@@ -19,6 +16,9 @@ const Bridge = lazy(() => import(/* webpackChunkName:'Bridge' */ './pages/bridge
 export const BridgeTransfer = lazy(() => import(/* webpackChunkName:'BridgeTransfer' */ './pages/bridge/transfer'))
 export const BridgeHistoryList = lazy(() => import(/* webpackChunkName:'BridgeHistoryList' */ './pages/bridge/list'))
 export const BridgeOrderDetail = lazy(() => import(/* webpackChunkName:'BridgeOrderDetail' */ './pages/bridge/detail'))
+
+import './App.less'
+import { ConnectorNames } from './constants/wallet'
 
 function RouteWithSubRoutes(route: { path: string; component: any; routes: any }) {
   return (
@@ -54,14 +54,14 @@ export default function App() {
     },
   ]
 
-  const location = useLocation()
   const { active, activate, account } = useWeb3React()
   const { login } = useAuth()
-  React.useEffect(() => {
+
+  /*   React.useEffect(() => {
     if (active && !account) {
       login(ConnectorNames.Injected)
     }
-  }, [active, account])
+  }, [active, account]) */
 
   return (
     <Suspense fallback={<FullLoading />}>

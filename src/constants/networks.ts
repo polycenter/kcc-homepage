@@ -11,6 +11,6 @@ export const networks = {
     rpc: 'https://rpc-mainnet.kcc.network',
     chain_id: 321,
     symbol: 'KCS',
-    scan: 'https://explorer.kcc.io',
+    browser: 'https://explorer.kcc.io',
   },
 }
