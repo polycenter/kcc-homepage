@@ -1,10 +1,13 @@
-## 1.0.2 (2021-06-20)
+## 1.0.2 (2021-07-02)
 
 
 ### Bug Fixes
 
 * **announcement:** add click events ([d36bbc0](https://github.com/kucoin-community-chain/kcc-homepage/commit/d36bbc0001b561a0045b9a8e61fffb70a714462c))
 * **announcement:** fix announcement ui ([492e802](https://github.com/kucoin-community-chain/kcc-homepage/commit/492e802c6070d48d4e64e689d9db6adab1abd8ae))
+* **announcement:** fix date format for IOS ([030ffae](https://github.com/kucoin-community-chain/kcc-homepage/commit/030ffaee36df6ffb6b7c8b72814d64a36bc301f8))
+* **appmenu:** fix wrong style when change route ([cdc3652](https://github.com/kucoin-community-chain/kcc-homepage/commit/cdc3652691dba911523ddd0a7186c446743600c2))
+* **bridge:** bridge route & animation ([ad05d97](https://github.com/kucoin-community-chain/kcc-homepage/commit/ad05d97b210c05409ac893647f537d230790a01d))
 * **button:** fix home page button hover style ([9011562](https://github.com/kucoin-community-chain/kcc-homepage/commit/9011562f1b6313cf7d741206405821ddc7a9c0bf))
 * **change-language:** fix can't change language in h5 mode ([246b332](https://github.com/kucoin-community-chain/kcc-homepage/commit/246b332d4b555cceebaa077de94d2715b585184e))
 * **english:** edit english template ([1b12519](https://github.com/kucoin-community-chain/kcc-homepage/commit/1b12519e9293cd2dc17fb998368bbafdd70b12ef))
@@ -13,19 +16,31 @@
 * **grant:** uI ([08e2c55](https://github.com/kucoin-community-chain/kcc-homepage/commit/08e2c556f5a89eca27d4bb44f678aff4de18060a))
 * **grant:** uI ([3200f57](https://github.com/kucoin-community-chain/kcc-homepage/commit/3200f572b58e9563e9f1ea3e1b699fe9e519ba28))
 * **header:** fix header wrong hover events ([e41569c](https://github.com/kucoin-community-chain/kcc-homepage/commit/e41569c50294b491caa1857656a40f251fe26f95))
+* **home:** home UI ([f523eb7](https://github.com/kucoin-community-chain/kcc-homepage/commit/f523eb7f38296297021f9d146eefe7e45f49c7ef))
 * **i18n:** footer i18n ([5b3238a](https://github.com/kucoin-community-chain/kcc-homepage/commit/5b3238ab93129d0fac90e44f8a10b40df7eac172))
 * **link:** update link ([f987e35](https://github.com/kucoin-community-chain/kcc-homepage/commit/f987e35863e3a87d9420eb9ad1bd070cf79fc4de))
 * **link:** update link ([e12b1da](https://github.com/kucoin-community-chain/kcc-homepage/commit/e12b1dad3fa3210506ebba32df23a38b4ddd4e56))
+* **logo:** show logo when in mobile mode ([ff65e57](https://github.com/kucoin-community-chain/kcc-homepage/commit/ff65e5739dd7ed686cd60598aee449bb3b7c89db))
 * **menu:** fix menu style ([72533ce](https://github.com/kucoin-community-chain/kcc-homepage/commit/72533cea19d8b6700656d5e812b510eea390db98))
 * **milestone:** edit text ([d27f54d](https://github.com/kucoin-community-chain/kcc-homepage/commit/d27f54df163094da8c222c8e480f1f8ec5d156ab))
 * **navbar:** fix navbar ([ee04d50](https://github.com/kucoin-community-chain/kcc-homepage/commit/ee04d50bc267b3e25f48322925a1e748125c8a22))
 * **noticebar:** hide niticebar ([0e49dfd](https://github.com/kucoin-community-chain/kcc-homepage/commit/0e49dfd6ce10e76dbf6bf9b63623ebf5206e579a))
+* **partner:** fix partner UI in h5 ([32e71a4](https://github.com/kucoin-community-chain/kcc-homepage/commit/32e71a4084d7f58e2c7f642674d59399756bd37b))
+* **partner:** fix UI ([5adfc24](https://github.com/kucoin-community-chain/kcc-homepage/commit/5adfc2417a73ca79babc69a88502e3a7f6f4bdbe))
+* **text:** update text ([2cfd259](https://github.com/kucoin-community-chain/kcc-homepage/commit/2cfd25919147b4282402c68342a12f2565c63b0b))
 * **text:** update text ([ee37e9c](https://github.com/kucoin-community-chain/kcc-homepage/commit/ee37e9c210cf963744a42c4d8d421d635640d65c))
 
 
 ### Features
 
+* **activity:** add activity logics ([d1a86d0](https://github.com/kucoin-community-chain/kcc-homepage/commit/d1a86d0af81b7c897a876163b86593073d8ee9bc))
+* **activity:** add activity part ([5c183ff](https://github.com/kucoin-community-chain/kcc-homepage/commit/5c183ffe27af4404e25a771980d8eeb64ebb3b57))
+* **activity:** open activity & add diffenrent language logics ([619b88f](https://github.com/kucoin-community-chain/kcc-homepage/commit/619b88f82a87a4680753dbe6c43799477e121e09))
 * **announcement:** announcement completed ([87c0b53](https://github.com/kucoin-community-chain/kcc-homepage/commit/87c0b534ba83e8b8c833da683ebd26501256a3a5))
+* **bridge:** add bridge basic code ([0247ed4](https://github.com/kucoin-community-chain/kcc-homepage/commit/0247ed4acf7ddff8fc01175fd04140adad92c37f))
+* **bridge:** add some bridge modal ([e75379d](https://github.com/kucoin-community-chain/kcc-homepage/commit/e75379d33e73e3c9aa872aec395faae87d65c374))
+* **bridge-transfer:** bridge-transfer ui ([7a829e3](https://github.com/kucoin-community-chain/kcc-homepage/commit/7a829e3c45dcf61e4e3070ecc385b5875f3ef2eb))
+* **connect:** connect metamsk ([e47b52e](https://github.com/kucoin-community-chain/kcc-homepage/commit/e47b52ee3f93a529738c12c0f1e044c3d388ccce))
 * **framework:** init framework & basic code ([f3c997a](https://github.com/kucoin-community-chain/kcc-homepage/commit/f3c997aa5ae869cecda929d06fbb77e33fefa27f))
 * **grant:** add grants nav link ([20a16ca](https://github.com/kucoin-community-chain/kcc-homepage/commit/20a16ca4d2ad9ac4566714bb11471cb9f1d5165e))
 * **grant:** competiable h5 ([22be2a3](https://github.com/kucoin-community-chain/kcc-homepage/commit/22be2a3e8c522bd523f9ee36770c2a227fd722d3))
@@ -39,11 +54,20 @@
 * **i18n:** add spain language ([1413777](https://github.com/kucoin-community-chain/kcc-homepage/commit/14137770dcf17b33f37717cf18c3acf9e75ebbde))
 * **i18n:** completed i18n ([b6a7a18](https://github.com/kucoin-community-chain/kcc-homepage/commit/b6a7a18191c5590228972727a72e9079447445e1))
 * **i18n:** grants & home  i18n completed ([2c90ca4](https://github.com/kucoin-community-chain/kcc-homepage/commit/2c90ca477bb96d2ef5bd72886df8b93c98f86894))
+* **i18n:** open the corresponding document address according to the current language ([91248ea](https://github.com/kucoin-community-chain/kcc-homepage/commit/91248eae8769c677640331b22c07d5947783ec79))
 * **i18n:** update some text ([29fbe63](https://github.com/kucoin-community-chain/kcc-homepage/commit/29fbe63652ce6ba02ca49161d20969d7e29c9452))
 * **link:** add get start button event ([4b847c7](https://github.com/kucoin-community-chain/kcc-homepage/commit/4b847c756c07a93ff61bf2e4ff39ff52d997db8f))
 * **link:** update navbar & footer link ([0a3b8f2](https://github.com/kucoin-community-chain/kcc-homepage/commit/0a3b8f28f2b7453b416fe0d6e1b528998d7277fd))
 * **milestone:** milestone completed ([62f4eac](https://github.com/kucoin-community-chain/kcc-homepage/commit/62f4eac8b67ced63755188cef026f3bf89d112b5))
 * **noticebar:** show the noticebar ([dbc55cf](https://github.com/kucoin-community-chain/kcc-homepage/commit/dbc55cf6e10400b9e0ab353af8f88a0f9af49347))
+* **partner:** add partner component ([457c138](https://github.com/kucoin-community-chain/kcc-homepage/commit/457c13887b7cccf04592ac8463da614c50edb7fd))
 * **release:** release v1.0.0 ([ded5a49](https://github.com/kucoin-community-chain/kcc-homepage/commit/ded5a49f5e31e7e8fee9b77c2f5ae79b21e82b73))
+* **responsive:** support for tablet device ([08382e2](https://github.com/kucoin-community-chain/kcc-homepage/commit/08382e2b576a7efcc622fd27b3c2e078e7142b18))
 * **subsribe:** mail subscribe completed ([a646807](https://github.com/kucoin-community-chain/kcc-homepage/commit/a646807531a602067ede28491aadba37dc9a330d))
 * **text:** edit text ([61ea03f](https://github.com/kucoin-community-chain/kcc-homepage/commit/61ea03f85ba569eb02aa606fd29364423f8372b8))
+
+
+### Performance Improvements
+
+* **build & console:** build & console ([1d5b2bf](https://github.com/kucoin-community-chain/kcc-homepage/commit/1d5b2bf8d014e276542ffe14394f616db2fab14d))
+
