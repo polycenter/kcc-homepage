@@ -9,10 +9,12 @@ import { EllipsisOutlined } from '@ant-design/icons'
 import { theme } from '../../constants/theme'
 import { ConnectorNames, WalletList } from '../../constants/wallet'
 import useAuth from '../../hooks/useAuth'
+import { useDispatch } from 'react-redux'
+import { useConnectWalletModalShow } from '../../state/wallet/hooks'
+import { toggleConnectWalletModalShow } from '../../state/wallet/actions'
 
 export interface WalletListModalProps {
   visible: boolean
-  toggleVisible: any
 }
 
 const WalletListWrap = styled.div``
@@ -105,12 +107,14 @@ const RightBottomWrap = styled.img`
   width: 24px;
 `
 
-const WalletListModal: React.FunctionComponent<WalletListModalProps> = ({ visible, toggleVisible }) => {
+const WalletListModal: React.FunctionComponent<WalletListModalProps> = ({ visible }) => {
   const { t } = useTranslation()
 
   const [selectedId, setSelectedId] = React.useState<number>(0)
 
   const { login } = useAuth()
+
+  const dispatch = useDispatch()
 
   const initViewer = () => {
     const container = document.getElementById('metamask') as HTMLElement
@@ -140,7 +144,7 @@ const WalletListModal: React.FunctionComponent<WalletListModalProps> = ({ visibl
       switch (selectedId) {
         case 0:
           await login(ConnectorNames.Injected)
-          toggleVisible(() => false)
+          dispatch(toggleConnectWalletModalShow({ show: false }))
           break
         default:
           console.log('No wallet is valid')
@@ -178,7 +182,7 @@ const WalletListModal: React.FunctionComponent<WalletListModalProps> = ({ visibl
       style={{ borderRadius: '8px' }}
       destroyOnClose
       onCancel={() => {
-        toggleVisible(() => false)
+        dispatch(toggleConnectWalletModalShow({ show: false }))
       }}
     >
       <ModalTitle>{t(`Connect Wallet`)}</ModalTitle>

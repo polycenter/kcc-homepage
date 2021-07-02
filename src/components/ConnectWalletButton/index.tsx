@@ -1,17 +1,16 @@
-import { Button } from 'antd'
 import React from 'react'
 import styled from 'styled-components'
 import { theme } from '../../constants/theme'
-
-import useAuth from '../../hooks/useAuth'
 import { LanguageButton } from '../ChangeLanguage/index'
 import { useWeb3React } from '@web3-react/core'
-import { ConnectorNames } from '../../constants/wallet'
 import { shortAddress } from '../../utils/format'
 import { useTranslation } from 'react-i18next'
-import { useWalletErrorInfo } from '../../state/wallet/hooks'
+import { useWalletErrorInfo, useConnectWalletModalShow } from '../../state/wallet/hooks'
 import LogoutModal from '../LogoutModal'
 import WalletListModal from '../WalletListModal'
+import { useDispatch } from 'react-redux'
+import { toggleConnectWalletModalShow } from '../../state/wallet/actions'
+
 const ConnectButton = styled(LanguageButton)`
   width: auto;
   color: ${theme.colors.primary};
@@ -42,7 +41,9 @@ const UnlockButton: React.FunctionComponent = () => {
   const { account } = useWeb3React()
 
   const [logoutModalShow, setLogoutModalShow] = React.useState<boolean>(false)
-  const [walletListModalShow, setWalletListModalShow] = React.useState<boolean>(false)
+  // const [walletListModalShow, setWalletListModalShow] = React.useState<boolean>(false)
+
+  const dispatch = useDispatch()
 
   const { errorInfo, hasError } = useWalletErrorInfo()
 
@@ -52,7 +53,8 @@ const UnlockButton: React.FunctionComponent = () => {
 
   const connect = () => {
     // login(ConnectorNames.Injected)
-    setWalletListModalShow(() => true)
+    // setWalletListModalShow(() => true)
+    dispatch(toggleConnectWalletModalShow({ show: true }))
   }
 
   let btn: any = null
@@ -86,7 +88,6 @@ const UnlockButton: React.FunctionComponent = () => {
     <>
       {btn}
       <LogoutModal visible={logoutModalShow} toggleVisible={hideLogout} />
-      <WalletListModal visible={walletListModalShow} toggleVisible={setWalletListModalShow} />
     </>
   )
 }

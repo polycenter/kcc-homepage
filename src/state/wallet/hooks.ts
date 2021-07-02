@@ -9,6 +9,12 @@ export function useWalletErrorInfo(): { hasError: boolean; errorInfo: string } {
   })
 }
 
+export function useConnectWalletModalShow(): boolean {
+  return useSelector((state: AppState) => {
+    return state.wallet.connectWalletModalShow
+  })
+}
+
 // get the list of active popups
 /* export function useActivePopups(): AppState['application']['popupList'] {
   const list = useSelector((state: AppState) => state.application.popupList)

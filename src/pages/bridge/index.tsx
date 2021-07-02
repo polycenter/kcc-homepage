@@ -5,6 +5,8 @@ import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import { BridgeHistoryList, BridgeOrderDetail, BridgeTransfer } from '../../App'
 
 import '../../styles/transition.css'
+import { useConnectWalletModalShow } from '../../state/wallet/hooks'
+import WalletListModal from '../../components/WalletListModal'
 
 export interface BridgePageProps {}
 
@@ -57,8 +59,12 @@ const BridgePage: React.FunctionComponent<BridgePageProps> = ({ children }) => {
   }, [])
 
   const location = useLocation()
+
+  const walletListModalShow = useConnectWalletModalShow()
+
   return (
     <BridgeWrap>
+      <WalletListModal visible={walletListModalShow} />
       <NavBg />
       <Content>
         <SwitchTransition mode="out-in">
