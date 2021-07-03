@@ -29,6 +29,11 @@ export const Box = styled.div`
   flex: 1;
 `
 
+export enum ChainDirection {
+  'From',
+  'To',
+}
+
 const ChainBridge: React.FunctionComponent<ChainBridgeProps> = (props) => {
   const { t } = useTranslation()
   const swap = () => {
@@ -42,12 +47,12 @@ const ChainBridge: React.FunctionComponent<ChainBridgeProps> = (props) => {
     <ChainBridgeWrap>
       <Box>
         <BridgeTitle>{t('From')}</BridgeTitle>
-        <ChainCard />
+        <ChainCard direction={ChainDirection.From} />
       </Box>
       <SwapIcon onClick={swap} src={require('../../assets/images/bridge/transfer.png').default} />
       <Box>
         <BridgeTitle>{t('To')}</BridgeTitle>
-        <ChainCard />
+        <ChainCard direction={ChainDirection.To} />
       </Box>
     </ChainBridgeWrap>
   )

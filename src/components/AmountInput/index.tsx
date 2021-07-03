@@ -3,8 +3,12 @@ import styled from 'styled-components'
 import { BridgeTitle } from '../../pages/bridge/transfer'
 import { useTranslation } from 'react-i18next'
 import { Input } from 'antd'
+import { CenterRow } from '../Row/index'
 
-export interface AmountInputProps {}
+export interface AmountInputProps {
+  amount: number
+  setAmount: any
+}
 
 const AmountInputWrap = styled.div`
   margin-top: 16px;
@@ -14,6 +18,12 @@ const AmountInputWrap = styled.div`
     height: 38px;
   }
 `
+
+const TextWrap = styled(CenterRow)`
+  align-items: center;
+  justify-content: space-between;
+`
+
 const SuffixText = styled.span`
   font-family: URWDIN-Regular;
   height: 16px;
@@ -22,12 +32,47 @@ const SuffixText = styled.span`
   font-size: 16px;
 `
 
-const AmountInput: React.FunctionComponent<AmountInputProps> = () => {
+const ErrorText = styled.span`
+  font-family: URWDIN-Regular;
+  color: #f00;
+  font-size: 12px;
+`
+
+const AmountInput: React.FunctionComponent<AmountInputProps> = ({ amount, setAmount }) => {
   const { t } = useTranslation()
+
+  const [error, setError] = React.useState<boolean>(false)
+
+  const [errorInfo, setErrorInfo] = React.useState<string>('')
+
+  const insufficientText = `Insufficient available balance`
+  const minAmountText = 'The minimum exchange quantity is 10'
+
+  const changeAmount = (e: any) => {
+    const input = parseFloat(e.target.value)
+    if (input < 10) {
+      setError(() => true)
+      setErrorInfo(() => minAmountText)
+    } else {
+      setError(() => false)
+    }
+    setAmount(e.target.value)
+  }
+
   return (
     <AmountInputWrap>
-      <BridgeTitle>{t(`Amount`)}</BridgeTitle>
-      <Input style={{ background: 'rgba(1, 8, 30, 0.04)' }} suffix={<SuffixText>USDT</SuffixText>} />
+      <TextWrap>
+        <BridgeTitle>{t(`Amount`)}</BridgeTitle>
+        {error ? <ErrorText> * {t(errorInfo)}</ErrorText> : null}
+      </TextWrap>
+      <Input
+        value={amount}
+        maxLength={8}
+        type="number"
+        onChange={changeAmount}
+        style={{ background: 'rgba(1, 8, 30, 0.04)' }}
+        suffix={<SuffixText>USDT</SuffixText>}
+      />
     </AmountInputWrap>
   )
 }
