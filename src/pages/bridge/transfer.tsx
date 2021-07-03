@@ -88,6 +88,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
   const [srcId, changeSrcId] = React.useState(1)
   const [distId, changeDistId] = React.useState(321)
   const [receiveAddress, setReceiveAddress] = React.useState<any>(account)
+  const [amount, setAmount] = React.useState<number>(0)
 
   React.useEffect(() => {
     setReceiveAddress(() => account)
@@ -103,10 +104,17 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
         <BridgeTitle>{t(`Asset`)}</BridgeTitle>
         <SelectToken list={[]} />
         <ChainBridge srcId={1} distId={1} changeDistId={changeDistId} changeSrcId={changeSrcId} />
-        <AmountInput />
+        <AmountInput amount={amount} setAmount={setAmount} />
         <Row style={{ marginTop: '9px', justifyContent: 'flex-start' }}>
           <ReceiveText>{t(`You will receive`)}</ReceiveText>
           <ReceiveAmountText>{t(` ≈ 88 USDT`)}</ReceiveAmountText>
+          {account ? (
+            <>
+              <ReceiveText style={{ marginLeft: '10px' }}>Available:</ReceiveText>
+              <ReceiveAmountText>{t(`  1288 USDT`)}</ReceiveAmountText>
+            </>
+          ) : null}
+
           <ChainTag>
             <ChainText>KRC20</ChainText>
           </ChainTag>

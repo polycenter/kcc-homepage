@@ -1,6 +1,12 @@
+import { Dropdown, Menu } from 'antd'
 import React from 'react'
 import styled from 'styled-components'
-export interface ChainCardProps {}
+import { networks } from '../../constants/networks'
+import { ChainId, ChainIds } from '../../connectors/index'
+import { ChainDirection } from '../ChainBridge'
+interface ChainCardProps {
+  direction: ChainDirection
+}
 
 const ChainCardWrap = styled.div`
   width: 100%;
@@ -44,14 +50,65 @@ const SelectWrap = styled.div`
     transform: scale(1.2);
   }
 `
+const ChainItem = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  background: #fff;
+  width: 100%;
+  &:hover {
+    background: #f5f5f6;
+  }
+`
+const ChainIcon = styled.img`
+  width: 28px;
+  height: 28px;
+  background: #d8d8d8;
+  border-radius: 50%;
+`
 
-const ChainCard: React.SFC<ChainCardProps> = () => {
+const ChainName = styled.span`
+  height: 22px;
+  font-size: 14px;
+  font-family: URWDIN-Regular, URWDIN;
+  font-weight: 400;
+  color: rgba(1, 8, 30, 0.87);
+  line-height: 22px;
+  margin-left: 8px;
+`
+
+const ChainCard: React.SFC<ChainCardProps> = (props) => {
+  const menuList = ChainIds.map((id, index) => {
+    const net = (networks as any)[id]
+    return (
+      <Menu.Item key={id}>
+        <ChainItem>
+          <ChainIcon />
+          <ChainName>{net.name}</ChainName>
+        </ChainItem>
+      </Menu.Item>
+    )
+  })
+
+  const menu = <Menu style={{ width: '220px' }}>{menuList}</Menu>
+  /*  return (<Menu>    
+      <Menu.Item>
+        <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+          1st menu item
+        </a>
+      </Menu.Item>
+    </Menu> 
+  )*/
+
   return (
     <ChainCardWrap>
       <ChainLogo />
       <Name>Ethereum Network</Name>
       <SelectWrap>
-        <SelectIcon src={require('../../assets/images/bridge/down.png').default} />
+        <Dropdown overlay={menu} placement={'bottomCenter'}>
+          <SelectIcon src={require('../../assets/images/bridge/down.png').default} />
+        </Dropdown>
       </SelectWrap>
     </ChainCardWrap>
   )
