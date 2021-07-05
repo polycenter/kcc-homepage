@@ -16,6 +16,9 @@ const Bridge = lazy(() => import(/* webpackChunkName:'Bridge' */ './pages/bridge
 export const BridgeTransfer = lazy(() => import(/* webpackChunkName:'BridgeTransfer' */ './pages/bridge/transfer'))
 export const BridgeHistoryList = lazy(() => import(/* webpackChunkName:'BridgeHistoryList' */ './pages/bridge/list'))
 export const BridgeOrderDetail = lazy(() => import(/* webpackChunkName:'BridgeOrderDetail' */ './pages/bridge/detail'))
+export const BridgeOrderConfirm = lazy(
+  () => import(/* webpackChunkName:'BridgeOrderConfirm' */ './pages/bridge/confirm')
+)
 
 import './App.less'
 import { ConnectorNames } from './constants/wallet'
@@ -49,6 +52,10 @@ export default function App() {
         {
           path: '/bridge/detail',
           component: BridgeOrderDetail,
+        },
+        {
+          path: '/bridge/confirm',
+          component: BridgeOrderConfirm,
         },
       ],
     },

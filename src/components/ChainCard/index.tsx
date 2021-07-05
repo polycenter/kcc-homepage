@@ -2,10 +2,13 @@ import { Dropdown, Menu } from 'antd'
 import React from 'react'
 import styled from 'styled-components'
 import { networks } from '../../constants/networks'
-import { ChainId, ChainIds } from '../../connectors/index'
+import { ChainIds } from '../../connectors/index'
 import { ChainDirection } from '../ChainBridge'
+import { ChainBridgeType } from '../../pages/bridge/confirm'
+
 interface ChainCardProps {
   direction: ChainDirection
+  type: ChainBridgeType
 }
 
 const ChainCardWrap = styled.div`
@@ -78,7 +81,7 @@ const ChainName = styled.span`
   margin-left: 8px;
 `
 
-const ChainCard: React.SFC<ChainCardProps> = (props) => {
+const ChainCard: React.SFC<ChainCardProps> = ({ type }) => {
   const menuList = ChainIds.map((id, index) => {
     const net = (networks as any)[id]
     return (
@@ -105,11 +108,13 @@ const ChainCard: React.SFC<ChainCardProps> = (props) => {
     <ChainCardWrap>
       <ChainLogo />
       <Name>Ethereum Network</Name>
-      <SelectWrap>
-        <Dropdown overlay={menu} placement={'bottomCenter'}>
-          <SelectIcon src={require('../../assets/images/bridge/down.png').default} />
-        </Dropdown>
-      </SelectWrap>
+      {type === ChainBridgeType.OPERATE ? (
+        <SelectWrap>
+          <Dropdown overlay={menu} placement={'bottomCenter'}>
+            <SelectIcon src={require('../../assets/images/bridge/down.png').default} />
+          </Dropdown>
+        </SelectWrap>
+      ) : null}
     </ChainCardWrap>
   )
 }

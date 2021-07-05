@@ -1,19 +1,19 @@
-import { Button, Card, Popover, Select } from 'antd'
-import React, { useRef, useState } from 'react'
+import { Popover } from 'antd'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { DownOutlined } from '@ant-design/icons'
 import { allLanguages } from '../../constants/languageCodes'
 import { useTranslation } from 'react-i18next'
 import { RowBetween } from '../Row'
 import { useDispatch } from 'react-redux'
-import { AppState, AppDispatch } from '../../state/index'
-import { changeTheme, changeLanguage } from '../../state/application/actions'
+import { AppDispatch } from '../../state/index'
+import { changeLanguage } from '../../state/application/actions'
 import { useLanguage } from '../../state/application/hooks'
 import { theme } from '../../constants/theme'
 import { useResponsive } from '../../utils/responsive'
+import { BrowserView, MobileView } from '../Common'
 
 import './index.less'
-import { BrowserView, MobileView } from '../Common'
 
 export interface ChangeLanguageProps {}
 
@@ -23,6 +23,7 @@ const MenuWrap = styled.div`
   width: 100%;
   flex: 1;
   text-align: right;
+
   @media (max-width: 768px) {
     padding-left: 10px;
   }
@@ -71,7 +72,6 @@ export const LanguageButton = styled.div`
 
 const ChangeLanguage: React.FunctionComponent<ChangeLanguageProps> = () => {
   const { isMobile } = useResponsive()
-  console.log('isMobile', isMobile)
   const { i18n } = useTranslation()
 
   const [show, setShow] = useState(false)
@@ -119,7 +119,7 @@ const ChangeLanguage: React.FunctionComponent<ChangeLanguageProps> = () => {
   })
   return (
     <MenuWrap>
-      <Popover placement="bottom" content={selectOptions} visible={show}>
+      <Popover style={{ background: '#000' }} placement="bottom" content={selectOptions} visible={show}>
         <BrowserView>
           <LanguageButton
             onMouseEnter={showPop}
@@ -149,4 +149,4 @@ const ChangeLanguage: React.FunctionComponent<ChangeLanguageProps> = () => {
   )
 }
 
-export default ChangeLanguage
+export default React.memo(ChangeLanguage)

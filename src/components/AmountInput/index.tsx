@@ -70,7 +70,7 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({ amount, setAmo
         maxLength={8}
         type="number"
         onChange={changeAmount}
-        style={{ background: 'rgba(1, 8, 30, 0.04)' }}
+        style={{ background: '#F5F5F6' }}
         suffix={<SuffixText>USDT</SuffixText>}
       />
     </AmountInputWrap>
