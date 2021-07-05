@@ -3,8 +3,7 @@ import styled from 'styled-components'
 import { TransferWrap } from './transfer'
 import BridgeTitlePanel from '../../components/BridgeTitlePanel/index'
 import { useHistory } from 'react-router'
-import { Progress, Steps } from 'antd'
-import { icons } from 'antd/lib/image/PreviewGroup'
+import { Progress } from 'antd'
 import { CenterRow } from '../../components/Row/index'
 import { useTranslation } from 'react-i18next'
 
@@ -84,8 +83,12 @@ const Line = styled.div`
 `
 
 const NetworkWrap = styled.div`
-  height: 125px;
+  height: 120px;
   padding-left: 40px;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: flex-start;
 `
 
 const NetworkIcon = styled.img`
@@ -104,7 +107,7 @@ const NetworkName = styled.span`
 `
 const StatusText = styled.span`
   font-size: 14px;
-  paddint-top: 2px;
+  padding-top: 2px;
   font-family: URWDIN-Regular, URWDIN;
   font-weight: 400;
   color: #01081e;
@@ -112,7 +115,11 @@ const StatusText = styled.span`
 
 const LinkText = styled(StatusText)`
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 400;
+  &:hover {
+    font-weight: 500;
+    text-decoration: underline;
+  }
 `
 const LinkIcon = styled.img`
   width: 15px;
@@ -126,11 +133,13 @@ const BetweenBox = styled.div`
   align-items: center;
   width: 100%;
 `
-
+const SuccessIconWrap = styled.img`
+  width: 10px;
+  height: 10px;
+  margin-right: 5px;
+`
 const SuccessIcon = require('../../assets/images/bridge/success-process.png').default
 const ProcessingIcon = require('../../assets/images/bridge/in-process.png').default
-
-const { Step } = Steps
 
 const BridgeDetailPage: React.FunctionComponent<BridgeDetailPageProps> = () => {
   const { t } = useTranslation()
@@ -138,7 +147,7 @@ const BridgeDetailPage: React.FunctionComponent<BridgeDetailPageProps> = () => {
   const icon = (current: number, nth: number) => {
     return <StepIcon src={nth < current ? SuccessIcon : ProcessingIcon} />
   }
-  const [current, setCurrent] = React.useState<number>(1)
+  const [current, setCurrent] = React.useState<number>(2)
   const [percent1, setPercent1] = React.useState<number>(50)
   const [percent2, setPercent2] = React.useState<number>(0)
   const history = useHistory()
@@ -162,12 +171,15 @@ const BridgeDetailPage: React.FunctionComponent<BridgeDetailPageProps> = () => {
                 <NetworkIcon />
                 <NetworkName>Ethereum Network</NetworkName>
               </CenterRow>
+              <StatusText style={{ color: current > 0 ? '#31D7A0' : '#01081E' }}>
+                {current > 0 ? t('Completed') : t(`Process`)}
+              </StatusText>
             </BetweenBox>
             <Progress
               percent={percent1}
               type="line"
               strokeWidth={4}
-              style={{ margin: '10px 0 10px 0' }}
+              style={{ margin: '8px 0' }}
               status="active"
               strokeColor={{
                 '0%': '#00FFA8',
@@ -179,6 +191,42 @@ const BridgeDetailPage: React.FunctionComponent<BridgeDetailPageProps> = () => {
               <LinkIcon src={require('../../assets/images/bridge/link.svg').default} />
             </CenterRow>
           </NetworkWrap>
+          <NetworkWrap style={{ marginTop: '20px' }}>
+            <BetweenBox>
+              <CenterRow>
+                <NetworkIcon />
+                <NetworkName>Ethereum Network</NetworkName>
+              </CenterRow>
+              <StatusText style={{ color: current > 1 ? '#31D7A0' : '#01081E' }}>
+                {current > 1 ? t('Completed') : t(`Process`)}
+              </StatusText>
+            </BetweenBox>
+            <Progress
+              percent={percent2}
+              type="line"
+              strokeWidth={4}
+              style={{ margin: '8px 0' }}
+              status="active"
+              strokeColor={{
+                '0%': '#00FFA8',
+                '100%': '#31D7A0',
+              }}
+            />
+            <CenterRow>
+              <LinkText>{t(`View hash`)}</LinkText>
+              <LinkIcon src={require('../../assets/images/bridge/link.svg').default} />
+            </CenterRow>
+          </NetworkWrap>
+          <CenterRow style={{ marginTop: '20px' }}>
+            {current === 2 ? (
+              <>
+                <SuccessIconWrap src={require('../../assets/images/bridge/selected@2x.png').default} />
+                <StatusText style={{ color: '#31D7A0' }}>{t(`Success`)}!</StatusText>
+              </>
+            ) : (
+              <StatusText>{t(`Processing`)}...</StatusText>
+            )}
+          </CenterRow>
         </StepsWrap>
       </OrderDetailWrap>
     </BridgeDetaiPageWrap>

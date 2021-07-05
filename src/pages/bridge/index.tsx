@@ -8,6 +8,11 @@ import { useConnectWalletModalShow } from '../../state/wallet/hooks'
 import WalletListModal from '../../components/WalletListModal'
 
 import '../../styles/transition.css'
+import BridgeLoading from '../../components/BridgeLoading'
+import { useBridgeLoading } from '../../state/application/hooks'
+import { useTranslation } from 'react-i18next'
+import { useDispatch } from 'react-redux'
+import { updateBridgeLoading } from '../../state/application/actions'
 
 export interface BridgePageProps {}
 
@@ -51,38 +56,89 @@ const ButtonBgImg = styled.img`
   left: 0;
 `
 
+const LoadingBg = styled.div`
+  margin: 200px auto;
+  background: #fff;
+  position: relative;
+  width: 464px;
+  height: 306px;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+`
+
+const Success = styled.div`
+  margin-top: 120px;
+  height: 36px;
+  font-size: 24px;
+  font-family: URWDIN-Medium, URWDIN;
+  font-weight: 500;
+  color: #000426;
+  line-height: 36px;
+  text-align: center;
+`
+
+const CloseIcon = styled.img`
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  cursor: pointer;
+`
+
 const BridgePage: React.FunctionComponent<BridgePageProps> = ({ children }) => {
-  const router = useHistory()
-  const { path } = useRouteMatch()
   /*   React.useEffect(() => {
     if (path === '/bridge') {
       router.push('/bridge/transfer')
     }
   }, []) */
 
+  const { t } = useTranslation()
+
+  const { status, visible } = useBridgeLoading()
+
+  console.log(status, visible)
+
   const location = useLocation()
 
   const walletListModalShow = useConnectWalletModalShow()
+
+  const dispatch = useDispatch()
+
+  const hideLoading = () => {
+    dispatch(updateBridgeLoading({ visible: false, status: 0 }))
+  }
 
   return (
     <BridgeWrap>
       <WalletListModal visible={walletListModalShow} />
       <NavBg />
       <Content>
-        <SwitchTransition mode="out-in">
-          <CSSTransition
-            key={location.pathname}
-            classNames="fade"
-            addEndListener={(node, done) => node.addEventListener('transitionend', done, false)}
-          >
-            <Switch>
-              <Route path="/bridge/transfer" component={BridgeTransfer} />
-              <Route path="/bridge/list" component={BridgeHistoryList} />
-              <Route path="/bridge/detail" component={BridgeOrderDetail} />
-              <Route path="/bridge/confirm" component={BridgeOrderConfirm} />
-            </Switch>
-          </CSSTransition>
-        </SwitchTransition>
+        {visible ? (
+          <LoadingBg>
+            <BridgeLoading status={status} />
+            <CloseIcon src={require('../../assets/images/bridge/close@2x.png').default} onClick={hideLoading} />
+            <Success>{status !== 0 ? t(`Success`) + '!' : t('Waiting for confirmation')}</Success>
+          </LoadingBg>
+        ) : (
+          <SwitchTransition mode="out-in">
+            <CSSTransition
+              key={location.pathname}
+              classNames="fade"
+              addEndListener={(node, done) => node.addEventListener('transitionend', done, false)}
+            >
+              <Switch>
+                <Route path="/bridge/transfer" component={BridgeTransfer} />
+                <Route path="/bridge/list" component={BridgeHistoryList} />
+                <Route path="/bridge/detail" component={BridgeOrderDetail} />
+                <Route path="/bridge/confirm" component={BridgeOrderConfirm} />
+              </Switch>
+            </CSSTransition>
+          </SwitchTransition>
+        )}
       </Content>
 
       <CenterBgImg src={CenterBg} />

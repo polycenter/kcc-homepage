@@ -20,3 +20,9 @@ export const changeMobileMenuShow =
   createAction<{
     show: boolean
   }>('app/changeMobileMenuShow')
+
+export const updateBridgeLoading =
+  createAction<{
+    visible: boolean
+    status: number
+  }>('app/updateBridgeLoading')
