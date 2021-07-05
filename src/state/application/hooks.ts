@@ -19,6 +19,11 @@ export function useMobileMenuShow(): boolean {
   return useSelector((state: AppState) => state.application.mobileMenuShow)
 }
 
+export function useBridgeLoading(): { visible: boolean; status: number } {
+  return useSelector((state: AppState) => {
+    return { visible: state.application.bridgeLoadingVisible, status: state.application.bridgeLoadingStatus }
+  })
+}
 // get the list of active popups
 /* export function useActivePopups(): AppState['application']['popupList'] {
   const list = useSelector((state: AppState) => state.application.popupList)

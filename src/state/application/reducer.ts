@@ -1,11 +1,13 @@
 import { createReducer } from '@reduxjs/toolkit'
-import { updateBlockNumber, changeLanguage, changeTheme, changeMobileMenuShow } from './actions'
+import { updateBlockNumber, changeLanguage, changeTheme, changeMobileMenuShow, updateBridgeLoading } from './actions'
 
 export interface ApplicationState {
   blockNumber: { [chainId: number]: number }
   darkMode: boolean
   language: string
   mobileMenuShow: boolean
+  bridgeLoadingVisible: boolean
+  bridgeLoadingStatus: number
 }
 
 const initialState: ApplicationState = {
@@ -13,6 +15,8 @@ const initialState: ApplicationState = {
   darkMode: false,
   language: 'en',
   mobileMenuShow: false,
+  bridgeLoadingVisible: false,
+  bridgeLoadingStatus: 0,
 }
 
 export default createReducer(initialState, (builder) =>
@@ -44,5 +48,10 @@ export default createReducer(initialState, (builder) =>
     .addCase(changeMobileMenuShow, (state, action) => {
       const { show } = action.payload
       state.mobileMenuShow = show
+    })
+    .addCase(updateBridgeLoading, (state, action) => {
+      const { visible, status } = action.payload
+      state.bridgeLoadingStatus = status
+      state.bridgeLoadingVisible = visible
     })
 )
