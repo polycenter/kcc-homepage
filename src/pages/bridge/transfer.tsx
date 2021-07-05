@@ -9,9 +9,10 @@ import Row from '../../components/Row'
 import { Box } from '../../components/ChainBridge/index'
 import { useWeb3React } from '@web3-react/core'
 import TransferButton from '../../components/TransferButton'
+import { ChainBridgeType } from './confirm'
 export interface BridgeTransferPageProps {}
 
-const BridgeTransferWrap = styled.div`
+export const BridgeTransferWrap = styled.div`
   color: #fff;
   display: flex;
   flex-flow: column nowrap;
@@ -22,13 +23,14 @@ const BridgeTransferWrap = styled.div`
 `
 
 export const TransferWrap = styled.div`
-  margin-top: 136px;
+  margin-top: 156px;
   background: #fff;
   width: 516px;
   backgroud: #fff;
   padding: 32px;
   border-radius: 8px;
   position: relative;
+  background: #f2fffd;
 `
 export const BridgeTitle = styled.div`
   font-size: 14px;
@@ -103,7 +105,13 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
       <TransferWrap>
         <BridgeTitle>{t(`Asset`)}</BridgeTitle>
         <SelectToken list={[]} />
-        <ChainBridge srcId={1} distId={1} changeDistId={changeDistId} changeSrcId={changeSrcId} />
+        <ChainBridge
+          srcId={1}
+          distId={1}
+          changeDistId={changeDistId}
+          changeSrcId={changeSrcId}
+          type={ChainBridgeType.OPERATE}
+        />
         <AmountInput amount={amount} setAmount={setAmount} />
         <Row style={{ marginTop: '9px', justifyContent: 'flex-start' }}>
           <ReceiveText>{t(`You will receive`)}</ReceiveText>
