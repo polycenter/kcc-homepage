@@ -54,10 +54,10 @@ const useAuth = () => {
           dispatch(updateErrorInfo({ hasError: true, errorInfo: 'Authorization Error' }))
         } else {
           notification.error({
-            message: t(`${error.name}`),
+            message: t(`Unkown Error`),
             description: t(`${error.message}`),
           })
-          dispatch(updateErrorInfo({ hasError: true, errorInfo: error.name }))
+          dispatch(updateErrorInfo({ hasError: true, errorInfo: t(`Unkown Error`) }))
         }
       })
     } else {

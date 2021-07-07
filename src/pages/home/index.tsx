@@ -443,7 +443,6 @@ const HomePage: React.FunctionComponent<HomePageProps> = () => {
 
       setEmail('')
     } catch (e) {
-      console.log(e?.response)
       message.error(t(`${e?.response?.data?.detail}`))
     } finally {
       setDisable(false)

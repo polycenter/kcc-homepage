@@ -4,8 +4,9 @@ import { getThemeCache } from '../utils/theme'
 
 import application from './application/reducer'
 import wallet from './wallet/reducer'
+import bridge from './bridge/reducer'
 
-type ModuleTypes = 'application' | 'wallet'
+type ModuleTypes = 'application' | 'wallet' | 'bridge'
 
 type MergedState = {
   [key in ModuleTypes]: {
@@ -23,6 +24,7 @@ const store = configureStore({
   reducer: {
     application,
     wallet,
+    bridge,
   },
   middleware: [...getDefaultMiddleware({ thunk: false }), save({ states: PERSISTED_KEYS, debounce: 500 })],
   preloadedState: loadedState,

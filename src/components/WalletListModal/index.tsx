@@ -12,6 +12,7 @@ import useAuth from '../../hooks/useAuth'
 import { useDispatch } from 'react-redux'
 import { useConnectWalletModalShow } from '../../state/wallet/hooks'
 import { toggleConnectWalletModalShow } from '../../state/wallet/actions'
+import { updateBridgeLoading } from '../../state/application/actions'
 
 export interface WalletListModalProps {
   visible: boolean
@@ -128,7 +129,6 @@ const WalletListModal: React.FunctionComponent<WalletListModalProps> = ({ visibl
         // head should slowly drift (overrides lookAt)
         slowDrift: false,
       })
-      console.log('container', container)
       container?.appendChild(viewer.container)
     }
   }
@@ -143,6 +143,7 @@ const WalletListModal: React.FunctionComponent<WalletListModalProps> = ({ visibl
     if (selectedId !== -1) {
       switch (selectedId) {
         case 0:
+          dispatch(updateBridgeLoading({ visible: true, status: 0 }))
           await login(ConnectorNames.Injected)
           dispatch(toggleConnectWalletModalShow({ show: false }))
           break

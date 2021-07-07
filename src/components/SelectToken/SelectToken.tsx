@@ -1,9 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
-import { RightOutlined, SearchOutlined } from '@ant-design/icons'
+import { RightOutlined } from '@ant-design/icons'
 import { Input } from 'antd'
+import { Currency } from '../../state/bridge/reducer'
 export interface SelectTokenProps {
   list: any[]
+  setCurrency: any
+  currency: Currency
 }
 
 const SelectTokenWrap = styled.div`
@@ -93,81 +96,13 @@ const SelectItem = styled(TokenWrap)`
   }
 `
 
-const list = [
-  {
-    id: 0,
-    name: 'USDT',
-    fullName: 'TetherUs',
-  },
-  {
-    id: 1,
-    name: 'LINK',
-    fullName: 'TetherUs',
-  },
-  {
-    id: 2,
-    name: 'KCS',
-    fullName: 'TetherUs',
-  },
-  {
-    id: 3,
-    name: 'KCS',
-    fullName: 'TetherUs',
-  },
-  {
-    id: 4,
-    name: 'KCS',
-    fullName: 'TetherUs',
-  },
-  {
-    id: 5,
-    name: 'KCS',
-    fullName: 'TetherUs',
-  },
-  {
-    id: 6,
-    name: 'KCS',
-    fullName: 'TetherUs',
-  },
-  {
-    id: 7,
-    name: 'KCS',
-    fullName: 'TetherUs',
-  },
-  {
-    id: 8,
-    name: 'KCS',
-    fullName: 'TetherUs',
-  },
-  {
-    id: 9,
-    name: 'KCS',
-    fullName: 'TetherUs',
-  },
-  {
-    id: 10,
-    name: 'KCS',
-    fullName: 'TetherUs',
-  },
-  {
-    id: 11,
-    name: 'KCS',
-    fullName: 'TetherUs',
-  },
-  {
-    id: 12,
-    name: 'KCS',
-    fullName: 'TetherUs',
-  },
-]
-
-const SelectToken: React.SFC<SelectTokenProps> = () => {
-  const [selectedId, setSelectedId] = React.useState<number>(0)
+const SelectToken: React.SFC<SelectTokenProps> = ({ list, currency, setCurrency }) => {
   const [show, setShow] = React.useState<boolean>(false)
+  const [keyword, setKeyword] = React.useState<string>(' ')
 
-  const [tokenId, setTokenId] = React.useState<number>(0)
-
-  const [keyword, setKeyword] = React.useState<string>('')
+  React.useEffect(() => {
+    setKeyword(() => '')
+  }, [])
 
   const filterList = React.useMemo(() => {
     const key = keyword.toLowerCase()
@@ -178,31 +113,34 @@ const SelectToken: React.SFC<SelectTokenProps> = () => {
   }, [keyword])
 
   const filterChange = (e: any) => {
-    console.log(e.target.value)
     setKeyword(() => e.target.value)
   }
 
-  const selectToken = (id: number) => {
-    setSelectedId(() => id)
+  const selectToken = (currency: Currency) => {
+    setCurrency(currency)
     setShow(() => false)
   }
 
-  const tokenList = filterList.map((token, index) => {
+  const close = () => {
+    setShow(() => false)
+  }
+
+  const tokenList = filterList.map((token: Currency, index) => {
     return (
       <SelectTokenWrap
-        onClick={selectToken.bind(null, token.id)}
+        onClick={selectToken.bind(null, token)}
         style={{ background: '#fff', padding: '0px', borderRadius: '0px' }}
         key={index}
       >
         <SelectItem>
           <TokenWrap>
-            <TokenIcon />
+            <TokenIcon src={token.logoUrl} />
             <TokenDescriptionWrap>
-              <TokenName>{token.name}</TokenName>
-              <FullName>{token.fullName}</FullName>
+              <TokenName>{token.symbol.toUpperCase()}</TokenName>
+              <FullName>{token.name ?? token.symbol}</FullName>
             </TokenDescriptionWrap>
           </TokenWrap>
-          {token.id === selectedId ? (
+          {token.symbol === currency.symbol ? (
             <Icon src={require('../../assets/images/bridge/selected@2x.png').default} />
           ) : null}
         </SelectItem>
@@ -217,8 +155,8 @@ const SelectToken: React.SFC<SelectTokenProps> = () => {
           setShow(() => true)
         }}
       >
-        <TokenIcon />
-        <TokenText>USDT</TokenText>
+        <TokenIcon src={currency.logoUrl} />
+        <TokenText>{currency.symbol.toUpperCase()}</TokenText>
       </TokenWrap>
       <RightOutlined style={{ fontSize: '10px', color: '#01081e' }} />
       {show ? (
@@ -229,12 +167,7 @@ const SelectToken: React.SFC<SelectTokenProps> = () => {
               onChange={filterChange}
               style={{ paddingTop: '4px' }}
               prefix={<Icon src={require('../../assets/images/bridge/search@2x.png').default} />}
-              suffix={
-                <Icon
-                  onClick={() => setKeyword(() => '')}
-                  src={require('../../assets/images//bridge/close@2x.png').default}
-                />
-              }
+              suffix={<Icon onClick={close} src={require('../../assets/images//bridge/close@2x.png').default} />}
             />
           </SelectTokenWrap>
           <ListWrap>{tokenList}</ListWrap>
@@ -244,4 +177,4 @@ const SelectToken: React.SFC<SelectTokenProps> = () => {
   )
 }
 
-export default SelectToken
+export default React.memo(SelectToken)

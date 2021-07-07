@@ -12,7 +12,7 @@ import './index.less'
 
 if ('ethereum' in window) {
   // @ts-ignore
-  window.ethereum.autoRefreshOnNetworkChange = false
+  window.ethereum.autoRefreshOnNetworkChange = true
 }
 
 window.addEventListener('error', () => {

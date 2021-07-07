@@ -13,6 +13,9 @@ import { useBridgeLoading } from '../../state/application/hooks'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { updateBridgeLoading } from '../../state/application/actions'
+import { BridgeService } from '../../api/bridge'
+import { useWeb3React } from '@web3-react/core'
+import { updatePairList } from '../../state/bridge/actions'
 
 export interface BridgePageProps {}
 
@@ -90,27 +93,39 @@ const CloseIcon = styled.img`
 `
 
 const BridgePage: React.FunctionComponent<BridgePageProps> = ({ children }) => {
-  /*   React.useEffect(() => {
-    if (path === '/bridge') {
-      router.push('/bridge/transfer')
-    }
-  }, []) */
-
   const { t } = useTranslation()
 
   const { status, visible } = useBridgeLoading()
 
-  console.log(status, visible)
-
   const location = useLocation()
+
+  const { account } = useWeb3React()
 
   const walletListModalShow = useConnectWalletModalShow()
 
   const dispatch = useDispatch()
 
+  const getPairList = async () => {
+    const res = await BridgeService.pairList()
+    dispatch(updatePairList({ pairList: res.data.data }))
+  }
+
   const hideLoading = () => {
     dispatch(updateBridgeLoading({ visible: false, status: 0 }))
   }
+
+  React.useEffect(() => {
+    const init = async () => {
+      await getPairList()
+    }
+    init()
+  }, [])
+
+  React.useEffect(() => {
+    if (account) {
+      hideLoading()
+    }
+  }, [account])
 
   return (
     <BridgeWrap>
