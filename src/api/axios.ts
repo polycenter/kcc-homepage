@@ -1,6 +1,16 @@
 import Axios, { AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios'
 import { message } from 'antd'
 
+export interface HttpResponse<T> {
+  status: number
+  statusText: string
+  data: {
+    code: number
+    msg: string
+    data: T
+  }
+}
+
 /**
  * get status code
  * @param {AxiosResponse} response Axios  response object
@@ -57,7 +67,7 @@ const getErrorCode2text = (response: AxiosResponse): string => {
  * service.get<{data: string; code: number}>('/test').then(({data}) => { console.log(data.code) })
  */
 const service = Axios.create({
-  baseURL: process.env.REACT_APP_BASE_URL,
+  baseURL: process.env.REACT_APP_API_URL + '/v1/bridge/server/',
   timeout: 10000,
 })
 
@@ -83,6 +93,7 @@ service.interceptors.response.use(
       return Promise.resolve(response)
     } else {
       const __text = getErrorCode2text(response)
+      message.error(__text)
       return Promise.reject(new Error(__text))
     }
   },
@@ -90,17 +101,18 @@ service.interceptors.response.use(
   (error: AxiosError) => {
     let __emsg: string = error.message || ''
 
-    if (error.message) {
+    if (error?.message) {
       __emsg = error.message
     }
 
-    if (error.response) {
-      __emsg = error.response.data.message ? error.response.data.message : error.response.data.data
+    if (error?.response) {
+      __emsg = error.response.data.message ? error.response?.data?.message : error.response?.data?.data
     }
     // timeout
-    if (__emsg.indexOf('timeout') >= 0) {
+    if (__emsg?.indexOf('timeout') >= 0) {
       __emsg = 'timeout'
     }
+    message.error(__emsg)
     return Promise.reject(new Error(__emsg))
   }
 )

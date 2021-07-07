@@ -5,10 +5,13 @@ import { theme } from '../../constants/theme'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { toggleConnectWalletModalShow } from '../../state/wallet/actions'
-import { withRouter } from 'react-router-dom'
+import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { useHistory } from 'react-router'
 
-export interface TransferButtonProps {}
+export interface TransferButtonProps {
+  approved: boolean
+  applyApprove: any
+}
 
 const TransferButtonWrap = styled.div`
   margin-top: 20px;
@@ -40,7 +43,11 @@ const HistoryText = styled.div`
   }
 `
 
-const TransferButton: React.FunctionComponent<TransferButtonProps> = () => {
+const TransferButton: React.FunctionComponent<TransferButtonProps> = ({ approved, applyApprove }) => {
+  React.useEffect(() => {
+    console.log('---', approved)
+  }, [approved])
+
   const { t } = useTranslation()
   const { account } = useWeb3React()
 
@@ -52,6 +59,7 @@ const TransferButton: React.FunctionComponent<TransferButtonProps> = () => {
     dispatch(toggleConnectWalletModalShow({ show: true }))
   }
 
+  // not connect
   if (!account) {
     return (
       <TransferButtonWrap>
@@ -59,6 +67,18 @@ const TransferButton: React.FunctionComponent<TransferButtonProps> = () => {
       </TransferButtonWrap>
     )
   }
+
+  // not approve
+  if (!approved) {
+    return (
+      <TransferButtonWrap>
+        <BaseButton onClick={applyApprove}>{t(`Approved`)}</BaseButton>
+      </TransferButtonWrap>
+    )
+  }
+
+  // not available
+
   return (
     <TransferButtonWrap>
       <BaseButton>{t(`Next`)}</BaseButton>
@@ -67,4 +87,4 @@ const TransferButton: React.FunctionComponent<TransferButtonProps> = () => {
   )
 }
 
-export default withRouter(TransferButton)
+export default withRouter<any, any>(TransferButton)

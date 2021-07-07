@@ -4,10 +4,12 @@ import { BridgeTitle } from '../../pages/bridge/transfer'
 import { useTranslation } from 'react-i18next'
 import { Input } from 'antd'
 import { CenterRow } from '../Row/index'
+import { Currency } from '../../state/bridge/reducer'
 
 export interface AmountInputProps {
   amount: number
   setAmount: any
+  currency: Currency
 }
 
 const AmountInputWrap = styled.div`
@@ -38,7 +40,7 @@ const ErrorText = styled.span`
   font-size: 12px;
 `
 
-const AmountInput: React.FunctionComponent<AmountInputProps> = ({ amount, setAmount }) => {
+const AmountInput: React.FunctionComponent<AmountInputProps> = ({ currency, amount, setAmount }) => {
   const { t } = useTranslation()
 
   const [error, setError] = React.useState<boolean>(false)
@@ -71,10 +73,10 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({ amount, setAmo
         type="number"
         onChange={changeAmount}
         style={{ background: '#F5F5F6' }}
-        suffix={<SuffixText>USDT</SuffixText>}
+        suffix={<SuffixText>{currency.symbol.toUpperCase()}</SuffixText>}
       />
     </AmountInputWrap>
   )
 }
 
-export default AmountInput
+export default React.memo(AmountInput)

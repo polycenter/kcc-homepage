@@ -43,7 +43,6 @@ const ActivityCardWrap = styled(Column)<{ lng: string; enBg: string; chBg: strin
   width: 280px;
   height: 208px;
   background: ${({ lng, enBg, chBg }) => {
-    console.log('lng=', lng)
     if (lng === 'zh-CN') {
       return `url(${chBg}) top center no-repeat`
     }

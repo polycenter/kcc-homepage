@@ -78,7 +78,11 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
           <ConfirmItem title="Amount received" content="110USDT" />
           <ConfirmItem title="Transfer fee">
             <FeeAmmount>10 USDT</FeeAmmount>
-            <Tooltip title={<Text>text</Text>}>
+            <Tooltip
+              title={
+                <Text>{t(`During the trial operation period, the handling fee is free for a limited time.`)}</Text>
+              }
+            >
               <MoreInfo src={require('../../assets/images/bridge/question.png').default} />
             </Tooltip>
           </ConfirmItem>

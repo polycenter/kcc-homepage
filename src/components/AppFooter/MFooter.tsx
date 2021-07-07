@@ -45,7 +45,6 @@ export default function MFooter() {
         // Open the corresponding document address according to the current language
         const anchor = t(navText).trimLeft().trimRight().replaceAll(' ', '-').toLowerCase()
         const url = `${KCC.DOCS_URL}${translateLanguageTable[i18n.language]}/?id=${anchor}`
-        console.log('url', url)
         window.open(url, '_blank')
       }
     }

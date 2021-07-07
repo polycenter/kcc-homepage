@@ -77,3 +77,7 @@ export const KCC = {
     },
   ],
 }
+
+export const APP = {
+  TOKEN_INFO_CDN: 'https://cdn.jsdelivr.net/gh/kucoin-community-chain/tokens-info@main/icons/',
+}
