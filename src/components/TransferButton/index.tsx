@@ -11,6 +11,7 @@ import { useHistory } from 'react-router'
 export interface TransferButtonProps {
   approved: boolean
   applyApprove: any
+  generateOrder: any
 }
 
 const TransferButtonWrap = styled.div`
@@ -43,7 +44,7 @@ const HistoryText = styled.div`
   }
 `
 
-const TransferButton: React.FunctionComponent<TransferButtonProps> = ({ approved, applyApprove }) => {
+const TransferButton: React.FunctionComponent<TransferButtonProps> = ({ approved, applyApprove, generateOrder }) => {
   React.useEffect(() => {
     console.log('---', approved)
   }, [approved])
@@ -57,6 +58,11 @@ const TransferButton: React.FunctionComponent<TransferButtonProps> = ({ approved
 
   const connect = () => {
     dispatch(toggleConnectWalletModalShow({ show: true }))
+  }
+
+  const next = () => {
+    generateOrder()
+    history.push('/bridge/history')
   }
 
   // not connect
@@ -82,7 +88,7 @@ const TransferButton: React.FunctionComponent<TransferButtonProps> = ({ approved
   return (
     <TransferButtonWrap>
       <BaseButton>{t(`Next`)}</BaseButton>
-      <HistoryText onClick={() => history.push('/bridge/history')}>{t(`Transaction History`)}</HistoryText>
+      <HistoryText onClick={next}>{t(`Transaction History`)}</HistoryText>
     </TransferButtonWrap>
   )
 }
