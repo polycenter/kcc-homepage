@@ -115,14 +115,14 @@ const NoticeBar: React.FunctionComponent<NoticeBarProps> = () => {
 
   const enRiskAnnouncement = {
     title:
-      'KCC officially will not release any Swap project because all projects are developed by the community.So KCC is not responsible for any inconvenience caused by these projects. Also, KCC does not serve as customer service for relevant projects.',
+      '<Risk Statement> KCC officially will not release any Swap project because all projects are developed by the community.So KCC is not responsible for any inconvenience caused by these projects. Also, KCC does not serve as customer service for relevant projects.',
     pubDate: '',
     link: 'https://docs.kcc.io/#/en-us/?id=risk-statement',
   }
 
   const cnRiskAnnouncement = {
     title:
-      'KCC官方不会发布任何Swap项目，因为所有项目都是由社区开发的，所以KCC对这些项目造成的问题不承担任何责任。此外，KCC不为相关项目提供客户服务。',
+      '<风险提示> KCC官方不会发布任何Swap项目，因为所有项目都是由社区开发的，所以KCC对这些项目造成的问题不承担任何责任。此外，KCC不为相关项目提供客户服务。',
     pubDate: '',
     link: 'https://docs.kcc.io/#/zh-cn/?id=%e9%a3%8e%e9%99%a9%e6%8f%90%e7%a4%ba',
   }
