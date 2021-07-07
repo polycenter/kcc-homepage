@@ -342,7 +342,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
             )}
           </NoticeText>
         </ReceiveAddressWrap>
-        <TransferButton approved={approved} applyApprove={applyApprove} />
+        <TransferButton approved={approved} applyApprove={applyApprove} generateOrder={generateOrder} />
       </TransferWrap>
     </BridgeTransferWrap>
   )
