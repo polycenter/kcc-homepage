@@ -63,9 +63,9 @@ const AppHeader: React.FunctionComponent = (props: any) => {
     <AppHeaderWrap>
       <AppHeaderContent isMobile={isMobile}>
         <HeaderLeftWrap>
-          <KccLogo styles={{ width: '100px', textAlign: 'left' }} />
+          <KccLogo abbr={true} styles={{ width: '140px', textAlign: 'left' }} />
           <BrowserView>
-            <AppMenu style={{ width: '600px' }} />
+            <AppMenu style={{ width: '600px', position: 'relative', top: '3px' }} />
           </BrowserView>
         </HeaderLeftWrap>
 

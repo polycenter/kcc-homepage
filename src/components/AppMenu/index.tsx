@@ -2,7 +2,7 @@ import React, { CSSProperties } from 'react'
 import styled from 'styled-components'
 import { NavItemType, NavItemChildrenType, NavItemGroupType, MENU_LIST } from '../../constants/menuList'
 import { NavLink, useHistory } from 'react-router-dom'
-import { DownOutlined, MenuOutlined } from '@ant-design/icons'
+import { DownOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 
 import Row from '../Row/index'
