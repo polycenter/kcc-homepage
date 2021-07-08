@@ -62,7 +62,7 @@ const TransferButton: React.FunctionComponent<TransferButtonProps> = ({ approved
 
   const next = () => {
     generateOrder()
-    history.push('/bridge/history')
+    history.push('/bridge/confirm')
   }
 
   // not connect
@@ -87,8 +87,8 @@ const TransferButton: React.FunctionComponent<TransferButtonProps> = ({ approved
 
   return (
     <TransferButtonWrap>
-      <BaseButton>{t(`Next`)}</BaseButton>
-      <HistoryText onClick={next}>{t(`Transaction History`)}</HistoryText>
+      <BaseButton onClick={next}>{t(`Next`)}</BaseButton>
+      <HistoryText>{t(`Transaction History`)}</HistoryText>
     </TransferButtonWrap>
   )
 }

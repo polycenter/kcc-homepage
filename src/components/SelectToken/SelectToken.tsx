@@ -102,7 +102,7 @@ const SelectToken: React.SFC<SelectTokenProps> = ({ list, currency, setCurrency 
 
   React.useEffect(() => {
     setKeyword(() => '')
-  }, [])
+  }, [list])
 
   const filterList = React.useMemo(() => {
     const key = keyword.toLowerCase()

@@ -128,8 +128,6 @@ const ChainCard: React.FunctionComponent<ChainCardProps> = ({
   oppsiteId,
   direction,
 }) => {
-  const networkIds = useChainIdList()
-
   // console.log(networkIds)
 
   const network = React.useMemo(() => {
@@ -139,6 +137,10 @@ const ChainCard: React.FunctionComponent<ChainCardProps> = ({
   React.useEffect(() => {
     /*  console.log('direction', direction)
     console.log('availableChainIds', availableChainIds) */
+    if (type === ChainBridgeType.DISPLAY) {
+      return
+    }
+
     if (availableChainIds?.length === 0) {
       changeNetwork(() => 0)
     }

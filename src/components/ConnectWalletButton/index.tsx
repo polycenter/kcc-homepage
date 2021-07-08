@@ -9,7 +9,12 @@ import { useWalletErrorInfo, useConnectWalletModalShow } from '../../state/walle
 import LogoutModal from '../LogoutModal'
 import WalletListModal from '../WalletListModal'
 import { useDispatch } from 'react-redux'
-import { toggleConnectWalletModalShow } from '../../state/wallet/actions'
+import { toggleConnectWalletModalShow, updateErrorInfo } from '../../state/wallet/actions'
+import { ChainIds } from '../../connectors/index'
+import { getNetworkInfo } from '../../utils/index'
+import { CenterRow } from '../Row/index'
+import { Badge, notification } from 'antd'
+import { AlertOutlined } from '@ant-design/icons'
 
 const ConnectButton = styled(LanguageButton)`
   width: auto;
@@ -26,6 +31,9 @@ const ErrorButton = styled(ConnectButton)`
   background: #f00;
   color: fff;
   border: 1px solid #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   ${Text} {
     color: #fff;
   }
@@ -36,9 +44,17 @@ const WalletIcon = styled.img`
   margin-right: 10px;
 `
 
+const NetworkWrap = styled(CenterRow)`
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  border-right: 1px solid ${theme.colors.primary};
+  padding-right: 15px;
+  margin-right: 10px;
+`
+
 const UnlockButton: React.FunctionComponent = () => {
   const { t } = useTranslation()
-  const { account } = useWeb3React()
+  const { account, chainId } = useWeb3React()
 
   const [logoutModalShow, setLogoutModalShow] = React.useState<boolean>(false)
   // const [walletListModalShow, setWalletListModalShow] = React.useState<boolean>(false)
@@ -51,6 +67,19 @@ const UnlockButton: React.FunctionComponent = () => {
     setLogoutModalShow(() => show)
   }
 
+  const selectedNetworkInfo = React.useMemo(() => {
+    if (ChainIds.includes(chainId as any)) {
+      dispatch(updateErrorInfo({ errorInfo: '', hasError: false }))
+      return getNetworkInfo(chainId as any)
+    } else {
+      notification.error({
+        message: t('Unsupported Chain Id'),
+        description: t('Unsupported Chain Id Error. Check your chain Id'),
+      })
+      dispatch(updateErrorInfo({ hasError: true, errorInfo: 'Unsupported Chain Id' }))
+    }
+  }, [chainId, ChainIds])
+
   const connect = () => {
     // login(ConnectorNames.Injected)
     // setWalletListModalShow(() => true)
@@ -62,6 +91,7 @@ const UnlockButton: React.FunctionComponent = () => {
   if (hasError) {
     btn = (
       <ErrorButton>
+        <AlertOutlined style={{ fontSize: '16px', color: '#fff', margin: '-2px 5px 0px 5px' }} />
         <Text>{t(`${errorInfo}`)}</Text>
       </ErrorButton>
     )
@@ -72,6 +102,10 @@ const UnlockButton: React.FunctionComponent = () => {
           setLogoutModalShow(() => true)
         }}
       >
+        <NetworkWrap>
+          <Badge status="success" />
+          <Text>{selectedNetworkInfo?.name}</Text>
+        </NetworkWrap>
         <Text>{shortAddress(account)}</Text>
       </ConnectButton>
     )
