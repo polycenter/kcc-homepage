@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import AppMenu from '../AppMenu'
 import ChangeLanguage from '../ChangeLanguage/index'
-import KccLogo from '../Logo/KccLogo'
+import KccLogo, { PictureType } from '../Logo/KccLogo'
 import { MobileView, BrowserView } from '../Common'
 import { theme } from '../../constants/theme'
 import { MenuOutlined, CloseOutlined, CloseCircleOutlined } from '@ant-design/icons'
@@ -28,6 +28,11 @@ const AppHeaderWrap = styled.div`
   z-index: 99;
 `
 
+const Box = styled.div`
+  display: flex;
+  align-items: center;
+`
+
 const HeaderLeftWrap = styled.div`
   display: flex;
   flex-flow: row no-wrap;
@@ -36,7 +41,7 @@ const HeaderLeftWrap = styled.div`
 `
 
 const AppHeaderContent = styled(HeaderLeftWrap)<{ isMobile: boolean }>`
-  justify-content: ${({ isMobile }) => (isMobile ? 'flex-end' : 'flex-space')};
+  justify-content: space-between;
   width: 100%;
   // max-width: 1200px;
 `
@@ -63,36 +68,37 @@ const AppHeader: React.FunctionComponent = (props: any) => {
     <AppHeaderWrap>
       <AppHeaderContent isMobile={isMobile}>
         <HeaderLeftWrap>
-          <KccLogo styles={{ width: '100px', textAlign: 'left' }} />
+          <KccLogo abbr={true} sourceType={PictureType.png} styles={{ width: '120px', textAlign: 'left' }} />
           <BrowserView>
-            <AppMenu style={{ width: '600px' }} />
+            <AppMenu style={{ width: '600px', position: 'relative', top: '3px' }} />
           </BrowserView>
         </HeaderLeftWrap>
 
-        <ButtonGroup>
-          <ChangeLanguage />
-          {walletButtonShow ? <UnlockButton /> : null}
-        </ButtonGroup>
+        <Box>
+          <ButtonGroup>
+            <ChangeLanguage />
+            {walletButtonShow ? <UnlockButton /> : null}
+          </ButtonGroup>
+          <MobileView style={{ width: '24px' }}>
+            {!show ? (
+              <MenuOutlined
+                style={{ fontSize: '18px', color: theme.colors.primary }}
+                onClick={() => {
+                  dispatch(changeMobileMenuShow({ show: true }))
+                }}
+              />
+            ) : (
+              <CloseCircleOutlined
+                style={{ fontSize: '20px', color: theme.colors.primary }}
+                onClick={() => {
+                  dispatch(changeMobileMenuShow({ show: false }))
+                }}
+              />
+            )}
 
-        <MobileView style={{ width: '24px' }}>
-          {!show ? (
-            <MenuOutlined
-              style={{ fontSize: '18px', color: theme.colors.primary }}
-              onClick={() => {
-                dispatch(changeMobileMenuShow({ show: true }))
-              }}
-            />
-          ) : (
-            <CloseCircleOutlined
-              style={{ fontSize: '20px', color: theme.colors.primary }}
-              onClick={() => {
-                dispatch(changeMobileMenuShow({ show: false }))
-              }}
-            />
-          )}
-
-          {show ? <AppMenu style={{ width: '100%' }} /> : null}
-        </MobileView>
+            {show ? <AppMenu style={{ width: '100%' }} /> : null}
+          </MobileView>
+        </Box>
       </AppHeaderContent>
     </AppHeaderWrap>
   )

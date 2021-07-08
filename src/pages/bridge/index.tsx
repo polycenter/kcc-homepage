@@ -16,6 +16,7 @@ import { updateBridgeLoading } from '../../state/application/actions'
 import { BridgeService } from '../../api/bridge'
 import { useWeb3React } from '@web3-react/core'
 import { updatePairList } from '../../state/bridge/actions'
+import { PairInfo } from '../../state/bridge/reducer'
 
 export interface BridgePageProps {}
 
@@ -106,8 +107,27 @@ const BridgePage: React.FunctionComponent<BridgePageProps> = ({ children }) => {
   const dispatch = useDispatch()
 
   const getPairList = async () => {
-    const res = await BridgeService.pairList()
-    dispatch(updatePairList({ pairList: res.data.data }))
+    try {
+      const res = await BridgeService.pairList()
+
+      const list: PairInfo[] = []
+
+      for (let i = 0; i < res.data.data.length; i++) {
+        const chain: PairInfo = res.data.data[i]
+        const status = chain.status
+        if ((chain.status & 1) !== 1) {
+          continue
+        } else {
+          chain.openStatus = true
+          chain.limitStatus = (chain.status & 2) === 2 ? true : false
+          chain.blackListStatus = (chain.status & 4) === 4 ? true : false
+          list.push({ ...chain })
+        }
+      }
+      dispatch(updatePairList({ pairList: list }))
+    } catch {
+      console.log('get pairList error')
+    }
   }
 
   const hideLoading = () => {

@@ -5,7 +5,7 @@ export const KCC = {
   TEST_EXPLORER: 'https://scan-testnet.kcc.network',
   FAUCET: 'https://faucet-testnet.kcc.network/',
   DOCS_URL: 'https://docs.kcc.io/#/',
-  GITHUB_URL: 'https://github.com/kucoin-community-chain',
+  GITHUB_URL: 'https://github.com/kcc-community',
   DAPP_URL: 'https://github.com/kucoin-community-chain/awesome-dApps',
   DISCORD_URL: 'https://discord.com/invite/H5ucJydSyd',
   MEDIA_URL: 'https://kucoincommunitychain.medium.com',

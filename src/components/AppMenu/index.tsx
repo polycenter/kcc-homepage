@@ -2,7 +2,7 @@ import React, { CSSProperties } from 'react'
 import styled from 'styled-components'
 import { NavItemType, NavItemChildrenType, NavItemGroupType, MENU_LIST } from '../../constants/menuList'
 import { NavLink, useHistory } from 'react-router-dom'
-import { DownOutlined, MenuOutlined } from '@ant-design/icons'
+import { DownOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 
 import Row from '../Row/index'
@@ -147,7 +147,7 @@ const AppMenu: React.FunctionComponent<AppMenuProps> = ({ style }) => {
             activeClassName="selected"
             style={{ color: theme.colors.primary }}
           >
-            <NavTitle>{t(`${navItem.name}`)}</NavTitle>
+            <NavTitle style={{ position: 'relative', top: '-2px' }}>{t(`${navItem.name}`)}</NavTitle>
           </NavLink>
         </Menu.Item>
       )
