@@ -22,7 +22,7 @@ import {
 } from '../../state/bridge/hooks'
 import { Currency, PairChainInfo } from '../../state/bridge/reducer'
 import { updateCurrentCurrency, updateCurrentPairId } from '../../state/bridge/actions'
-import { getApproveStatus, getNetworkInfo, wei2eth, getPairInfo } from '../../utils'
+import { getApproveStatus, getNetworkInfo, getPairInfo } from '../../utils'
 import { getErc20Contract } from '../../utils/contract'
 import { updateBridgeLoading } from '../../state/application/actions'
 
@@ -122,6 +122,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
   const [available, setAvailable] = React.useState<string>('0')
   const [availableLoading, setAvailableLoading] = React.useState<boolean>(false)
   const [approved, setApproved] = React.useState<boolean>(false)
+  const [totalSupply, setTotalSupply] = React.useState<number>(0)
   const currency = useCurrentCurrency()
 
   const { srcChainIds, distChainIds } = useTokenSupporChain()
@@ -211,10 +212,6 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
   }
 
   React.useEffect(() => {
-    console.log('--------------------')
-    console.log(chainId, isSelectedNetwork)
-    console.log(account, currency)
-    console.log(selectedPairInfo, currentPairId)
     if (chainId && isSelectedNetwork && account && currentPairId && currency.symbol && currentPairId !== -1) {
       const selectedSrcChainInfo = selectedPairInfo?.srcChainInfo as PairChainInfo
       const contract = getErc20Contract(selectedSrcChainInfo.contract, library)
@@ -344,10 +341,12 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
     localStorage.setItem('PRESEND_ORDER', orderRaw)
   }
 
+  const getTransferLimit = () => {}
+
   return (
     <BridgeTransferWrap>
       <TransferWrap>
-        <TransferLimit available={20} total={100} />
+        <TransferLimit currency={currency} available={totalSupply} />
         <BridgeTitle>{t(`Asset`)}</BridgeTitle>
         <SelectToken list={tokenList} setCurrency={setSelectedCurrency} currency={currency} />
         <ChainBridge

@@ -34,6 +34,9 @@ export interface PairInfo {
   count: number
   status: number
   comment: string
+  openStatus: boolean
+  limitStatus: boolean
+  blackListStatus: boolean
   srcChainInfo: PairChainInfo
   dstChainInfo: PairChainInfo
 }

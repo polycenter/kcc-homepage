@@ -2,9 +2,10 @@ import React from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { Progress } from 'antd'
+import { Currency } from '../../state/bridge/reducer'
 export interface TransferLimitProps {
   available: number
-  total: number
+  currency: Currency
 }
 
 const TransferLimitWrap = styled.div`
@@ -22,18 +23,14 @@ const Title = styled.div`
   line-height: 22px;
 `
 
-const TransferLimit: React.FunctionComponent<TransferLimitProps> = ({ available, total }) => {
+const TransferLimit: React.FunctionComponent<TransferLimitProps> = ({ available, currency }) => {
   const { t } = useTranslation()
-  const percent = React.useMemo(() => {
-    console.log((available / total) * 100)
-    return (available / total) * 100
-  }, [available, total])
   return (
     <TransferLimitWrap>
       <Title>
-        {t(`Available Balance`)}: {`${available}/${total}`}
+        {t(`Available Balance`)}: {`${available / Math.pow(10, currency.decimals)}`}
       </Title>
-      <Progress
+      {/* <Progress
         percent={percent}
         type="line"
         showInfo={false}
@@ -44,7 +41,7 @@ const TransferLimit: React.FunctionComponent<TransferLimitProps> = ({ available,
           '0%': '#00FFA8',
           '100%': '#31D7A0',
         }}
-      />
+      /> */}
     </TransferLimitWrap>
   )
 }
