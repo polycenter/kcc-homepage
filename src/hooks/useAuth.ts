@@ -24,14 +24,11 @@ const useAuth = () => {
   const login = useCallback((connectorID: ConnectorNames) => {
     const connector = connectorsByName[connectorID]
     if (connector) {
+      dispatch(updateErrorInfo({ hasError: false, errorInfo: '' }))
       activate(connector, async (error: Error) => {
         window.localStorage.removeItem(connectorLocalStorageKey)
         if (error instanceof UnsupportedChainIdError) {
           // error modal
-          notification.error({
-            message: t('Unsupported Chain Id'),
-            description: t('Unsupported Chain Id Error. Check your chain Id'),
-          })
           dispatch(updateErrorInfo({ hasError: true, errorInfo: 'Unsupported Chain Id' }))
         } else if (error instanceof NoEthereumProviderError) {
           notification.error({

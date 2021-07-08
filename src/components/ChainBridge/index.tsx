@@ -15,6 +15,7 @@ export interface ChainBridgeProps {
   changeSrcId?: any
   changeDistId?: any
   currency?: any
+  changeNetwork?: any
 }
 
 const ChainBridgeWrap = styled.div`
@@ -82,6 +83,13 @@ const ChainBridge: React.FunctionComponent<ChainBridgeProps> = (props) => {
     }
     return ids
   }, [props.srcId])
+
+  /* 
+  React.useEffect(() => {
+    if (props.type === ChainBridgeType.DISPLAY) {
+        change
+      }
+  },[props.type]) */
 
   return (
     <ChainBridgeWrap>

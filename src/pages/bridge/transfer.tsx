@@ -11,6 +11,8 @@ import TransferButton from '../../components/TransferButton'
 import { ChainBridgeType } from './confirm'
 import TransferLimit from '../../components/TransferLimit'
 import { useDispatch } from 'react-redux'
+import BN from 'bignumber.js'
+import { LoadingOutlined } from '@ant-design/icons'
 import {
   useTokenList,
   useCurrentCurrency,
@@ -27,6 +29,8 @@ import { updateBridgeLoading } from '../../state/application/actions'
 export interface BridgeTransferPageProps {}
 
 export interface TransferOrder {
+  pairId: number
+  currency: Currency
   srcId: number
   distId: number
   amount: number
@@ -116,13 +120,14 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
   const [receiveAddress, setReceiveAddress] = React.useState<any>(account)
   const [amount, setAmount] = React.useState<number>(0)
   const [available, setAvailable] = React.useState<string>('0')
+  const [availableLoading, setAvailableLoading] = React.useState<boolean>(false)
   const [approved, setApproved] = React.useState<boolean>(false)
-
   const currency = useCurrentCurrency()
 
   const { srcChainIds, distChainIds } = useTokenSupporChain()
 
   const [order, setOrder] = React.useState<TransferOrder>({
+    pairId: 0,
     srcId: 0,
     distId: 0,
     amount: 0,
@@ -130,6 +135,12 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
     from: '',
     receiver: '',
     timestamp: '',
+    currency: {
+      name: '',
+      symbol: '',
+      logoUrl: '',
+      decimals: 0,
+    },
   })
 
   React.useEffect(() => {
@@ -168,6 +179,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
   const currentPairId = useCurrentPairId()
 
   const selectedPairInfo = React.useMemo(() => {
+    console.log(` selectedPairInfo is chaing`, getPairInfo(currentPairId))
     if (currentPairId !== -1) {
       return getPairInfo(currentPairId)
     }
@@ -192,33 +204,42 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
     } else {
       dispatch(updateCurrentPairId(-1))
     }
-  }, [srcId, distId, currency])
+  }, [srcId, distId, currency.name])
 
   const setSelectedCurrency = (currency: Currency) => {
     dispatch(updateCurrentCurrency({ currency: currency }))
   }
 
   React.useEffect(() => {
-    if (isSelectedNetwork && account && currentPairId !== -1) {
-      console.log('selectedPairInfo', selectedPairInfo)
+    console.log('--------------------')
+    console.log(chainId, isSelectedNetwork)
+    console.log(account, currency)
+    console.log(selectedPairInfo, currentPairId)
+    if (chainId && isSelectedNetwork && account && currentPairId && currency.symbol && currentPairId !== -1) {
       const selectedSrcChainInfo = selectedPairInfo?.srcChainInfo as PairChainInfo
       const contract = getErc20Contract(selectedSrcChainInfo.contract, library)
+      setAvailableLoading(() => true)
       // chain token
-      if (selectedSrcChainInfo.tag === 0) {
-        library.getBalance(account).then((res: any) => {
-          setAvailable(() => res.toString())
-        })
-      } else {
-        contract.methods
-          .balanceOf(account)
-          .call()
-          .then((r: any) => {
-            console.log(r)
-            setAvailable(() => r)
+      try {
+        if (selectedSrcChainInfo.tag === 0) {
+          library.getBalance(account).then((res: any) => {
+            setAvailable(() => res.toString())
+            setAvailableLoading(() => false)
           })
+        } else {
+          contract.methods
+            .balanceOf(account)
+            .call()
+            .then((r: any) => {
+              setAvailable(() => r.toString())
+              setAvailableLoading(() => false)
+            })
+        }
+      } catch {
+        setAvailableLoading(() => false)
       }
     }
-  }, [isSelectedNetwork, account, currentPairId])
+  }, [isSelectedNetwork, account, chainId, selectedPairInfo?.id, currency, currentPairId, distId, srcId])
 
   const amountText = () => {
     const srcChainInfo = getNetworkInfo(srcId as any)
@@ -226,11 +247,17 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
       if (isSelectedNetwork) {
         return (
           <>
-            <ReceiveText style={{ marginLeft: '10px' }}>Available:</ReceiveText>
-            <ReceiveAmountText>
-              {t(`  ${wei2eth(available, selectedPairInfo?.srcChainInfo.decimals as any)} `)}
-              {currency.symbol.toUpperCase()}
-            </ReceiveAmountText>
+            <ReceiveText style={{ marginLeft: '10px' }}>{t(`Available`)}:</ReceiveText>
+            {!availableLoading ? (
+              <ReceiveAmountText>
+                {new BN(available).div(Math.pow(10, selectedPairInfo?.srcChainInfo.decimals as any)).toString()}
+                {currency.symbol.toUpperCase()}
+              </ReceiveAmountText>
+            ) : (
+              <LoadingOutlined
+                style={{ margin: '4px 10px 0px 10px', width: '12px', height: '12px', color: '#000', fontSize: '10px' }}
+              />
+            )}
           </>
         )
       }
@@ -268,7 +295,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
     } else {
       setApproved(() => false)
     }
-  }, [selectedPairInfo, account, chainId])
+  }, [selectedPairInfo, account])
 
   const applyApprove = async () => {
     if (selectedPairInfo) {
@@ -298,17 +325,22 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
   }
 
   const generateOrder = () => {
-    setOrder({
+    if (!selectedPairInfo) return
+    const newOrder = {
+      pairId: currentPairId,
       srcId: srcId,
       distId: distId,
       from: account as string,
       receiver: receiveAddress,
       fee: 0,
-      amount: amount,
+      amount: new BN(amount).multipliedBy(Math.pow(10, selectedPairInfo?.srcChainInfo.decimals)).toNumber(),
       timestamp: '',
+      currency: currency,
+    }
+    setOrder(() => {
+      return newOrder
     })
-
-    const orderRaw = JSON.stringify(order)
+    const orderRaw = JSON.stringify(newOrder)
     localStorage.setItem('PRESEND_ORDER', orderRaw)
   }
 

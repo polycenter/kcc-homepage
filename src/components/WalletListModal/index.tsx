@@ -95,8 +95,7 @@ const ConnectButton = styled.div`
   cursor: pointer;
   text-align: center;
   color: #fff;
-  font-size: 16px;
-  letter-spacing: 1px;
+  font-size: 14px;
 `
 
 const RightBottomWrap = styled.img`
@@ -140,12 +139,20 @@ const WalletListModal: React.FunctionComponent<WalletListModalProps> = ({ visibl
   }, [visible])
 
   const connect = async () => {
+    let timer: any = null
     if (selectedId !== -1) {
       switch (selectedId) {
         case 0:
           dispatch(updateBridgeLoading({ visible: true, status: 0 }))
           await login(ConnectorNames.Injected)
           dispatch(toggleConnectWalletModalShow({ show: false }))
+          dispatch(updateBridgeLoading({ visible: false, status: 0 }))
+          /* dispatch(updateBridgeLoading({ visible: false, status: 1 }))
+          dispatch(updateBridgeLoading({ visible: true, status: 1 }))
+          timer = setTimeout(() => {
+            dispatch(updateBridgeLoading({ visible: false, status: 0 }))
+            dispatch(toggleConnectWalletModalShow({ show: false }))
+          }, 1000) */
           break
         default:
           console.log('No wallet is valid')
@@ -153,6 +160,8 @@ const WalletListModal: React.FunctionComponent<WalletListModalProps> = ({ visibl
     } else {
       message.warn(t(`Please select one of the wallets in the list`))
     }
+
+    clearTimeout(timer)
   }
 
   const changeSelected = (id: number) => {
