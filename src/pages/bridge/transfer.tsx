@@ -341,12 +341,10 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
     localStorage.setItem('PRESEND_ORDER', orderRaw)
   }
 
-  const getTransferLimit = () => {}
-
   return (
     <BridgeTransferWrap>
       <TransferWrap>
-        <TransferLimit currency={currency} available={totalSupply} />
+        {selectedPairInfo?.limitStatus ? <TransferLimit currency={currency} available={totalSupply} /> : null}
         <BridgeTitle>{t(`Asset`)}</BridgeTitle>
         <SelectToken list={tokenList} setCurrency={setSelectedCurrency} currency={currency} />
         <ChainBridge

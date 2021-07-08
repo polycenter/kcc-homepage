@@ -147,7 +147,7 @@ const AppMenu: React.FunctionComponent<AppMenuProps> = ({ style }) => {
             activeClassName="selected"
             style={{ color: theme.colors.primary }}
           >
-            <NavTitle>{t(`${navItem.name}`)}</NavTitle>
+            <NavTitle style={{ position: 'relative', top: '-2px' }}>{t(`${navItem.name}`)}</NavTitle>
           </NavLink>
         </Menu.Item>
       )
