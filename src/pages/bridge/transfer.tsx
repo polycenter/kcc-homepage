@@ -1,10 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useTranslation, Trans } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { Input } from 'antd'
 import SelectToken from '../../components/SelectToken/SelectToken'
 import ChainBridge from '../../components/ChainBridge'
-import AmountInput from '../../components/AmountInput'
+import AmountInput, { ErrorText, TextWrap } from '../../components/AmountInput'
 import Row from '../../components/Row'
 import { useWeb3React } from '@web3-react/core'
 import TransferButton from '../../components/TransferButton'
@@ -25,6 +25,10 @@ import { updateCurrentCurrency, updateCurrentPairId } from '../../state/bridge/a
 import { getApproveStatus, getNetworkInfo, getPairInfo } from '../../utils'
 import { getErc20Contract } from '../../utils/contract'
 import { updateBridgeLoading } from '../../state/application/actions'
+import { getNetWorkConnect } from '../../connectors'
+import { web3Utils } from '../../utils/index'
+import { useHistory } from 'react-router-dom'
+import { network } from '../../connectors/index'
 
 export interface BridgeTransferPageProps {}
 
@@ -112,20 +116,40 @@ const NoticeText = styled.div`
   line-height: 20px;
 `
 
+const statusList = {
+  totolSupply: true,
+  pair: false,
+  amount: false,
+  address: false,
+  asset: false,
+  approve: false,
+  network: false,
+}
+
+export type CheckListType = typeof statusList
+
 const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () => {
   const { t } = useTranslation()
   const { account, chainId, library } = useWeb3React()
   const [srcId, changeSrcId] = React.useState(0)
   const [distId, changeDistId] = React.useState(0)
   const [receiveAddress, setReceiveAddress] = React.useState<any>(account)
-  const [amount, setAmount] = React.useState<number>(0)
+  const [amount, setAmount] = React.useState<string>('0')
   const [available, setAvailable] = React.useState<string>('0')
   const [availableLoading, setAvailableLoading] = React.useState<boolean>(false)
-  const [approved, setApproved] = React.useState<boolean>(false)
-  const [totalSupply, setTotalSupply] = React.useState<number>(0)
   const currency = useCurrentCurrency()
 
+  const history = useHistory()
+
+  const [totalSupply, setTotalSupply] = React.useState<string>('0')
+
   const { srcChainIds, distChainIds } = useTokenSupporChain()
+
+  const [checkList, setCheckList] = React.useState<typeof statusList>(statusList)
+
+  const dispatch = useDispatch()
+  const tokenList = useTokenList()
+  const pairList = usePariList()
 
   const [order, setOrder] = React.useState<TransferOrder>({
     pairId: 0,
@@ -143,6 +167,10 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
       decimals: 0,
     },
   })
+
+  const checkNetwork = (currentNetworkId: number, sendNetworkId: number) => {
+    return currentNetworkId === sendNetworkId
+  }
 
   React.useEffect(() => {
     if (srcChainIds.length && srcId === 0) {
@@ -162,13 +190,17 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
   }, [chainId, srcId])
 
   const changeReceiveAddress = (e: any) => {
-    setReceiveAddress(() => e.target.value)
+    const address = e.target.value.trim()
+    const isAddress = web3Utils.isAddress(address)
+    console.log(isAddress)
+    setCheckList((list) => {
+      return {
+        ...list,
+        address: !isAddress,
+      }
+    })
+    setReceiveAddress(() => address)
   }
-
-  const dispatch = useDispatch()
-
-  const tokenList = useTokenList()
-  const pairList = usePariList()
 
   // init the asset selected
   React.useEffect(() => {
@@ -280,46 +312,25 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
   React.useEffect(() => {
     if (selectedPairInfo && account) {
       if (selectedPairInfo?.srcChainInfo.tag === 0) {
-        setApproved(() => true)
+        setCheckList((list) => {
+          return { ...list, approve: true }
+        })
       } else {
         const chain = getNetworkInfo(chainId as any)
         getApproveStatus(account, selectedPairInfo.srcChainInfo.contract, chain.bridgeCoreAddress, library).then(
           (allowance) => {
-            setApproved(() => allowance)
+            setCheckList((list) => {
+              return { ...list, approve: Boolean(allowance) }
+            })
           }
         )
       }
     } else {
-      setApproved(() => false)
+      setCheckList((list) => {
+        return { ...list, approve: false }
+      })
     }
   }, [selectedPairInfo, account])
-
-  const applyApprove = async () => {
-    if (selectedPairInfo) {
-      const contract = getErc20Contract(selectedPairInfo?.srcChainInfo.contract, library)
-      const network = getNetworkInfo(selectedPairInfo?.srcChainInfo.chainId)
-      await contract.methods
-        .approve(
-          network.bridgeCoreAddress,
-          '115792089237316195423570985008687907853269984665640564039457584007913129639935'
-        )
-        .send({ from: account })
-        .once('sending', () => {
-          dispatch(updateBridgeLoading({ visible: true, status: 0 }))
-        })
-        .once('confirmation', (confirmations: number) => {
-          console.log(confirmations)
-          dispatch(updateBridgeLoading({ visible: true, status: 1 }))
-          setTimeout(() => {
-            setApproved(() => true)
-            dispatch(updateBridgeLoading({ visible: false, status: 0 }))
-          }, 1200)
-        })
-        .on('error', () => {
-          dispatch(updateBridgeLoading({ visible: false, status: 0 }))
-        })
-    }
-  }
 
   const generateOrder = () => {
     if (!selectedPairInfo) return
@@ -341,6 +352,73 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
     localStorage.setItem('PRESEND_ORDER', orderRaw)
   }
 
+  const generateOrderAndConfirm = () => {
+    generateOrder()
+    history.push('/bridge/confirm')
+  }
+
+  const applyApprove = async () => {
+    if (selectedPairInfo) {
+      const contract = getErc20Contract(selectedPairInfo?.srcChainInfo.contract, library)
+      const network = getNetworkInfo(selectedPairInfo?.srcChainInfo.chainId)
+      await contract.methods
+        .approve(
+          network.bridgeCoreAddress,
+          '115792089237316195423570985008687907853269984665640564039457584007913129639935'
+        )
+        .send({ from: account })
+        .once('sending', () => {
+          dispatch(updateBridgeLoading({ visible: true, status: 0 }))
+        })
+        .once('confirmation', (confirmations: number) => {
+          console.log(confirmations)
+          dispatch(updateBridgeLoading({ visible: true, status: 1 }))
+          setTimeout(() => {
+            setCheckList((list) => {
+              return { ...list, approve: true }
+            })
+            dispatch(updateBridgeLoading({ visible: false, status: 0 }))
+            generateOrderAndConfirm
+          }, 2000)
+        })
+        .on('error', () => {
+          dispatch(updateBridgeLoading({ visible: false, status: 0 }))
+        })
+    }
+  }
+
+  React.useEffect(() => {
+    const callback = async () => {
+      if (selectedPairInfo?.status) {
+        const chain = getNetworkInfo(selectedPairInfo.dstChainInfo.chainId)
+        const connector = getNetWorkConnect(selectedPairInfo.dstChainInfo.chainId)
+        const contract = getErc20Contract(selectedPairInfo.dstChainInfo.contract, connector)
+        // const supply = await contract.methods.totalSupply().call()
+        const supply = await contract.methods.balanceOf(chain.bridgeCoreAddress).call()
+        console.log('supply', supply)
+        return supply
+      }
+    }
+    if (selectedPairInfo?.limitStatus) {
+      callback().then((res) => {
+        setTotalSupply(() => new BN(res).toString())
+      })
+    } else {
+      setTotalSupply(() => '0')
+    }
+  }, [selectedPairInfo?.limitStatus])
+
+  // componentdidmount
+  React.useEffect(() => {
+    const result = checkNetwork(chainId as number, selectedPairInfo?.srcChainInfo.chainId as number)
+    setCheckList((list) => {
+      return {
+        ...list,
+        network: result,
+      }
+    })
+  }, [chainId, selectedPairInfo?.srcChainInfo.chainId])
+
   return (
     <BridgeTransferWrap>
       <TransferWrap>
@@ -355,7 +433,16 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
           currency={currency}
           type={ChainBridgeType.OPERATE}
         />
-        <AmountInput currency={currency} amount={amount} setAmount={setAmount} />
+        <AmountInput
+          currency={currency}
+          amount={amount}
+          setAmount={setAmount}
+          totalSupply={totalSupply}
+          checkList={checkList}
+          available={available}
+          setCheckList={setCheckList}
+          pairId={currentPairId}
+        />
         <Row style={{ marginTop: '9px', justifyContent: 'flex-start' }}>
           {amountText()}
           <ChainTag>
@@ -363,15 +450,21 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
           </ChainTag>
         </Row>
         <ReceiveAddressWrap>
-          <BridgeTitle>{t(`Receiving address`)}</BridgeTitle>
+          <TextWrap>
+            <BridgeTitle>{t(`Receiving address`)}</BridgeTitle>
+            {checkList.address ? <ErrorText> * {t(`Invalid address`)}</ErrorText> : null}
+          </TextWrap>
           <Input value={receiveAddress} onChange={changeReceiveAddress} placeholder={t(`Destination address`)} />
           <NoticeText>
-            {t(
-              `If you have not add KuCoin Community Chain networkin your MetaMask yet，please click Add network and continue`
-            )}
+            {t(`If you have not add KCC network in your MetaMask yet，please click Add network and continue`)}
           </NoticeText>
         </ReceiveAddressWrap>
-        <TransferButton approved={approved} applyApprove={applyApprove} generateOrder={generateOrder} />
+        <TransferButton
+          pairId={currentPairId}
+          checkList={checkList}
+          applyApprove={applyApprove}
+          generateOrder={generateOrder}
+        />
       </TransferWrap>
     </BridgeTransferWrap>
   )

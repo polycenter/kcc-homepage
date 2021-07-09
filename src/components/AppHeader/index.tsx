@@ -54,7 +54,6 @@ const ButtonGroup = styled.div`
 
 const AppHeader: React.FunctionComponent = (props: any) => {
   // const [mobileMenuShow, setMobileMenuShow] = React.useState(false)
-
   const show = useMobileMenuShow()
   const { isMobile } = useResponsive()
 
@@ -68,7 +67,7 @@ const AppHeader: React.FunctionComponent = (props: any) => {
     <AppHeaderWrap>
       <AppHeaderContent isMobile={isMobile}>
         <HeaderLeftWrap>
-          <KccLogo abbr={true} sourceType={PictureType.png} styles={{ width: '120px', textAlign: 'left' }} />
+          <KccLogo abbr={true} sourceType={PictureType.svg} styles={{ width: '120px', textAlign: 'left' }} />
           <BrowserView>
             <AppMenu style={{ width: '600px', position: 'relative', top: '3px' }} />
           </BrowserView>

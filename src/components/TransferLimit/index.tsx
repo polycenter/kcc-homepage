@@ -2,9 +2,10 @@ import React from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { Progress } from 'antd'
+import BN from 'bignumber.js'
 import { Currency } from '../../state/bridge/reducer'
 export interface TransferLimitProps {
-  available: number
+  available: string
   currency: Currency
 }
 
@@ -28,7 +29,7 @@ const TransferLimit: React.FunctionComponent<TransferLimitProps> = ({ available,
   return (
     <TransferLimitWrap>
       <Title>
-        {t(`Available Balance`)}: {`${available / Math.pow(10, currency.decimals)}`}
+        {t(`Available Balance`)}: {`${new BN(available).div(Math.pow(10, currency.decimals)).toString()}`}
       </Title>
       {/* <Progress
         percent={percent}
