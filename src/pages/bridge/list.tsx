@@ -5,6 +5,14 @@ import { TransferWrap } from './transfer'
 import { useHistory } from 'react-router-dom'
 import { CenterRow } from '../../components/Row'
 import { RightOutlined } from '@ant-design/icons'
+import { Spin } from 'antd'
+import { getNetworkInfo, getPairInfo } from '../../utils/index'
+import { PairInfo } from '../../state/bridge/reducer'
+import { useTranslation } from 'react-i18next'
+import BN from 'bignumber.js'
+import { BridgeService } from '../../api/bridge'
+import { useWeb3React } from '@web3-react/core'
+import { BaseButton } from '../../components/TransferButton'
 
 export interface BridgeListPageProps {}
 
@@ -108,7 +116,7 @@ const Fee = styled.div`
 const EmptyWrap = styled.div`
   background: linear-gradient(180deg, #f5fffc 0%, #feffff 100%);
   width: 100%;
-  height: 480px;
+  height: 380px;
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
@@ -169,207 +177,147 @@ const StatusRow = styled.div`
   align-items: center;
 `
 
+const ButtonText = styled.span`
+  font-size: 14px;
+  color: #ffffff;
+  line-height: 16px;
+  height: 16px;
+  letter-spacing: 1px;
+`
+export interface History {
+  createTime: string
+  updateTime: string
+  id: number
+  orderSn: string
+  pairId: number
+  srcChain: string
+  srcCurrency: string
+  srcBlockNumber: number
+  srcTxHash: string
+  srcLogIndex: number
+  srcAddress: string
+  srcAmount: string
+  srcFee: string
+  srcContract: string
+  dstChain: string
+  dstCurrency: string
+  dstBlockNumber: number
+  dstTxHash: string
+  dstLogIndex: number
+  dstAddress: string
+  dstAmount: string
+  dstContract: string
+  status: string
+  comment: string
+}
+
+const DirectionIcon = require('../../assets/images/bridge/to.png').default
+
 const BridgeListPage: React.FunctionComponent<BridgeListPageProps> = () => {
-  const [historyList, setHistoryList] = React.useState<any[]>([
-    {
-      id: 1,
-    },
-  ])
+  const { t } = useTranslation()
+  const { account } = useWeb3React()
+
+  const [loading, setLoading] = React.useState<boolean>(false)
+  const [totalPage, setTotalPage] = React.useState<number>(0)
+  const [currentPage, setCurrentPage] = React.useState<number>(1)
+  const [historyList, setHistoryList] = React.useState<History[]>([])
 
   const history = useHistory()
+
+  const getHistoryList = async () => {
+    if (!account) return
+    try {
+      setLoading(() => true)
+      const res = await BridgeService.transitionList(account, 1, currentPage, 50)
+      console.log(res.data.data)
+      if (res?.data.data) {
+        setHistoryList(() => res.data.data)
+      }
+    } finally {
+      setLoading(() => false)
+    }
+  }
+
+  React.useEffect(() => {
+    getHistoryList()
+  }, [])
+
+  React.useEffect(() => {
+    getHistoryList()
+  }, [account])
 
   const nav2transfer = () => {
     history.push('/bridge/transfer')
   }
 
-  const DirectionIcon = require('../../assets/images/bridge/to.png').default
+  const list = historyList.map((transaction, index) => {
+    const no = index + 1
+    const selectedPairInfo = getPairInfo(transaction.pairId) as PairInfo
+    const srcNetworkInfo = getNetworkInfo(selectedPairInfo.srcChainInfo.chainId)
+    const distNetworkInfo = getNetworkInfo(selectedPairInfo.dstChainInfo.chainId)
+
+    return (
+      <Order>
+        <CenterRow>
+          <Number>{no < 10 ? `0${no}` : `${no}`}</Number>
+          <NetworkIcon />
+          <NetworkName>{srcNetworkInfo.fullName}</NetworkName>
+          <NetWorkDirectionIcon src={DirectionIcon} />
+          <NetworkIcon />
+          <NetworkName>{distNetworkInfo.fullName}</NetworkName>
+        </CenterRow>
+        <OrderDetailWrap>
+          <Left>
+            <OrderDetaiItem>
+              <Title>{t(`Asset`)}:</Title>
+              <Content>{transaction.srcCurrency.toUpperCase()}</Content>
+            </OrderDetaiItem>
+            <OrderDetaiItem>
+              <Title>{t(`Amount`)}:</Title>
+              <Content>{new BN(transaction.dstAmount).toFixed(6)}</Content>
+            </OrderDetaiItem>
+            <OrderDetaiItem>
+              <Title>{t(`Transfer fee`)}:</Title>
+              <Fee>
+                {new BN(transaction.srcFee).toFixed(6)} {srcNetworkInfo.symbol.toUpperCase()}
+              </Fee>
+            </OrderDetaiItem>
+          </Left>
+          <Right>
+            <OrderDetaiItem>
+              <StatusRow>
+                <Title>{t(`${transaction.status}`)}</Title>
+                <RightOutlined style={{ color: 'rgba(0, 0, 58, 0.6)', fontSize: '10px', marginLeft: '5px' }} />
+              </StatusRow>
+              <Content>{transaction.createTime}</Content>
+            </OrderDetaiItem>
+          </Right>
+        </OrderDetailWrap>
+      </Order>
+    )
+  })
 
   return (
     <BridgeListWrap>
       <HistoryWrap>
         <BridgeTitlePanel title="Transaction History" iconEvent={nav2transfer} />
         {historyList.length ? (
-          <HistoryListWrap>
-            <Order>
-              <CenterRow>
-                <Number>01</Number>
-                <NetworkIcon />
-                <NetworkName>Ethereum Network</NetworkName>
-                <NetWorkDirectionIcon src={DirectionIcon} />
-                <NetworkIcon />
-                <NetworkName>Ethereum Network</NetworkName>
-              </CenterRow>
-              <OrderDetailWrap>
-                <Left>
-                  <OrderDetaiItem>
-                    <Title>Asset:</Title>
-                    <Content>USDT</Content>
-                  </OrderDetaiItem>
-                  <OrderDetaiItem>
-                    <Title>Amount:</Title>
-                    <Content>120</Content>
-                  </OrderDetaiItem>
-                  <OrderDetaiItem>
-                    <Title>Transfer fee:</Title>
-                    <Fee>10 KCS</Fee>
-                  </OrderDetaiItem>
-                </Left>
-                <Right>
-                  <OrderDetaiItem>
-                    <StatusRow>
-                      <Title>Processing</Title>
-                      <RightOutlined style={{ color: 'rgba(0, 0, 58, 0.6)', fontSize: '10px', marginLeft: '5px' }} />
-                    </StatusRow>
-                    <Content>2021年07月05日17:20:09</Content>
-                  </OrderDetaiItem>
-                </Right>
-              </OrderDetailWrap>
-            </Order>
-            <Order>
-              <CenterRow>
-                <Number>01</Number>
-                <NetworkIcon />
-                <NetworkName>Ethereum Network</NetworkName>
-                <NetWorkDirectionIcon src={DirectionIcon} />
-                <NetworkIcon />
-                <NetworkName>Ethereum Network</NetworkName>
-              </CenterRow>
-              <OrderDetailWrap>
-                <Left>
-                  <OrderDetaiItem>
-                    <Title>Asset:</Title>
-                    <Content>USDT</Content>
-                  </OrderDetaiItem>
-                  <OrderDetaiItem>
-                    <Title>Amount:</Title>
-                    <Content>120</Content>
-                  </OrderDetaiItem>
-                  <OrderDetaiItem>
-                    <Title>Transfer fee:</Title>
-                    <Fee>10 KCS</Fee>
-                  </OrderDetaiItem>
-                </Left>
-                <Right>
-                  <OrderDetaiItem>
-                    <StatusRow>
-                      <Title>Processing</Title>
-                      <RightOutlined style={{ color: 'rgba(0, 0, 58, 0.6)', fontSize: '10px', marginLeft: '5px' }} />
-                    </StatusRow>
-                    <Content>2021年07月05日17:20:09</Content>
-                  </OrderDetaiItem>
-                </Right>
-              </OrderDetailWrap>
-            </Order>
-            <Order>
-              <CenterRow>
-                <Number>01</Number>
-                <NetworkIcon />
-                <NetworkName>Ethereum Network</NetworkName>
-                <NetWorkDirectionIcon src={DirectionIcon} />
-                <NetworkIcon />
-                <NetworkName>Ethereum Network</NetworkName>
-              </CenterRow>
-              <OrderDetailWrap>
-                <Left>
-                  <OrderDetaiItem>
-                    <Title>Asset:</Title>
-                    <Content>USDT</Content>
-                  </OrderDetaiItem>
-                  <OrderDetaiItem>
-                    <Title>Amount:</Title>
-                    <Content>120</Content>
-                  </OrderDetaiItem>
-                  <OrderDetaiItem>
-                    <Title>Transfer fee:</Title>
-                    <Fee>10 KCS</Fee>
-                  </OrderDetaiItem>
-                </Left>
-                <Right>
-                  <OrderDetaiItem>
-                    <StatusRow>
-                      <Title>Processing</Title>
-                      <RightOutlined style={{ color: 'rgba(0, 0, 58, 0.6)', fontSize: '10px', marginLeft: '5px' }} />
-                    </StatusRow>
-                    <Content>2021年07月05日17:20:09</Content>
-                  </OrderDetaiItem>
-                </Right>
-              </OrderDetailWrap>
-            </Order>
-            <Order>
-              <CenterRow>
-                <Number>01</Number>
-                <NetworkIcon />
-                <NetworkName>Ethereum Network</NetworkName>
-                <NetWorkDirectionIcon src={DirectionIcon} />
-                <NetworkIcon />
-                <NetworkName>Ethereum Network</NetworkName>
-              </CenterRow>
-              <OrderDetailWrap>
-                <Left>
-                  <OrderDetaiItem>
-                    <Title>Asset:</Title>
-                    <Content>USDT</Content>
-                  </OrderDetaiItem>
-                  <OrderDetaiItem>
-                    <Title>Amount:</Title>
-                    <Content>120</Content>
-                  </OrderDetaiItem>
-                  <OrderDetaiItem>
-                    <Title>Transfer fee:</Title>
-                    <Fee>10 KCS</Fee>
-                  </OrderDetaiItem>
-                </Left>
-                <Right>
-                  <OrderDetaiItem>
-                    <StatusRow>
-                      <Title>Processing</Title>
-                      <RightOutlined style={{ color: 'rgba(0, 0, 58, 0.6)', fontSize: '10px', marginLeft: '5px' }} />
-                    </StatusRow>
-                    <Content>2021年07月05日17:20:09</Content>
-                  </OrderDetaiItem>
-                </Right>
-              </OrderDetailWrap>
-            </Order>
-            <Order>
-              <CenterRow>
-                <Number>01</Number>
-                <NetworkIcon />
-                <NetworkName>Ethereum Network Ethereum Network</NetworkName>
-                <NetWorkDirectionIcon src={DirectionIcon} />
-                <NetworkIcon />
-                <NetworkName>Ethereum Network</NetworkName>
-              </CenterRow>
-              <OrderDetailWrap>
-                <Left>
-                  <OrderDetaiItem>
-                    <Title>Asset:</Title>
-                    <Content>USDT</Content>
-                  </OrderDetaiItem>
-                  <OrderDetaiItem>
-                    <Title>Amount:</Title>
-                    <Content>120</Content>
-                  </OrderDetaiItem>
-                  <OrderDetaiItem>
-                    <Title>Transfer fee:</Title>
-                    <Fee>10 KCS</Fee>
-                  </OrderDetaiItem>
-                </Left>
-                <Right>
-                  <OrderDetaiItem>
-                    <StatusRow>
-                      <Title>Processing</Title>
-                      <RightOutlined style={{ color: 'rgba(0, 0, 58, 0.6)', fontSize: '10px', marginLeft: '5px' }} />
-                    </StatusRow>
-                    <Content>2021年07月05日17:20:09</Content>
-                  </OrderDetaiItem>
-                </Right>
-              </OrderDetailWrap>
-            </Order>
-          </HistoryListWrap>
+          <Spin spinning={loading}>
+            <HistoryListWrap>{list}</HistoryListWrap>
+          </Spin>
         ) : (
           <EmptyWrap>
-            <EmptyIcon />
-            <EmptyText>No record</EmptyText>
+            {account ? (
+              <>
+                <EmptyIcon src={require('../../assets/images/bridge/empty.svg').default} />
+                <EmptyText>{t(`No record`)}</EmptyText>
+              </>
+            ) : (
+              <EmptyWrap>
+                <EmptyIcon src={require('../../assets/images/bridge/empty.svg').default} />
+                <EmptyText>{t(`Connect wallet first`)}</EmptyText>
+              </EmptyWrap>
+            )}
           </EmptyWrap>
         )}
       </HistoryWrap>

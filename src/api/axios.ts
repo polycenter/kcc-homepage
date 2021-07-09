@@ -90,6 +90,9 @@ service.interceptors.response.use(
   /** 请求有响应 */
   async (response: AxiosResponse) => {
     if (response.status === 200) {
+      if (response.data.code === 500) {
+        message.error(response.data.msg)
+      }
       return Promise.resolve(response)
     } else {
       const __text = getErrorCode2text(response)

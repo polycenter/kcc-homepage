@@ -14,4 +14,37 @@ export class BridgeService {
       url: '/pair/list',
     })
   }
+
+  static inWhiteList(address: string): Promise<HttpResponse<any>> {
+    return Axios({
+      method: 'get',
+      url: '/white/in',
+      params: {
+        addr: address,
+      },
+    })
+  }
+
+  static inBlackList(address: string): Promise<HttpResponse<any>> {
+    return Axios({
+      method: 'get',
+      url: '/black/in',
+      params: {
+        addr: address,
+      },
+    })
+  }
+
+  static transitionList(address: string, start: number, page: number, limit = 50): Promise<HttpResponse<any>> {
+    return Axios({
+      method: 'get',
+      url: '/trans/list',
+      params: {
+        srcAccount: address,
+        start,
+        page,
+        limit,
+      },
+    })
+  }
 }

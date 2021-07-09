@@ -7,8 +7,7 @@ import { useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import { useDispatch } from 'react-redux'
 import { injected } from '../connectors'
-import { NetworkContextName } from '../constants/wallet'
-import { updateErrorInfo } from '../state/wallet/actions'
+import { NetworkContextName, OppositeNetworkName } from '../constants/wallet'
 
 const connectorLocalStorageKey = 'connectorId'
 
@@ -17,6 +16,11 @@ export function useActiveWeb3React(): Web3ReactContextInterface<Web3Provider> & 
   const context = useWeb3ReactCore<Web3Provider>()
   const contextNetwork = useWeb3ReactCore<Web3Provider>(NetworkContextName)
   return context.active ? context : contextNetwork
+}
+
+export function useAnotherWeb3React(): Web3ReactContextInterface<Web3Provider> & { chainId?: any } {
+  const contextNetwork = useWeb3ReactCore<Web3Provider>(OppositeNetworkName)
+  return contextNetwork
 }
 
 /*  */

@@ -54,7 +54,6 @@ const ButtonGroup = styled.div`
 
 const AppHeader: React.FunctionComponent = (props: any) => {
   // const [mobileMenuShow, setMobileMenuShow] = React.useState(false)
-
   const show = useMobileMenuShow()
   const { isMobile } = useResponsive()
 

@@ -5,13 +5,17 @@ import { theme } from '../../constants/theme'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { toggleConnectWalletModalShow } from '../../state/wallet/actions'
-import { RouteComponentProps, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { useHistory } from 'react-router'
+import { CheckListType } from '../../pages/bridge/transfer'
+import { network } from '../../connectors/index'
+import { getPairInfo, getNetworkInfo } from '../../utils/index'
 
 export interface TransferButtonProps {
-  approved: boolean
   applyApprove: any
   generateOrder: any
+  checkList: CheckListType
+  pairId: number
 }
 
 const TransferButtonWrap = styled.div`
@@ -43,12 +47,18 @@ const HistoryText = styled.div`
     text-decoration: underline;
   }
 `
+const DisabledButton = styled(BaseButton)`
+  background: #e4f3f2;
+  cursor: not-allowed;
+  color: #ccc;
+`
 
-const TransferButton: React.FunctionComponent<TransferButtonProps> = ({ approved, applyApprove, generateOrder }) => {
-  React.useEffect(() => {
-    console.log('---', approved)
-  }, [approved])
-
+const TransferButton: React.FunctionComponent<TransferButtonProps> = ({
+  applyApprove,
+  generateOrder,
+  checkList,
+  pairId,
+}) => {
   const { t } = useTranslation()
   const { account } = useWeb3React()
 
@@ -65,6 +75,20 @@ const TransferButton: React.FunctionComponent<TransferButtonProps> = ({ approved
     history.push('/bridge/confirm')
   }
 
+  const selectedPairInfo = getPairInfo(pairId)
+  const selectedNetworkInfo = getNetworkInfo(selectedPairInfo?.srcChainInfo.chainId as any)
+
+  const allStatus = React.useMemo(() => {
+    const keys = Reflect.ownKeys(checkList)
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i]
+      if (!checkList[key as keyof CheckListType]) {
+        return false
+      }
+    }
+    return true
+  }, [checkList])
+
   // not connect
   if (!account) {
     return (
@@ -74,21 +98,42 @@ const TransferButton: React.FunctionComponent<TransferButtonProps> = ({ approved
     )
   }
 
-  // not approve
-  if (!approved) {
+  // switch network
+  if (!checkList.network) {
     return (
       <TransferButtonWrap>
-        <BaseButton onClick={applyApprove}>{t(`Approved`)}</BaseButton>
+        <BaseButton onClick={applyApprove}>
+          {t(`Switch`)} {selectedNetworkInfo.fullName}
+        </BaseButton>
+        <HistoryText onClick={() => history.push('/bridge/list')}>{t(`Transaction History`)}</HistoryText>
       </TransferButtonWrap>
     )
   }
 
-  // not available
+  // not approve
+  if (!checkList.approve) {
+    return (
+      <TransferButtonWrap>
+        <BaseButton onClick={applyApprove}>{t(`Approved`)}</BaseButton>
+        <HistoryText onClick={() => history.push('/bridge/list')}>{t(`Transaction History`)}</HistoryText>
+      </TransferButtonWrap>
+    )
+  }
 
+  if (!allStatus) {
+    return (
+      <TransferButtonWrap>
+        <DisabledButton>{t(`Follow the tips`)}</DisabledButton>
+        <HistoryText onClick={() => history.push('/bridge/list')}>{t(`Transaction History`)}</HistoryText>
+      </TransferButtonWrap>
+    )
+  }
+
+  // all check is pass
   return (
     <TransferButtonWrap>
       <BaseButton onClick={next}>{t(`Next`)}</BaseButton>
-      <HistoryText>{t(`Transaction History`)}</HistoryText>
+      <HistoryText onClick={() => history.push('/bridge/list')}>{t(`Transaction History`)}</HistoryText>
     </TransferButtonWrap>
   )
 }

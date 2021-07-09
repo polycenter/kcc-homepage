@@ -4,6 +4,7 @@ import { NetworkConnector } from './NetworkConnector'
 
 import { ConnectorNames } from '../constants/wallet'
 import { networks } from '../constants/networks'
+import { getNetworkInfo } from '../utils/index'
 
 // rpc
 const NETWORK_URL = process.env.REACT_APP_NETWORK_URL
@@ -18,6 +19,13 @@ if (typeof NETWORK_URL === 'undefined') {
 export const network = new NetworkConnector({
   urls: { [NETWORK_CHAIN_ID]: NETWORK_URL },
 })
+
+export function getNetWorkConnect(chainId: ChainId) {
+  const selectedNetwork = getNetworkInfo(chainId)
+  return new NetworkConnector({
+    urls: { [chainId]: selectedNetwork.rpc },
+  })
+}
 
 let networkLibrary: Web3Provider | undefined
 export function getNetworkLibrary(): Web3Provider {

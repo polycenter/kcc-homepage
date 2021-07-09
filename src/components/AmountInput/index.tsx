@@ -1,15 +1,23 @@
 import React from 'react'
 import styled from 'styled-components'
-import { BridgeTitle } from '../../pages/bridge/transfer'
+import { BridgeTitle, CheckListType } from '../../pages/bridge/transfer'
 import { useTranslation } from 'react-i18next'
 import { Input } from 'antd'
 import { CenterRow } from '../Row/index'
 import { Currency } from '../../state/bridge/reducer'
+import BN from 'bignumber.js'
+import { getPairInfo } from '../../utils/index'
+import { useWeb3React } from '@web3-react/core'
 
 export interface AmountInputProps {
-  amount: number
+  amount: string
   setAmount: any
   currency: Currency
+  totalSupply: string
+  checkList: CheckListType
+  setCheckList: any
+  available: string
+  pairId: number
 }
 
 const AmountInputWrap = styled.div`
@@ -21,7 +29,7 @@ const AmountInputWrap = styled.div`
   }
 `
 
-const TextWrap = styled(CenterRow)`
+export const TextWrap = styled(CenterRow)`
   align-items: center;
   justify-content: space-between;
 `
@@ -34,29 +42,83 @@ const SuffixText = styled.span`
   font-size: 16px;
 `
 
-const ErrorText = styled.span`
+export const ErrorText = styled.span`
   font-family: URWDIN-Regular;
   color: #f00;
   font-size: 12px;
 `
 
-const AmountInput: React.FunctionComponent<AmountInputProps> = ({ currency, amount, setAmount }) => {
+const AmountInput: React.FunctionComponent<AmountInputProps> = ({
+  currency,
+  amount,
+  setAmount,
+  checkList,
+  setCheckList,
+  totalSupply,
+  available,
+  pairId,
+}) => {
   const { t } = useTranslation()
-
-  const [error, setError] = React.useState<boolean>(false)
-
+  const { account } = useWeb3React()
   const [errorInfo, setErrorInfo] = React.useState<string>('')
 
+  const pairInfo = getPairInfo(pairId)
+
+  const errorFormatText = `Invalid number`
   const insufficientText = `Insufficient available balance`
-  const minAmountText = 'The minimum exchange quantity is 10'
+  const minAmountText = `The minimum exchange quantity is ${new BN(pairInfo?.min ?? 0)
+    .div(Math.pow(10, currency.decimals))
+    .toString()}`
+  const maxAmountText = `The maximum exchange quantity is ${new BN(pairInfo?.min ?? 0)
+    .div(Math.pow(10, currency.decimals))
+    .toString()}`
+  const insufficienBridgeText = `Input amount is bigger than bridge available balance`
 
   const changeAmount = (e: any) => {
-    const input = parseFloat(e.target.value)
-    if (input < 10) {
-      setError(() => true)
+    const input = e.target.value.trim()
+    const inputAmount = new BN(input).multipliedBy(Math.pow(10, currency.decimals)).toNumber()
+
+    const maxLimit = pairInfo?.max === '0' ? true : false
+
+    if (!account) {
+      // no check
+      setCheckList((list: any) => {
+        return { ...list, amount: false }
+      })
+    } else if (input[0] === '0' || input[0] === '.') {
+      // invalid number format
+      setCheckList((list: any) => {
+        return { ...list, amount: true }
+      })
+      setErrorInfo(() => errorFormatText)
+    } else if (new BN(inputAmount).gte(available)) {
+      // less than balance
+      setCheckList((list: any) => {
+        return { ...list, amount: true }
+      })
+      setErrorInfo(() => insufficientText)
+    } else if (new BN(inputAmount).gte(totalSupply) && pairInfo?.limitStatus) {
+      // less than supply
+      setCheckList((list: any) => {
+        return { ...list, amount: true }
+      })
+      setErrorInfo(() => insufficienBridgeText)
+    } else if (new BN(inputAmount).lt(new BN(pairInfo?.min as any)) && pairInfo?.limitStatus) {
+      // check min
+      setCheckList((list: any) => {
+        return { ...list, amount: true }
+      })
       setErrorInfo(() => minAmountText)
+    } else if (maxLimit && new BN(inputAmount).gt(new BN(pairInfo?.max as any)) && pairInfo?.limitStatus) {
+      // check min
+      setCheckList((list: any) => {
+        return { ...list, amount: true }
+      })
+      setErrorInfo(() => maxAmountText)
     } else {
-      setError(() => false)
+      setCheckList((list: any) => {
+        return { ...list, amount: false }
+      })
     }
     setAmount(e.target.value)
   }
@@ -65,7 +127,7 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({ currency, amou
     <AmountInputWrap>
       <TextWrap>
         <BridgeTitle>{t(`Amount`)}</BridgeTitle>
-        {error ? <ErrorText> * {t(errorInfo)}</ErrorText> : null}
+        {checkList.amount ? <ErrorText> * {t(errorInfo)}</ErrorText> : null}
       </TextWrap>
       <Input
         value={amount}
