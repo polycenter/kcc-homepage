@@ -13,6 +13,14 @@ import TransferLimit from '../../components/TransferLimit'
 import { useDispatch } from 'react-redux'
 import BN from 'bignumber.js'
 import { LoadingOutlined } from '@ant-design/icons'
+import { Currency, PairChainInfo } from '../../state/bridge/reducer'
+import { updateCurrentCurrency, updateCurrentPairId } from '../../state/bridge/actions'
+import { checkAddress, getApproveStatus, getNetworkInfo, getPairInfo, web3Utils } from '../../utils'
+import { getErc20Contract } from '../../utils/contract'
+import { updateBridgeLoading } from '../../state/application/actions'
+import { getNetWorkConnect } from '../../connectors'
+import { useHistory } from 'react-router-dom'
+import { BridgeService } from '../../api/bridge'
 import {
   useTokenList,
   useCurrentCurrency,
@@ -20,15 +28,11 @@ import {
   usePariList,
   useCurrentPairId,
 } from '../../state/bridge/hooks'
-import { Currency, PairChainInfo } from '../../state/bridge/reducer'
-import { updateCurrentCurrency, updateCurrentPairId } from '../../state/bridge/actions'
-import { getApproveStatus, getNetworkInfo, getPairInfo } from '../../utils'
-import { getErc20Contract } from '../../utils/contract'
-import { updateBridgeLoading } from '../../state/application/actions'
-import { getNetWorkConnect } from '../../connectors'
-import { web3Utils } from '../../utils/index'
-import { useHistory } from 'react-router-dom'
-import { network } from '../../connectors/index'
+
+export enum ListType {
+  'WHITE',
+  'BLACK',
+}
 
 export interface BridgeTransferPageProps {}
 
@@ -123,9 +127,30 @@ const statusList = {
   address: false,
   approve: false,
   network: false,
+  senderWhite: false,
+  senderBlack: false,
+  receiverWhite: false,
+  receiverBlack: false,
 }
 
 export type CheckListType = typeof statusList
+
+const initOrder = {
+  pairId: 0,
+  srcId: 0,
+  distId: 0,
+  amount: 0,
+  fee: 0,
+  from: '',
+  receiver: '',
+  timestamp: '',
+  currency: {
+    name: '',
+    symbol: '',
+    logoUrl: '',
+    decimals: 0,
+  },
+}
 
 const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () => {
   const { t } = useTranslation()
@@ -136,6 +161,10 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
   const [amount, setAmount] = React.useState<string>('0')
   const [available, setAvailable] = React.useState<string>('0')
   const [availableLoading, setAvailableLoading] = React.useState<boolean>(false)
+
+  // important state
+  const [bridgeStatus, setBridgeStatus] = React.useState<boolean>(true)
+
   const currency = useCurrentCurrency()
 
   const history = useHistory()
@@ -144,33 +173,23 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
 
   const { srcChainIds, distChainIds } = useTokenSupporChain()
 
+  // the status list of transfer asset rules
   const [checkList, setCheckList] = React.useState<typeof statusList>(statusList)
 
   const dispatch = useDispatch()
   const tokenList = useTokenList()
   const pairList = usePariList()
+  const currentPairId = useCurrentPairId()
 
-  const [order, setOrder] = React.useState<TransferOrder>({
-    pairId: 0,
-    srcId: 0,
-    distId: 0,
-    amount: 0,
-    fee: 0,
-    from: '',
-    receiver: '',
-    timestamp: '',
-    currency: {
-      name: '',
-      symbol: '',
-      logoUrl: '',
-      decimals: 0,
-    },
-  })
+  const [order, setOrder] = React.useState<TransferOrder>(initOrder)
 
   const checkNetwork = (currentNetworkId: number, sendNetworkId: number) => {
     return currentNetworkId === sendNetworkId
   }
 
+  /**
+   * @description init select network
+   */
   React.useEffect(() => {
     if (srcChainIds.length && srcId === 0) {
       changeSrcId(srcChainIds[0])
@@ -180,6 +199,9 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
     }
   }, [srcChainIds, distChainIds])
 
+  /**
+   * @description update receiver address
+   */
   React.useEffect(() => {
     setReceiveAddress(() => account)
     if (account) {
@@ -209,17 +231,17 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
     setReceiveAddress(() => address)
   }
 
-  // init the asset selected
+  /**
+   * @description init the asset selected
+   */
+  //PREF  for UE
   React.useEffect(() => {
     if (currency.symbol === '' && tokenList.length) {
       dispatch(updateCurrentCurrency({ currency: tokenList[0] }))
     }
   }, [tokenList])
 
-  const currentPairId = useCurrentPairId()
-
   const selectedPairInfo = React.useMemo(() => {
-    console.log(` selectedPairInfo is chaing`, getPairInfo(currentPairId))
     if (currentPairId !== -1) {
       setCheckList((list) => {
         return {
@@ -230,6 +252,14 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
       return getPairInfo(currentPairId)
     }
   }, [currentPairId])
+
+  const selectedNetworkInfo = React.useMemo(() => {
+    return getNetworkInfo(selectedPairInfo?.srcChainInfo.chainId as any)
+  }, [selectedPairInfo])
+
+  const setSelectedCurrency = (currency: Currency) => {
+    dispatch(updateCurrentCurrency({ currency: currency }))
+  }
 
   // update selected pairId
   React.useEffect(() => {
@@ -252,10 +282,9 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
     }
   }, [srcId, distId, currency.name])
 
-  const setSelectedCurrency = (currency: Currency) => {
-    dispatch(updateCurrentCurrency({ currency: currency }))
-  }
-
+  /**
+   * @description get available status
+   */
   React.useEffect(() => {
     if (chainId && isSelectedNetwork && account && currentPairId && currency.symbol && currentPairId !== -1) {
       const selectedSrcChainInfo = selectedPairInfo?.srcChainInfo as PairChainInfo
@@ -323,6 +352,10 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
     )
   }
 
+  /**
+   * @description get approve status of pairInfo
+   */
+
   React.useEffect(() => {
     if (selectedPairInfo && account) {
       if (selectedPairInfo?.srcChainInfo.tag === 0) {
@@ -345,6 +378,59 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
       })
     }
   }, [selectedPairInfo, account])
+
+  const isTransferToSelf = React.useMemo(() => {
+    if (account && receiveAddress) {
+      return account === receiveAddress
+    }
+    return false
+  }, [account, receiveAddress])
+
+  /**
+   * @description get status of address status
+   * when receiver = sender,only check one,otherwise,check both address
+   * when pair whiteListStatus is false, no check for whiteList
+   */
+  React.useEffect(() => {
+    if (account && receiveAddress) {
+      const cb = async () => {
+        // check whiteList first
+        if (selectedPairInfo?.whiteListStatus === false) {
+          setCheckList((list) => {
+            return { ...list, senderWhite: true, receiverWhite: true }
+          })
+        } else {
+          const senderStatus = await checkAddress(account, ListType.WHITE)
+          // when isTransferToSelf
+          if (isTransferToSelf) {
+            setCheckList((list) => {
+              return { ...list, senderWhite: senderStatus, receiverWhite: senderStatus }
+            })
+          } else {
+            const receiverStatus = await checkAddress(receiveAddress, ListType.WHITE)
+            setCheckList((list) => {
+              return { ...list, senderWhite: senderStatus, receiverWhite: receiverStatus }
+            })
+          }
+        }
+
+        // start to check blackList
+        const senderStatus = await checkAddress(account, ListType.BLACK)
+        // when isTransferToSelf
+        if (isTransferToSelf) {
+          setCheckList((list) => {
+            return { ...list, senderBlack: senderStatus, receiverBlack: senderStatus }
+          })
+        } else {
+          const receiverStatus = await checkAddress(receiveAddress, ListType.BLACK)
+          setCheckList((list) => {
+            return { ...list, senderBlack: senderStatus, receiverBlack: receiverStatus }
+          })
+        }
+      }
+      cb()
+    }
+  }, [account, receiveAddress, selectedPairInfo?.whiteListStatus])
 
   const generateOrder = () => {
     if (!selectedPairInfo) return
@@ -464,7 +550,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
         <Row style={{ marginTop: '9px', justifyContent: 'flex-start' }}>
           {amountText()}
           <ChainTag>
-            <ChainText>KRC20</ChainText>
+            <ChainText>{selectedNetworkInfo?.standard}</ChainText>
           </ChainTag>
         </Row>
         <ReceiveAddressWrap>
@@ -473,9 +559,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
             {!checkList.address && account ? <ErrorText> * {t(`Invalid address`)}</ErrorText> : null}
           </TextWrap>
           <Input value={receiveAddress} onChange={changeReceiveAddress} placeholder={t(`Destination address`)} />
-          <NoticeText>
-            {t(`If you have not add KCC network in your MetaMask yet，please click Add network and continue`)}
-          </NoticeText>
+          {!isSelectedNetwork ? <NoticeText>{t(`Switch Correct Network`)}</NoticeText> : null}
         </ReceiveAddressWrap>
         <TransferButton
           pairId={currentPairId}
@@ -483,6 +567,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
           applyApprove={applyApprove}
           generateOrder={generateOrder}
           amount={amount}
+          bridgeStatus={bridgeStatus}
         />
       </TransferWrap>
     </BridgeTransferWrap>

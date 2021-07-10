@@ -49,12 +49,15 @@ const NetworkWrap = styled(CenterRow)`
   flex-flow: row nowrap;
   justify-content: center;
   align-items: center;
-  width: 90px;
+  width: auto;
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
   border-right: 1px solid ${theme.colors.primary};
   padding-right: 15px;
   margin-right: 10px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 `
 
 const UnlockButton: React.FunctionComponent = () => {

@@ -58,6 +58,7 @@ const Order = styled.div`
 `
 
 const Number = styled.span`
+  padding-top: 2px;
   font-size: 20px;
   font-family: URWDIN-Bold, URWDIN;
   font-style: italic;
