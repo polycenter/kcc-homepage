@@ -8,13 +8,12 @@ import { TransferOrder, TransferWrap } from './transfer'
 import { useHistory } from 'react-router'
 import { Tooltip } from 'antd'
 import BridgeTitlePanel from '../../components/BridgeTitlePanel/index'
-import { wei2eth, getPairInfo, getNetworkInfo, toHex, web3Utils } from '../../utils/index'
+import { getPairInfo, getNetworkInfo } from '../../utils/index'
 import { getBridgeContract } from '../../utils/contract'
 import { useWeb3React } from '@web3-react/core'
 import { updateBridgeLoading } from '../../state/application/actions'
 import { useDispatch } from 'react-redux'
 import BN from 'bignumber.js'
-import { Router } from 'react-router-dom'
 
 export enum ChainBridgeType {
   'DISPLAY',
@@ -92,7 +91,22 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
     },
   }) */
 
-  const orderRaw = JSON.parse(localStorage.getItem('PRESEND_ORDER') as any)
+  const history = useHistory()
+
+  let orderRaw: any = null
+
+  try {
+    orderRaw = JSON.parse(localStorage.getItem('PRESEND_ORDER') as any)
+  } catch {
+    history.push('/bridge/transfer')
+    return null
+  }
+
+  if (!orderRaw) {
+    history.push('/bridge/transfer')
+    return null
+  }
+
   const order: TransferOrder = orderRaw
   const selectedChainInfo = getPairInfo(order.pairId)
   const networkInfo = getNetworkInfo(selectedChainInfo?.srcChainInfo.chainId as any)
@@ -102,14 +116,6 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
       router.push('/bridge/transfer')
     }
   }, [])
-
-  /*  React.useEffect(() => {
-   
-    console.log(orderRaw)
-    if (orderRaw) {
-      setOrder(() => orderRaw)
-    }
-  }, []) */
 
   const initFee = async () => {
     if (!selectedChainInfo?.srcChainInfo) return
@@ -122,8 +128,6 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
   React.useEffect(() => {
     initFee()
   }, [])
-
-  const history = useHistory()
 
   const dispatch = useDispatch()
 
@@ -145,9 +149,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
 
   const transfer = async () => {
     if (!selectedChainInfo?.srcChainInfo) return
-
     const contract = getBridgeContract(networkInfo.bridgeCoreAddress, library)
-
     if (selectedChainInfo)
       if (selectedChainInfo.srcChainInfo.tag === 0) {
         // native token
@@ -163,6 +165,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
           })
           .once('transactionHash', (hash: string) => {
             console.log('hash', hash)
+            localStorage.removeItem('PRESEND_ORDER')
             // localStorage.setItem('hash',)
           })
           .once('confirmation', (confirmations: number) => {
@@ -194,6 +197,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
           })
           .once('transactionHash', (hash: string) => {
             console.log('hash', hash)
+            localStorage.removeItem('PRESEND_ORDER')
           })
           .once('confirmation', (confirmations: number) => {
             console.log(confirmations)

@@ -9,6 +9,7 @@ export const networks = {
     decimals: 0,
     logo: '',
     bridgeCoreAddress: '',
+    standard: '',
   },
   1: {
     name: 'Ethereum',
@@ -20,6 +21,7 @@ export const networks = {
     browser: 'https://etherscan.io',
     logo: 'https://cdn.jsdelivr.net/gh/kucoin-community-chain/tokens-info@main/icons/chain-1.png',
     bridgeCoreAddress: '0x6b9862e7e0203f7D2640E246A15EA961737489b0',
+    standard: 'ERC20',
   },
   4: {
     name: 'Rinkeby',
@@ -31,10 +33,11 @@ export const networks = {
     browser: 'https://rinkeby.etherscan.io',
     logo: 'https://cdn.jsdelivr.net/gh/kucoin-community-chain/tokens-info@main/icons/chain-1.png',
     bridgeCoreAddress: '0x6b9862e7e0203f7D2640E246A15EA961737489b0',
+    standard: 'ERC20',
   },
   321: {
-    name: 'KCC',
-    fullName: 'KCC Network',
+    name: 'KCC-MAINNET',
+    fullName: 'KCC Mainnet Network',
     rpc: 'https://rpc-mainnet.kcc.network',
     chain_id: 321,
     decimals: 18,
@@ -42,6 +45,7 @@ export const networks = {
     browser: 'https://explorer.kcc.io',
     logo: 'https://cdn.jsdelivr.net/gh/kucoin-community-chain/tokens-info@main/icons/chain-321.png',
     bridgeCoreAddress: '0x6b9862e7e0203f7D2640E246A15EA961737489b0',
+    standard: 'KRC20',
   },
   322: {
     name: 'KCC-TEST',
@@ -53,6 +57,7 @@ export const networks = {
     browser: 'https://scan-testnet.kucoin.one',
     logo: 'https://cdn.jsdelivr.net/gh/kucoin-community-chain/tokens-info@main/icons/chain-321.png',
     bridgeCoreAddress: '0x6b9862e7e0203f7D2640E246A15EA961737489b0',
+    standard: 'KRC20',
   },
 }
 
@@ -68,6 +73,7 @@ export interface NetworkType {
   decimals: number
   logo: string
   bridgeCoreAddress: string
+  standard: string
 }
 
 export interface AddEthereumChainParameter {

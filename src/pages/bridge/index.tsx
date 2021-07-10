@@ -116,20 +116,13 @@ const BridgePage: React.FunctionComponent<BridgePageProps> = ({ children }) => {
   const dispatch = useDispatch()
 
   const handleChainChanged = () => {
-    // logout for refresh wallet data
-    // logout()
-    const { ethereum } = window
-    console.log(account, chainId)
     if (ChainIds.includes(chainId as any)) {
       dispatch(updateErrorInfo({ hasError: false, errorInfo: '' }))
     } else {
       dispatch(updateErrorInfo({ hasError: false, errorInfo: 'Unsupported Network' }))
     }
-
-    if (ethereum && ethereum.on) {
-      login(ConnectorNames.Injected)
-    }
   }
+
   React.useEffect(() => {
     const { ethereum } = window
     if (ethereum) {
@@ -157,7 +150,7 @@ const BridgePage: React.FunctionComponent<BridgePageProps> = ({ children }) => {
         } else {
           chain.openStatus = true
           chain.limitStatus = (chain.status & 2) === 2 ? true : false
-          chain.blackListStatus = (chain.status & 4) === 4 ? true : false
+          chain.whiteListStatus = (chain.status & 4) === 4 ? true : false
           list.push({ ...chain })
         }
       }

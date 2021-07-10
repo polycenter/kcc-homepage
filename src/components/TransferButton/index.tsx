@@ -18,6 +18,7 @@ export interface TransferButtonProps {
   checkList: CheckListType
   pairId: number
   amount: string
+  bridgeStatus: string
 }
 
 const TransferButtonWrap = styled.div`
@@ -61,6 +62,7 @@ const TransferButton: React.FunctionComponent<TransferButtonProps> = ({
   checkList,
   pairId,
   amount,
+  bridgeStatus,
 }) => {
   const { t } = useTranslation()
   const { account } = useWeb3React()
@@ -109,6 +111,9 @@ const TransferButton: React.FunctionComponent<TransferButtonProps> = ({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: web3Utils.toHex(selectedNetworkInfo.chain_id).toString() }],
       })
+      if (selectedNetworkInfo.chain_id === 321) {
+        window.location.reload()
+      }
     } catch (error) {
       console.log(error)
       // This error code indicates that the chain has not been added to MetaMask.
@@ -131,12 +136,23 @@ const TransferButton: React.FunctionComponent<TransferButtonProps> = ({
               },
             ],
           })
+          if (selectedNetworkInfo.chain_id === 321) {
+            window.location.reload()
+          }
         } catch (addError) {
           message.error(addError)
         }
       }
       // handle other "switch" errors
     }
+  }
+
+  if (!bridgeStatus) {
+    return (
+      <TransferButtonWrap>
+        <DisabledButton>{t(`KCC bridge under maintenance`)}</DisabledButton>
+      </TransferButtonWrap>
+    )
   }
 
   // not connect
@@ -176,6 +192,14 @@ const TransferButton: React.FunctionComponent<TransferButtonProps> = ({
       key = `Invalid amount`
     } else if (!checkList.address) {
       key = `Invalid address`
+    } else if (!checkList.senderWhite) {
+      key = `Sender is not in whiteList`
+    } else if (!checkList.receiverWhite) {
+      key = `Receiver is not in whiteList`
+    } else if (!checkList.senderBlack) {
+      key = `Sender is in blackList`
+    } else if (!checkList.receiverBlack) {
+      key = `Receiver is in blackList`
     } else {
       key = `Follow the tips`
     }
