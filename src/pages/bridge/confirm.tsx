@@ -163,13 +163,15 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
           })
           .once('transactionHash', (hash: string) => {
             console.log('hash', hash)
+            // localStorage.setItem('hash',)
           })
           .once('confirmation', (confirmations: number) => {
             console.log(confirmations)
             dispatch(updateBridgeLoading({ visible: true, status: 1 }))
             setTimeout(() => {
               dispatch(updateBridgeLoading({ visible: false, status: 0 }))
-            }, 1200)
+              history.push('/bridge/list')
+            }, 2000)
           })
           .on('error', () => {
             dispatch(updateBridgeLoading({ visible: false, status: 0 }))
@@ -198,7 +200,8 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
             dispatch(updateBridgeLoading({ visible: true, status: 1 }))
             setTimeout(() => {
               dispatch(updateBridgeLoading({ visible: false, status: 0 }))
-            }, 1200)
+              history.push('/bridge/list')
+            }, 2000)
           })
           .on('error', () => {
             dispatch(updateBridgeLoading({ visible: false, status: 0 }))

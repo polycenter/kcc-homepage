@@ -8,14 +8,16 @@ import { toggleConnectWalletModalShow } from '../../state/wallet/actions'
 import { withRouter } from 'react-router-dom'
 import { useHistory } from 'react-router'
 import { CheckListType } from '../../pages/bridge/transfer'
-import { network } from '../../connectors/index'
-import { getPairInfo, getNetworkInfo } from '../../utils/index'
+import { getPairInfo, getNetworkInfo, web3Utils } from '../../utils/index'
+import { message } from 'antd'
+import useAuth from '../../hooks/useAuth'
 
 export interface TransferButtonProps {
   applyApprove: any
   generateOrder: any
   checkList: CheckListType
   pairId: number
+  amount: string
 }
 
 const TransferButtonWrap = styled.div`
@@ -58,6 +60,7 @@ const TransferButton: React.FunctionComponent<TransferButtonProps> = ({
   generateOrder,
   checkList,
   pairId,
+  amount,
 }) => {
   const { t } = useTranslation()
   const { account } = useWeb3React()
@@ -75,8 +78,13 @@ const TransferButton: React.FunctionComponent<TransferButtonProps> = ({
     history.push('/bridge/confirm')
   }
 
-  const selectedPairInfo = getPairInfo(pairId)
-  const selectedNetworkInfo = getNetworkInfo(selectedPairInfo?.srcChainInfo.chainId as any)
+  const selectedPairInfo = React.useMemo(() => {
+    return getPairInfo(pairId)
+  }, [pairId])
+
+  const selectedNetworkInfo = React.useMemo(() => {
+    return getNetworkInfo(selectedPairInfo?.srcChainInfo.chainId as any)
+  }, [selectedPairInfo])
 
   const allStatus = React.useMemo(() => {
     const keys = Reflect.ownKeys(checkList)
@@ -89,6 +97,48 @@ const TransferButton: React.FunctionComponent<TransferButtonProps> = ({
     return true
   }, [checkList])
 
+  React.useEffect(() => {
+    console.log(allStatus)
+    console.log(checkList)
+  }, [checkList])
+
+  const switchNetwork = async () => {
+    console.log(selectedNetworkInfo)
+    try {
+      await window.ethereum?.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: web3Utils.toHex(selectedNetworkInfo.chain_id).toString() }],
+      })
+    } catch (error) {
+      console.log(error)
+      // This error code indicates that the chain has not been added to MetaMask.
+      if (error.code === 4902) {
+        try {
+          await window.ethereum?.request({
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainId: web3Utils.toHex(selectedNetworkInfo.chain_id).toString(), // A 0x-prefixed hexadecimal string
+                chainName: selectedNetworkInfo.fullName,
+                nativeCurrency: {
+                  name: selectedNetworkInfo.symbol,
+                  symbol: selectedNetworkInfo.symbol.toUpperCase(), // 2-6 characters long
+                  decimals: selectedNetworkInfo.decimals,
+                },
+                rpcUrls: [selectedNetworkInfo.rpc],
+                blockExplorerUrls: [selectedNetworkInfo.browser],
+                iconUrls: [selectedNetworkInfo.logo],
+              },
+            ],
+          })
+        } catch (addError) {
+          message.error(addError)
+        }
+      }
+      // handle other "switch" errors
+    }
+  }
+
   // not connect
   if (!account) {
     return (
@@ -99,11 +149,11 @@ const TransferButton: React.FunctionComponent<TransferButtonProps> = ({
   }
 
   // switch network
-  if (!checkList.network) {
+  if (!checkList.network && selectedNetworkInfo) {
     return (
       <TransferButtonWrap>
-        <BaseButton onClick={applyApprove}>
-          {t(`Switch`)} {selectedNetworkInfo.fullName}
+        <BaseButton onClick={switchNetwork}>
+          {t(`Switch`)} {selectedNetworkInfo?.fullName}
         </BaseButton>
         <HistoryText onClick={() => history.push('/bridge/list')}>{t(`Transaction History`)}</HistoryText>
       </TransferButtonWrap>
@@ -121,9 +171,18 @@ const TransferButton: React.FunctionComponent<TransferButtonProps> = ({
   }
 
   if (!allStatus) {
+    let key = ''
+    if (amount === '' || !checkList.amount) {
+      key = `Invalid amount`
+    } else if (!checkList.address) {
+      key = `Invalid address`
+    } else {
+      key = `Follow the tips`
+    }
+
     return (
       <TransferButtonWrap>
-        <DisabledButton>{t(`Follow the tips`)}</DisabledButton>
+        <DisabledButton>{t(`${key}`)}</DisabledButton>
         <HistoryText onClick={() => history.push('/bridge/list')}>{t(`Transaction History`)}</HistoryText>
       </TransferButtonWrap>
     )

@@ -71,7 +71,8 @@ const LogoutModal: React.FunctionComponent<LogoutModalProps> = (props) => {
     props.toggleVisible(false)
   }
 
-  const copyAddress = () => {
+  const copyAddress = (e: any) => {
+    e.stopPropagation()
     if (account) {
       copy(account)
       message.success(t('Copy Success'))
@@ -102,8 +103,8 @@ const LogoutModal: React.FunctionComponent<LogoutModalProps> = (props) => {
     >
       <ModalWrap>
         <Text>{account}</Text>
-        <LinkGroup onClick={nav2Scan}>
-          <Link>
+        <LinkGroup>
+          <Link onClick={nav2Scan}>
             {t(`View on Browser`)}
             <ChromeOutlined style={{ fontSize: '16px', marginLeft: '5px' }} />
           </Link>
@@ -111,7 +112,7 @@ const LogoutModal: React.FunctionComponent<LogoutModalProps> = (props) => {
             {t(`Copy Address`)} <CopyOutlined onClick={copyAddress} style={{ fontSize: '16px', marginLeft: '5px' }} />
           </Link>
         </LinkGroup>
-        <LogoutButton>
+        {/*  <LogoutButton>
           <Button
             type="primary"
             ghost
@@ -120,7 +121,7 @@ const LogoutModal: React.FunctionComponent<LogoutModalProps> = (props) => {
           >
             <ButtonText>{t(`Logout`)}</ButtonText>
           </Button>
-        </LogoutButton>
+        </LogoutButton> */}
       </ModalWrap>
     </Modal>
   )

@@ -1,5 +1,5 @@
 import React, { lazy } from 'react'
-import { Link, Route, Switch, useHistory, useLocation, useRouteMatch } from 'react-router-dom'
+import { Route, Switch, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import { BridgeHistoryList, BridgeOrderDetail, BridgeTransfer, BridgeOrderConfirm } from '../../App'
@@ -7,7 +7,6 @@ import { BridgeHistoryList, BridgeOrderDetail, BridgeTransfer, BridgeOrderConfir
 import { useConnectWalletModalShow } from '../../state/wallet/hooks'
 import WalletListModal from '../../components/WalletListModal'
 
-import '../../styles/transition.css'
 import BridgeLoading from '../../components/BridgeLoading'
 import { useBridgeLoading } from '../../state/application/hooks'
 import { useTranslation } from 'react-i18next'
@@ -17,6 +16,12 @@ import { BridgeService } from '../../api/bridge'
 import { useWeb3React } from '@web3-react/core'
 import { updatePairList } from '../../state/bridge/actions'
 import { PairInfo } from '../../state/bridge/reducer'
+import { ConnectorNames } from '../../constants/wallet'
+import useAuth from '../../hooks/useAuth'
+import { ChainIds } from '../../connectors'
+import { updateErrorInfo } from '../../state/wallet/actions'
+
+import '../../styles/transition.css'
 
 export interface BridgePageProps {}
 
@@ -100,11 +105,43 @@ const BridgePage: React.FunctionComponent<BridgePageProps> = ({ children }) => {
 
   const location = useLocation()
 
-  const { account } = useWeb3React()
-
   const walletListModalShow = useConnectWalletModalShow()
 
+  const [loading, setLoading] = React.useState<boolean>(false)
+
+  const { active, account, chainId } = useWeb3React()
+
+  const { login, logout } = useAuth()
+
   const dispatch = useDispatch()
+
+  const handleChainChanged = () => {
+    // logout for refresh wallet data
+    // logout()
+    const { ethereum } = window
+    console.log(account, chainId)
+    if (ChainIds.includes(chainId as any)) {
+      dispatch(updateErrorInfo({ hasError: false, errorInfo: '' }))
+    } else {
+      dispatch(updateErrorInfo({ hasError: false, errorInfo: 'Unsupported Network' }))
+    }
+
+    if (ethereum && ethereum.on) {
+      login(ConnectorNames.Injected)
+    }
+  }
+  React.useEffect(() => {
+    const { ethereum } = window
+    if (ethereum) {
+      ethereum.on('chainChanged', handleChainChanged)
+    }
+    return () => {
+      if (!window.ethereum) return
+      window.ethereum.removeListener('chainChanged', handleChainChanged)
+    }
+  }, [])
+
+  // important, logout for refresh wallet data
 
   const getPairList = async () => {
     try {
@@ -134,10 +171,23 @@ const BridgePage: React.FunctionComponent<BridgePageProps> = ({ children }) => {
     dispatch(updateBridgeLoading({ visible: false, status: 0 }))
   }
 
+  const autoLogin = () => {
+    const { ethereum } = window
+    if (ethereum && ethereum.on && active && !account) {
+      login(ConnectorNames.Injected)
+    }
+  }
+
   React.useEffect(() => {
     const init = async () => {
-      await getPairList()
+      try {
+        setLoading(() => true)
+        await getPairList()
+      } finally {
+        setLoading(() => false)
+      }
     }
+    autoLogin()
     init()
   }, [])
 
@@ -147,16 +197,24 @@ const BridgePage: React.FunctionComponent<BridgePageProps> = ({ children }) => {
     }
   }, [account])
 
+  React.useEffect(() => {
+    console.log('chainId', chainId)
+  }, [chainId])
+
   return (
     <BridgeWrap>
       <WalletListModal visible={walletListModalShow} />
       <NavBg />
       <Content>
-        {visible ? (
+        {visible || loading ? (
           <LoadingBg>
             <BridgeLoading status={status} />
             <CloseIcon src={require('../../assets/images/bridge/close@2x.png').default} onClick={hideLoading} />
-            <Success>{status !== 0 ? t(`Success`) + '!' : t('Waiting for confirmation')}</Success>
+            {loading ? (
+              <Success>{t('Loading')}...</Success>
+            ) : (
+              <Success>{status !== 0 ? t(`Success`) + '!' : t('Waiting for confirmation')}</Success>
+            )}
           </LoadingBg>
         ) : (
           <SwitchTransition mode="out-in">

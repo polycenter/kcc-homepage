@@ -13,8 +13,9 @@ import { toggleConnectWalletModalShow, updateErrorInfo } from '../../state/walle
 import { ChainIds } from '../../connectors/index'
 import { getNetworkInfo } from '../../utils/index'
 import { CenterRow } from '../Row/index'
-import { Badge, notification } from 'antd'
+import { Badge, notification, Dropdown } from 'antd'
 import { AlertOutlined } from '@ant-design/icons'
+import NetworkList from '../NetworkList'
 
 const ConnectButton = styled(LanguageButton)`
   width: auto;
@@ -28,8 +29,7 @@ const Text = styled.span`
 `
 
 const ErrorButton = styled(ConnectButton)`
-  background: #f00;
-  color: fff;
+  color: #f00;
   border: 1px solid #fff;
   display: flex;
   justify-content: center;
@@ -45,6 +45,11 @@ const WalletIcon = styled.img`
 `
 
 const NetworkWrap = styled(CenterRow)`
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+  width: 90px;
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
   border-right: 1px solid ${theme.colors.primary};
@@ -54,10 +59,10 @@ const NetworkWrap = styled(CenterRow)`
 
 const UnlockButton: React.FunctionComponent = () => {
   const { t } = useTranslation()
+
   const { account, chainId } = useWeb3React()
 
   const [logoutModalShow, setLogoutModalShow] = React.useState<boolean>(false)
-  // const [walletListModalShow, setWalletListModalShow] = React.useState<boolean>(false)
 
   const dispatch = useDispatch()
 
@@ -68,55 +73,51 @@ const UnlockButton: React.FunctionComponent = () => {
   }
 
   const selectedNetworkInfo = React.useMemo(() => {
-    if (ChainIds.includes(chainId as any)) {
-      dispatch(updateErrorInfo({ errorInfo: '', hasError: false }))
-      return getNetworkInfo(chainId as any)
-    } else {
-      notification.error({
-        message: t('Unsupported Chain Id'),
-        description: t('Unsupported Chain Id Error. Check your chain Id'),
-      })
-      dispatch(updateErrorInfo({ hasError: true, errorInfo: 'Unsupported Chain Id' }))
-    }
-  }, [chainId, ChainIds])
+    console.log('chainId', chainId)
+    return getNetworkInfo(chainId as any)
+  }, [chainId])
 
   const connect = () => {
-    // login(ConnectorNames.Injected)
-    // setWalletListModalShow(() => true)
     dispatch(toggleConnectWalletModalShow({ show: true }))
   }
 
-  let btn: any = null
-
-  if (hasError) {
-    btn = (
-      <ErrorButton>
-        <AlertOutlined style={{ fontSize: '16px', color: '#fff', margin: '-2px 5px 0px 5px' }} />
-        <Text>{t(`${errorInfo}`)}</Text>
-      </ErrorButton>
-    )
-  } else if (account) {
-    btn = (
-      <ConnectButton
-        onClick={() => {
-          setLogoutModalShow(() => true)
-        }}
-      >
-        <NetworkWrap>
-          <Badge status="success" />
-          <Text>{selectedNetworkInfo?.name}</Text>
-        </NetworkWrap>
-        <Text>{shortAddress(account)}</Text>
-      </ConnectButton>
-    )
-  } else {
-    btn = (
-      <ConnectButton onClick={connect}>
-        <WalletIcon src={require('../../assets/images/bridge/wanllet@2x.png').default} />
-        <Text>{t(`Connect Wallet`)}</Text>
-      </ConnectButton>
-    )
-  }
+  const btn = React.useMemo(() => {
+    if (hasError) {
+      return (
+        <Dropdown overlay={<NetworkList />}>
+          <ErrorButton>
+            <AlertOutlined style={{ fontSize: '16px', color: '#fff', margin: '-2px 5px 0px 5px' }} />
+            <Text>{t(`${errorInfo}`)}</Text>
+          </ErrorButton>
+        </Dropdown>
+      )
+    } else if (account) {
+      return (
+        <ConnectButton>
+          <Dropdown overlay={<NetworkList />} placement="bottomLeft">
+            <NetworkWrap>
+              <Badge status="success" />
+              <Text>{selectedNetworkInfo?.name}</Text>
+            </NetworkWrap>
+          </Dropdown>
+          <Text
+            onClick={() => {
+              setLogoutModalShow(() => true)
+            }}
+          >
+            {shortAddress(account)}
+          </Text>
+        </ConnectButton>
+      )
+    } else {
+      return (
+        <ConnectButton onClick={connect}>
+          <WalletIcon src={require('../../assets/images/bridge/wanllet@2x.png').default} />
+          <Text>{t(`Connect Wallet`)}</Text>
+        </ConnectButton>
+      )
+    }
+  }, [hasError, account, selectedNetworkInfo])
 
   return (
     <>

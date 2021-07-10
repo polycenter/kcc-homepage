@@ -1,14 +1,11 @@
 import React, { lazy, Suspense } from 'react'
-import { Route, Switch, useLocation } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 
 import Web3ReactManager, { getLibrary } from './components/Web3ReactManager'
 import FullLoading from './components/FullLoading'
 import AppLayout from './layouts/AppLayout'
 import Home from './pages/home/'
 import NotFound from './pages/error'
-
-import { useWeb3React } from '@web3-react/core'
-import useAuth from './hooks/useAuth'
 
 const Grants = lazy(() => import(/* webpackChunkName:'Grant' */ './pages/grants/index'))
 const Activity = lazy(() => import(/* webpackChunkName:'Activity' */ './pages/activities/index'))
@@ -21,7 +18,6 @@ export const BridgeOrderConfirm = lazy(
 )
 
 import './App.less'
-import { ConnectorNames } from './constants/wallet'
 
 function RouteWithSubRoutes(route: { path: string; component: any; routes: any }) {
   return (
@@ -60,15 +56,6 @@ export default function App() {
       ],
     },
   ]
-
-  const { active, activate, account } = useWeb3React()
-  const { login } = useAuth()
-
-  /*   React.useEffect(() => {
-    if (active && !account) {
-      login(ConnectorNames.Injected)
-    }
-  }, [active, account]) */
 
   return (
     <Suspense fallback={<FullLoading />}>

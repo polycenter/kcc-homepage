@@ -6,6 +6,10 @@ import { useHistory } from 'react-router'
 import { Progress } from 'antd'
 import { CenterRow } from '../../components/Row/index'
 import { useTranslation } from 'react-i18next'
+import { useQuery } from '../../hooks/useQuery'
+import { Base64 } from '../../utils/base64'
+import { History } from './list'
+import { getNetworkInfo, getPairInfo } from '../../utils/index'
 
 export interface BridgeDetailPageProps {}
 
@@ -95,6 +99,7 @@ const NetworkIcon = styled.img`
   width: 24px;
   height: 24px;
   background: #d8d8d8;
+  border-radius: 50%;
 `
 
 const NetworkName = styled.span`
@@ -141,19 +146,74 @@ const SuccessIconWrap = styled.img`
 const SuccessIcon = require('../../assets/images/bridge/success-process.png').default
 const ProcessingIcon = require('../../assets/images/bridge/in-process.png').default
 
-const BridgeDetailPage: React.FunctionComponent<BridgeDetailPageProps> = () => {
+const BridgeDetailPage: React.FunctionComponent<BridgeDetailPageProps> = (props) => {
   const { t } = useTranslation()
 
   const icon = (current: number, nth: number) => {
     return <StepIcon src={nth < current ? SuccessIcon : ProcessingIcon} />
   }
-  const [current, setCurrent] = React.useState<number>(2)
-  const [percent1, setPercent1] = React.useState<number>(50)
+  const [current, setCurrent] = React.useState<number>(0)
+  const [percent1, setPercent1] = React.useState<number>(0)
   const [percent2, setPercent2] = React.useState<number>(0)
+
   const history = useHistory()
+
+  const query = useQuery()
+
+  const order: History = React.useMemo(() => {
+    try {
+      return JSON.parse(Base64.decode(query.get('o')))
+    } catch {
+      console.log('parse url error')
+      history.push('/bridge/list')
+    }
+  }, [query])
+
+  React.useEffect(() => {
+    switch (order.status) {
+      case 'CREATED':
+        setPercent1(() => 100)
+        setPercent2(() => 1)
+        setCurrent(() => 0)
+        break
+      case 'CANCELLED':
+        setPercent1(() => 100)
+        setPercent2(() => 1)
+        setCurrent(() => 1)
+        break
+      case 'VERIFIED':
+        setPercent1(() => 100)
+        setPercent2(() => 2)
+        setCurrent(() => 1)
+        break
+
+      case 'PROCESSING':
+        setPercent1(() => 100)
+        setPercent2(() => 2)
+        setCurrent(() => 40)
+        break
+      case 'CONFIRMED':
+      case 'SUCCESS':
+        setPercent1(() => 100)
+        setPercent2(() => 100)
+        setCurrent(() => 3)
+    }
+  }, [order])
+
+  const network = React.useMemo(() => {
+    const selectedPairInfo = getPairInfo(order.pairId as any)
+    return {
+      src: getNetworkInfo(selectedPairInfo?.srcChainInfo.chainId as any),
+      dist: getNetworkInfo(selectedPairInfo?.dstChainInfo.chainId as any),
+    }
+  }, [order])
 
   const nav2list = () => {
     history.push('/bridge/list')
+  }
+
+  const nav2Scan = (url: string) => {
+    window.open(url, '_blank')
   }
 
   return (
@@ -168,8 +228,8 @@ const BridgeDetailPage: React.FunctionComponent<BridgeDetailPageProps> = () => {
           <NetworkWrap>
             <BetweenBox>
               <CenterRow>
-                <NetworkIcon />
-                <NetworkName>Ethereum Network</NetworkName>
+                <NetworkIcon src={network.src.logo} />
+                <NetworkName>{network.src.fullName}</NetworkName>
               </CenterRow>
               <StatusText style={{ color: current > 0 ? '#31D7A0' : '#01081E' }}>
                 {current > 0 ? t('Completed') : t(`Process`)}
@@ -187,15 +247,17 @@ const BridgeDetailPage: React.FunctionComponent<BridgeDetailPageProps> = () => {
               }}
             />
             <CenterRow>
-              <LinkText>{t(`View hash`)}</LinkText>
+              <LinkText onClick={nav2Scan.bind(null, `${network.src.browser}/tx/${order.srcTxHash}`)}>
+                {t(`View hash`)}
+              </LinkText>
               <LinkIcon src={require('../../assets/images/bridge/link.svg').default} />
             </CenterRow>
           </NetworkWrap>
           <NetworkWrap style={{ marginTop: '20px' }}>
             <BetweenBox>
               <CenterRow>
-                <NetworkIcon />
-                <NetworkName>Ethereum Network</NetworkName>
+                <NetworkIcon src={network.dist.logo} />
+                <NetworkName>{network.dist.fullName}</NetworkName>
               </CenterRow>
               <StatusText style={{ color: current > 1 ? '#31D7A0' : '#01081E' }}>
                 {current > 1 ? t('Completed') : t(`Process`)}
@@ -213,18 +275,20 @@ const BridgeDetailPage: React.FunctionComponent<BridgeDetailPageProps> = () => {
               }}
             />
             <CenterRow>
-              <LinkText>{t(`View hash`)}</LinkText>
+              <LinkText onClick={nav2Scan.bind(null, `${network.dist.browser}/tx/${order.dstTxHash}`)}>
+                {t(`View hash`)}
+              </LinkText>
               <LinkIcon src={require('../../assets/images/bridge/link.svg').default} />
             </CenterRow>
           </NetworkWrap>
           <CenterRow style={{ marginTop: '20px' }}>
-            {current === 2 ? (
+            {order.status === 'SUCCESS' ? (
               <>
                 <SuccessIconWrap src={require('../../assets/images/bridge/selected@2x.png').default} />
                 <StatusText style={{ color: '#31D7A0' }}>{t(`Success`)}!</StatusText>
               </>
             ) : (
-              <StatusText>{t(`Processing`)}...</StatusText>
+              <StatusText>{t(`${order.status}`)}...</StatusText>
             )}
           </CenterRow>
         </StepsWrap>

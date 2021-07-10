@@ -5,8 +5,9 @@ interface Window {
   ethereum?: {
     isMetaMask?: true
     autoRefreshOnNetworkChange: boolean
-    on?: (...args: any[]) => void
-    removeListener?: (...args: any[]) => void
+    on: (...args: any[]) => void
+    removeListener: (...args: any[]) => void
+    request: any
   }
   web3?: any
   BinanceChain?: BinanceChain

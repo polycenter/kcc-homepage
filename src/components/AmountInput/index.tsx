@@ -60,7 +60,7 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
 }) => {
   const { t } = useTranslation()
   const { account } = useWeb3React()
-  const [errorInfo, setErrorInfo] = React.useState<string>('')
+  const [errorInfo, setErrorInfo] = React.useState<string>('Invalid number')
 
   const pairInfo = getPairInfo(pairId)
 
@@ -83,41 +83,41 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
     if (!account) {
       // no check
       setCheckList((list: any) => {
-        return { ...list, amount: false }
+        return { ...list, amount: true }
       })
-    } else if (input[0] === '0' || input[0] === '.') {
+    } else if (input[0] === '.' || !input || inputAmount <= 0) {
       // invalid number format
       setCheckList((list: any) => {
-        return { ...list, amount: true }
+        return { ...list, amount: false }
       })
       setErrorInfo(() => errorFormatText)
     } else if (new BN(inputAmount).gte(available)) {
       // less than balance
       setCheckList((list: any) => {
-        return { ...list, amount: true }
+        return { ...list, amount: false }
       })
       setErrorInfo(() => insufficientText)
     } else if (new BN(inputAmount).gte(totalSupply) && pairInfo?.limitStatus) {
       // less than supply
       setCheckList((list: any) => {
-        return { ...list, amount: true }
+        return { ...list, amount: false }
       })
       setErrorInfo(() => insufficienBridgeText)
     } else if (new BN(inputAmount).lt(new BN(pairInfo?.min as any)) && pairInfo?.limitStatus) {
       // check min
       setCheckList((list: any) => {
-        return { ...list, amount: true }
+        return { ...list, amount: false }
       })
       setErrorInfo(() => minAmountText)
     } else if (maxLimit && new BN(inputAmount).gt(new BN(pairInfo?.max as any)) && pairInfo?.limitStatus) {
       // check min
       setCheckList((list: any) => {
-        return { ...list, amount: true }
+        return { ...list, amount: false }
       })
       setErrorInfo(() => maxAmountText)
     } else {
       setCheckList((list: any) => {
-        return { ...list, amount: false }
+        return { ...list, amount: true }
       })
     }
     setAmount(e.target.value)
@@ -127,7 +127,7 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
     <AmountInputWrap>
       <TextWrap>
         <BridgeTitle>{t(`Amount`)}</BridgeTitle>
-        {checkList.amount ? <ErrorText> * {t(errorInfo)}</ErrorText> : null}
+        {!checkList.amount && account ? <ErrorText> * {t(`${errorInfo}`)}</ErrorText> : null}
       </TextWrap>
       <Input
         value={amount}
