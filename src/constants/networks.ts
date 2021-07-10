@@ -19,7 +19,7 @@ export const networks = {
     symbol: 'ETH',
     browser: 'https://etherscan.io',
     logo: 'https://cdn.jsdelivr.net/gh/kucoin-community-chain/tokens-info@main/icons/chain-1.png',
-    bridgeCoreAddress: '',
+    bridgeCoreAddress: '0x6b9862e7e0203f7D2640E246A15EA961737489b0',
   },
   4: {
     name: 'Rinkeby',
@@ -34,18 +34,18 @@ export const networks = {
   },
   321: {
     name: 'KCC',
-    fullName: 'KuCoin Community Chain Network',
+    fullName: 'KCC Network',
     rpc: 'https://rpc-mainnet.kcc.network',
     chain_id: 321,
     decimals: 18,
     symbol: 'KCS',
     browser: 'https://explorer.kcc.io',
     logo: 'https://cdn.jsdelivr.net/gh/kucoin-community-chain/tokens-info@main/icons/chain-321.png',
-    bridgeCoreAddress: '',
+    bridgeCoreAddress: '0x6b9862e7e0203f7D2640E246A15EA961737489b0',
   },
   322: {
     name: 'KCC-TEST',
-    fullName: 'KuCoin Community Chain Test Network',
+    fullName: 'KCC Test Network',
     rpc: 'https://rpc-testnet.kcc.network',
     chain_id: 322,
     decimals: 18,
@@ -68,4 +68,17 @@ export interface NetworkType {
   decimals: number
   logo: string
   bridgeCoreAddress: string
+}
+
+export interface AddEthereumChainParameter {
+  chainId: string // A 0x-prefixed hexadecimal string
+  chainName: string
+  nativeCurrency: {
+    name: string
+    symbol: string // 2-6 characters long
+    decimals: number
+  }
+  rpcUrls: string[]
+  blockExplorerUrls?: string[]
+  iconUrls?: string[] // Currently ignored.
 }

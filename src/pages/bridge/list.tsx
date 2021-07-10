@@ -13,6 +13,7 @@ import BN from 'bignumber.js'
 import { BridgeService } from '../../api/bridge'
 import { useWeb3React } from '@web3-react/core'
 import { BaseButton } from '../../components/TransferButton'
+import { Base64 } from '../../utils/base64'
 
 export interface BridgeListPageProps {}
 
@@ -37,6 +38,7 @@ const HistoryWrap = styled(TransferWrap)`
 
 const HistoryListWrap = styled.div`
   width: 100%;
+  height: 400px;
   margin-bottom: 0px;
   margin-top: 24px;
   overflow: scroll;
@@ -86,6 +88,7 @@ const NetworkName = styled.span`
 const NetworkIcon = styled.img`
   width: 24px;
   height: 24px;
+  border-radius: 50%;
   margin-right: 4px;
 `
 const NetWorkDirectionIcon = styled.img`
@@ -113,7 +116,7 @@ const Fee = styled.div`
   color: #31d7a0;
 `
 
-const EmptyWrap = styled.div`
+const EmptyWrap = styled.div<{ loading: boolean }>`
   background: linear-gradient(180deg, #f5fffc 0%, #feffff 100%);
   width: 100%;
   height: 380px;
@@ -121,6 +124,12 @@ const EmptyWrap = styled.div`
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
+  opacity: ${({ loading }) => {
+    if (loading) {
+      return 0
+    }
+    return 1
+  }};
 `
 
 const EmptyIcon = styled.img`
@@ -229,9 +238,10 @@ const BridgeListPage: React.FunctionComponent<BridgeListPageProps> = () => {
     try {
       setLoading(() => true)
       const res = await BridgeService.transitionList(account, 1, currentPage, 50)
-      console.log(res.data.data)
-      if (res?.data.data) {
-        setHistoryList(() => res.data.data)
+      const data = res.data.data
+      if (data) {
+        setHistoryList(() => data.list)
+        setTotalPage(() => data.total / 50 + 1)
       }
     } finally {
       setLoading(() => false)
@@ -250,6 +260,12 @@ const BridgeListPage: React.FunctionComponent<BridgeListPageProps> = () => {
     history.push('/bridge/transfer')
   }
 
+  const nav2detail = (transaction: History) => {
+    const orderRaw = JSON.stringify(transaction)
+    const order = Base64.encode(orderRaw) as any
+    history.push(`/bridge/detail?o=${order}`)
+  }
+
   const list = historyList.map((transaction, index) => {
     const no = index + 1
     const selectedPairInfo = getPairInfo(transaction.pairId) as PairInfo
@@ -257,30 +273,30 @@ const BridgeListPage: React.FunctionComponent<BridgeListPageProps> = () => {
     const distNetworkInfo = getNetworkInfo(selectedPairInfo.dstChainInfo.chainId)
 
     return (
-      <Order>
+      <Order onClick={nav2detail.bind(null, transaction)} key={transaction.id}>
         <CenterRow>
           <Number>{no < 10 ? `0${no}` : `${no}`}</Number>
-          <NetworkIcon />
+          <NetworkIcon src={srcNetworkInfo.logo} />
           <NetworkName>{srcNetworkInfo.fullName}</NetworkName>
           <NetWorkDirectionIcon src={DirectionIcon} />
-          <NetworkIcon />
+          <NetworkIcon src={distNetworkInfo.logo} />
           <NetworkName>{distNetworkInfo.fullName}</NetworkName>
         </CenterRow>
         <OrderDetailWrap>
           <Left>
             <OrderDetaiItem>
               <Title>{t(`Asset`)}:</Title>
-              <Content>{transaction.srcCurrency.toUpperCase()}</Content>
+              <Fee>{transaction.srcCurrency.toUpperCase()}</Fee>
             </OrderDetaiItem>
             <OrderDetaiItem>
               <Title>{t(`Amount`)}:</Title>
-              <Content>{new BN(transaction.dstAmount).toFixed(6)}</Content>
+              <Fee>{new BN(transaction.dstAmount).precision(6).toNumber()}</Fee>
             </OrderDetaiItem>
             <OrderDetaiItem>
               <Title>{t(`Transfer fee`)}:</Title>
-              <Fee>
-                {new BN(transaction.srcFee).toFixed(6)} {srcNetworkInfo.symbol.toUpperCase()}
-              </Fee>
+              <Content style={{ color: '#999', fontWeight: 300 }}>
+                {new BN(transaction.srcFee).toNumber()} {srcNetworkInfo.symbol.toUpperCase()}
+              </Content>
             </OrderDetaiItem>
           </Left>
           <Right>
@@ -301,25 +317,25 @@ const BridgeListPage: React.FunctionComponent<BridgeListPageProps> = () => {
     <BridgeListWrap>
       <HistoryWrap>
         <BridgeTitlePanel title="Transaction History" iconEvent={nav2transfer} />
-        {historyList.length ? (
-          <Spin spinning={loading}>
+        <Spin spinning={loading}>
+          {historyList.length ? (
             <HistoryListWrap>{list}</HistoryListWrap>
-          </Spin>
-        ) : (
-          <EmptyWrap>
-            {account ? (
-              <>
-                <EmptyIcon src={require('../../assets/images/bridge/empty.svg').default} />
-                <EmptyText>{t(`No record`)}</EmptyText>
-              </>
-            ) : (
-              <EmptyWrap>
-                <EmptyIcon src={require('../../assets/images/bridge/empty.svg').default} />
-                <EmptyText>{t(`Connect wallet first`)}</EmptyText>
-              </EmptyWrap>
-            )}
-          </EmptyWrap>
-        )}
+          ) : (
+            <EmptyWrap loading={true}>
+              {account ? (
+                <>
+                  <EmptyIcon src={require('../../assets/images/bridge/empty.svg').default} />
+                  <EmptyText>{t(`No record`)}</EmptyText>
+                </>
+              ) : (
+                <EmptyWrap loading={loading}>
+                  <EmptyIcon src={require('../../assets/images/bridge/empty.svg').default} />
+                  <EmptyText>{t(`Connect wallet first`)}</EmptyText>
+                </EmptyWrap>
+              )}
+            </EmptyWrap>
+          )}
+        </Spin>
       </HistoryWrap>
     </BridgeListWrap>
   )

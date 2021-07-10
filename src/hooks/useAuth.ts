@@ -29,7 +29,7 @@ const useAuth = () => {
         window.localStorage.removeItem(connectorLocalStorageKey)
         if (error instanceof UnsupportedChainIdError) {
           // error modal
-          dispatch(updateErrorInfo({ hasError: true, errorInfo: 'Unsupported Chain Id' }))
+          dispatch(updateErrorInfo({ hasError: true, errorInfo: 'Unsupported Network' }))
         } else if (error instanceof NoEthereumProviderError) {
           notification.error({
             message: t('Provider Error'),

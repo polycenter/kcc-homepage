@@ -7,6 +7,7 @@ import { Currency } from '../../state/bridge/reducer'
 export interface TransferLimitProps {
   available: string
   currency: Currency
+  style: any
 }
 
 const TransferLimitWrap = styled.div`
@@ -24,10 +25,10 @@ const Title = styled.div`
   line-height: 22px;
 `
 
-const TransferLimit: React.FunctionComponent<TransferLimitProps> = ({ available, currency }) => {
+const TransferLimit: React.FunctionComponent<TransferLimitProps> = ({ style, available, currency }) => {
   const { t } = useTranslation()
   return (
-    <TransferLimitWrap>
+    <TransferLimitWrap style={{ ...style }}>
       <Title>
         {t(`Available Balance`)}: {`${new BN(available).div(Math.pow(10, currency.decimals)).toString()}`}
       </Title>

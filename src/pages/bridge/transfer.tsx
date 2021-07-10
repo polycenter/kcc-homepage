@@ -121,7 +121,6 @@ const statusList = {
   pair: false,
   amount: false,
   address: false,
-  asset: false,
   approve: false,
   network: false,
 }
@@ -183,6 +182,14 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
 
   React.useEffect(() => {
     setReceiveAddress(() => account)
+    if (account) {
+      setCheckList((list) => {
+        return {
+          ...list,
+          address: true,
+        }
+      })
+    }
   }, [account])
 
   const isSelectedNetwork = React.useMemo(() => {
@@ -196,7 +203,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
     setCheckList((list) => {
       return {
         ...list,
-        address: !isAddress,
+        address: isAddress,
       }
     })
     setReceiveAddress(() => address)
@@ -214,6 +221,12 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
   const selectedPairInfo = React.useMemo(() => {
     console.log(` selectedPairInfo is chaing`, getPairInfo(currentPairId))
     if (currentPairId !== -1) {
+      setCheckList((list) => {
+        return {
+          ...list,
+          pair: true,
+        }
+      })
       return getPairInfo(currentPairId)
     }
   }, [currentPairId])
@@ -290,12 +303,13 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
           </>
         )
       }
+
       return (
         <>
           <ReceiveText style={{ marginLeft: '10px' }}>Available:</ReceiveText>
           <ReceiveText style={{ marginLeft: '10px' }}>
             {t(`Switch Network`)}
-            {srcChainInfo.name}
+            {` ${srcChainInfo.name}`}
           </ReceiveText>
         </>
       )
@@ -422,7 +436,11 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
   return (
     <BridgeTransferWrap>
       <TransferWrap>
-        {selectedPairInfo?.limitStatus ? <TransferLimit currency={currency} available={totalSupply} /> : null}
+        <TransferLimit
+          style={{ opacity: selectedPairInfo?.limitStatus ? 1 : 0 }}
+          currency={currency}
+          available={totalSupply}
+        />
         <BridgeTitle>{t(`Asset`)}</BridgeTitle>
         <SelectToken list={tokenList} setCurrency={setSelectedCurrency} currency={currency} />
         <ChainBridge
@@ -452,7 +470,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
         <ReceiveAddressWrap>
           <TextWrap>
             <BridgeTitle>{t(`Receiving address`)}</BridgeTitle>
-            {checkList.address ? <ErrorText> * {t(`Invalid address`)}</ErrorText> : null}
+            {!checkList.address && account ? <ErrorText> * {t(`Invalid address`)}</ErrorText> : null}
           </TextWrap>
           <Input value={receiveAddress} onChange={changeReceiveAddress} placeholder={t(`Destination address`)} />
           <NoticeText>
@@ -464,6 +482,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
           checkList={checkList}
           applyApprove={applyApprove}
           generateOrder={generateOrder}
+          amount={amount}
         />
       </TransferWrap>
     </BridgeTransferWrap>
