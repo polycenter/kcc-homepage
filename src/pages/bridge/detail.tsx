@@ -10,7 +10,6 @@ import { useQuery } from '../../hooks/useQuery'
 import { Base64 } from '../../utils/base64'
 import { History } from './list'
 import { getNetworkInfo, getPairInfo } from '../../utils/index'
-import { network } from '../../connectors/index'
 
 export interface BridgeDetailPageProps {}
 

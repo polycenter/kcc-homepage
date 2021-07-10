@@ -85,7 +85,7 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
       setCheckList((list: any) => {
         return { ...list, amount: true }
       })
-    } else if (input[0] === '0' || input[0] === '.' || !input) {
+    } else if (input[0] === '.' || !input || inputAmount <= 0) {
       // invalid number format
       setCheckList((list: any) => {
         return { ...list, amount: false }

@@ -12,7 +12,6 @@ import { useTranslation } from 'react-i18next'
 import BN from 'bignumber.js'
 import { BridgeService } from '../../api/bridge'
 import { useWeb3React } from '@web3-react/core'
-import { BaseButton } from '../../components/TransferButton'
 import { Base64 } from '../../utils/base64'
 
 export interface BridgeListPageProps {}
@@ -116,7 +115,7 @@ const Fee = styled.div`
   color: #31d7a0;
 `
 
-const EmptyWrap = styled.div<{ loading: boolean }>`
+const EmptyParentWrap = styled.div`
   background: linear-gradient(180deg, #f5fffc 0%, #feffff 100%);
   width: 100%;
   height: 380px;
@@ -124,6 +123,9 @@ const EmptyWrap = styled.div<{ loading: boolean }>`
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
+`
+
+const EmptyWrap = styled(EmptyParentWrap)<{ loading: boolean }>`
   opacity: ${({ loading }) => {
     if (loading) {
       return 0
@@ -316,12 +318,12 @@ const BridgeListPage: React.FunctionComponent<BridgeListPageProps> = () => {
   return (
     <BridgeListWrap>
       <HistoryWrap>
-        <BridgeTitlePanel title="Transaction History" iconEvent={nav2transfer} />
+        <BridgeTitlePanel title={t(`Transaction History`)} iconEvent={nav2transfer} />
         <Spin spinning={loading}>
           {historyList.length ? (
             <HistoryListWrap>{list}</HistoryListWrap>
           ) : (
-            <EmptyWrap loading={true}>
+            <EmptyParentWrap>
               {account ? (
                 <>
                   <EmptyIcon src={require('../../assets/images/bridge/empty.svg').default} />
@@ -333,7 +335,7 @@ const BridgeListPage: React.FunctionComponent<BridgeListPageProps> = () => {
                   <EmptyText>{t(`Connect wallet first`)}</EmptyText>
                 </EmptyWrap>
               )}
-            </EmptyWrap>
+            </EmptyParentWrap>
           )}
         </Spin>
       </HistoryWrap>
