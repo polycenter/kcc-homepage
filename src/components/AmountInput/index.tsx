@@ -99,7 +99,7 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
       // less than supply
       updateAddressStatus(false, insufficienBridgeText)
     } else if (pairInfo?.limitStatus && new BN(input).lt(new BN(pairInfo?.min as any))) {
-      // check min
+      //BUG (min= amount - swapfee) check min
       updateAddressStatus(false, minAmountText)
     } else if (pairInfo?.limitStatus && maxLimit && new BN(input).gt(new BN(pairInfo?.max as any))) {
       // check max
