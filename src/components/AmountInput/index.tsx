@@ -66,12 +66,10 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
 
   const errorFormatText = `Invalid number`
   const insufficientText = `Insufficient available balance`
-  const minAmountText = `The minimum exchange quantity is ${new BN(pairInfo?.min ?? 0)
-    .div(Math.pow(10, currency.decimals))
-    .toString()}`
-  const maxAmountText = `The maximum exchange quantity is ${new BN(pairInfo?.min ?? 0)
-    .div(Math.pow(10, currency.decimals))
-    .toString()}`
+  const minAmountText =
+    `The minimum exchange quantity is` + new BN(pairInfo?.min ?? 0).div(Math.pow(10, currency.decimals)).toString()
+  const maxAmountText =
+    `The maximum exchange quantity is` + new BN(pairInfo?.min ?? 0).div(Math.pow(10, currency.decimals)).toString()
   const insufficienBridgeText = `Input amount is bigger than bridge available balance`
 
   const changeAmount = (e: any) => {

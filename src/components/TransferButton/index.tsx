@@ -164,6 +164,15 @@ const TransferButton: React.FunctionComponent<TransferButtonProps> = ({
     )
   }
 
+  // not connect
+  if (pairId === -1) {
+    return (
+      <TransferButtonWrap>
+        <BaseButton onClick={connect}>{t(`No Available Network`)}</BaseButton>
+      </TransferButtonWrap>
+    )
+  }
+
   // switch network
   if (!checkList.network && selectedNetworkInfo) {
     return (

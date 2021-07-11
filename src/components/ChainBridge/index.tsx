@@ -4,13 +4,13 @@ import styled from 'styled-components'
 import { BridgeTitle } from '../../pages/bridge/transfer'
 import { useTranslation } from 'react-i18next'
 import { ChainBridgeType } from '../../pages/bridge/confirm'
-import { useChainIdList, useTokenSupporChain, useCurrentCurrency, usePariList } from '../../state/bridge/hooks'
-import { message } from 'antd'
-import { ChainId } from '../../connectors/index'
+import { useTokenSupporChain, usePariList } from '../../state/bridge/hooks'
+import { message, Tooltip } from 'antd'
 
 export interface ChainBridgeProps {
   srcId: any
   distId: any
+  pairId?: number
   type: ChainBridgeType
   changeSrcId?: any
   changeDistId?: any
@@ -26,11 +26,25 @@ const ChainBridgeWrap = styled.div`
   justify-content: space-between;
   align-items: center;
 `
-const SwapIcon = styled.img`
+const SwapIcon = styled.img<{ disabled: boolean }>`
   width: 20px;
   height: 20px;
   margin: 0 10px;
   cursor: pointer;
+  opacity: ${({ disabled }) => {
+    if (disabled) {
+      return 0.2
+    }
+    return 1
+  }};
+  &:hover {
+    cursor: ${({ disabled }) => {
+      if (disabled) {
+        return 'not-allowed'
+      }
+      return 'pointer'
+    }};
+  }
 `
 const ToIcon = styled.img`
   width: 16px;
@@ -57,17 +71,16 @@ const ChainBridge: React.FunctionComponent<ChainBridgeProps> = (props) => {
 
   const pairList = usePariList()
 
-  /*   console.log('srcChainIds', srcChainIds)
-  console.log('distChainIds', distChainIds) */
+  const swapStatus = React.useMemo(() => {
+    return srcChainIds.includes(props.distId) && distChainIds.includes(props.srcId)
+  }, [props.distId, props.srcId, distChainIds, srcChainIds])
 
   const swap = () => {
-    if (srcChainIds.includes(props.distId) && distChainIds.includes(props.srcId)) {
+    if (swapStatus) {
       let d = props.distId
       let s = props.srcId
       props.changeDistId(s)
       props.changeSrcId(d)
-    } else {
-      message.error(t("Can't swap the network for") + props.currency.symbol.toUpperCase())
     }
   }
 
@@ -84,13 +97,6 @@ const ChainBridge: React.FunctionComponent<ChainBridgeProps> = (props) => {
     return ids
   }, [props.srcId])
 
-  /* 
-  React.useEffect(() => {
-    if (props.type === ChainBridgeType.DISPLAY) {
-        change
-      }
-  },[props.type]) */
-
   return (
     <ChainBridgeWrap>
       <Box>
@@ -101,10 +107,23 @@ const ChainBridge: React.FunctionComponent<ChainBridgeProps> = (props) => {
           networkId={props.srcId}
           oppsiteId={props.distId}
           type={props.type}
+          pairId={props.pairId}
           changeNetwork={props.changeSrcId}
         />
       </Box>
-      {props.type === ChainBridgeType.OPERATE ? <SwapIcon src={Swap} onClick={swap} /> : <ToIcon src={To} />}
+      {props.type === ChainBridgeType.OPERATE ? (
+        <>
+          {swapStatus ? (
+            <SwapIcon disabled={false} src={Swap} onClick={swap} />
+          ) : (
+            <Tooltip placement="top" title={t(`Can not swap`)}>
+              <SwapIcon disabled={!swapStatus} src={Swap} />
+            </Tooltip>
+          )}
+        </>
+      ) : (
+        <ToIcon src={To} />
+      )}
 
       <Box>
         <BridgeTitle>{t('To')}</BridgeTitle>
@@ -113,6 +132,7 @@ const ChainBridge: React.FunctionComponent<ChainBridgeProps> = (props) => {
           networkId={props.distId}
           availableChainIds={cuclDistChainIds}
           oppsiteId={props.srcId}
+          pairId={props.pairId}
           type={props.type}
           changeNetwork={props.changeDistId}
         />

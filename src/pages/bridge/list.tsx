@@ -58,14 +58,14 @@ const Order = styled.div`
 `
 
 const Number = styled.span`
-  padding-top: 2px;
   font-size: 20px;
   font-family: URWDIN-Bold, URWDIN;
   font-style: italic;
   font-weight: normal;
   color: rgba(0, 6, 33, 0.87);
   margin-right: 12px;
-  padding-top: 2px;
+  height: 18px;
+  line-height: 22px;
 `
 
 const NetworkWrap = styled.div`
