@@ -5,7 +5,7 @@ import { BridgeTitle } from '../../pages/bridge/transfer'
 import { useTranslation } from 'react-i18next'
 import { ChainBridgeType } from '../../pages/bridge/confirm'
 import { useTokenSupporChain, usePariList } from '../../state/bridge/hooks'
-import { message, Tooltip } from 'antd'
+import { Tooltip } from 'antd'
 
 export interface ChainBridgeProps {
   srcId: any

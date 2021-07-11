@@ -137,12 +137,12 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
 
   const receiveAmount = React.useMemo(() => {
     if (!selectedChainInfo?.srcChainInfo) return
-    let receiveAmount = 0
+    let receiveAmount = ''
     if (selectedChainInfo?.srcChainInfo.tag === 0) {
-      receiveAmount = order.amount - swapFee
+      receiveAmount = new BN(order.amount).minus(swapFee).toString()
       return new BN(receiveAmount).div(Math.pow(10, networkInfo.decimals)).toString()
     } else {
-      receiveAmount = order.amount
+      receiveAmount = new BN(order.amount).toString()
       return new BN(receiveAmount).div(Math.pow(10, selectedChainInfo?.srcChainInfo.decimals)).toString()
     }
   }, [swapFee, order])
@@ -216,17 +216,20 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
   return (
     <BridgeConfirmWrap>
       <TransferWrap>
-        <BridgeTitlePanel title="Transfer confirmation" iconEvent={back2transfer} />
+        <BridgeTitlePanel title={t('Transfer confirmation')} iconEvent={back2transfer} />
         <ChainBridge srcId={order.srcId} distId={order.distId} type={ChainBridgeType.DISPLAY} />
         <Box>
           <ConfirmItem
-            title="Amount"
+            title={t('Amount')}
             content={`${new BN(order.amount)
               .div(Math.pow(10, selectedChainInfo?.srcChainInfo.decimals as any))
               .toString()} ${order.currency.symbol.toUpperCase()}`}
           />
-          <ConfirmItem title="Amount received" content={`${receiveAmount} ${order.currency.symbol.toUpperCase()}`} />
-          <ConfirmItem title="Transfer fee">
+          <ConfirmItem
+            title={t('Amount received')}
+            content={`${receiveAmount} ${order.currency.symbol.toUpperCase()}`}
+          />
+          <ConfirmItem title={t('Transfer fee')}>
             <FeeAmmount>
               {`${new BN(swapFee)
                 .div(Math.pow(10, networkInfo.decimals))
@@ -241,7 +244,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
             </Tooltip>
           </ConfirmItem>
         </Box>
-        <ConfirmItem title="Receiving address" content={order.receiver} />
+        <ConfirmItem title={t('Receiving address')} content={order.receiver} />
         <BaseButton onClick={transfer} style={{ marginTop: '32px' }}>
           <ButtonText>{t(`Transfer`)}</ButtonText>
         </BaseButton>

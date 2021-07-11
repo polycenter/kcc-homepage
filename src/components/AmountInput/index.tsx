@@ -64,61 +64,50 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
 
   const pairInfo = getPairInfo(pairId)
 
-  const errorFormatText = `Invalid number`
-  const insufficientText = `Insufficient available balance`
-  const minAmountText =
-    `The minimum exchange quantity is` + new BN(pairInfo?.min ?? 0).div(Math.pow(10, currency.decimals)).toString()
-  const maxAmountText =
-    `The maximum exchange quantity is` + new BN(pairInfo?.min ?? 0).div(Math.pow(10, currency.decimals)).toString()
-  const insufficienBridgeText = `Input amount is bigger than bridge available balance`
+  const errorFormatText = t(`Invalid number`)
+  const insufficientText = t(`Insufficient available balance`)
+  const minAmountText = t(`The minimum exchange quantity is`) + ' ' + new BN(pairInfo?.min ?? 0).toNumber().toString()
+  const maxAmountText = t(`The maximum exchange quantity is`) + ' ' + new BN(pairInfo?.max ?? 0).toNumber().toString()
+  const insufficienBridgeText = t(`Input amount is bigger than bridge available balance`)
+
+  const updateAddressStatus = (status: boolean, text?: string) => {
+    setCheckList((list: any) => {
+      return { ...list, amount: status }
+    })
+    text && setErrorInfo(() => text)
+  }
 
   const changeAmount = (e: any) => {
     const input = e.target.value.trim()
-    const inputAmount = new BN(input).multipliedBy(Math.pow(10, currency.decimals)).toNumber()
+    const numberAmount = new BN(input).multipliedBy(Math.pow(10, currency.decimals)).toNumber()
+    const inputAmount = new BN(input).multipliedBy(Math.pow(10, currency.decimals)).toString()
+    const maxLimit = new BN(pairInfo?.max as any).toNumber() === 0 ? false : true
 
-    const maxLimit = pairInfo?.max === '0' ? true : false
+    // init true
+    updateAddressStatus(true)
 
     if (!account) {
       // no check
-      setCheckList((list: any) => {
-        return { ...list, amount: true }
-      })
-    } else if (input[0] === '.' || !input || inputAmount <= 0) {
+      updateAddressStatus(true)
+    } else if (input[0] === '.' || !input || numberAmount <= 0) {
       // invalid number format
-      setCheckList((list: any) => {
-        return { ...list, amount: false }
-      })
-      setErrorInfo(() => errorFormatText)
+      updateAddressStatus(false, errorFormatText)
     } else if (new BN(inputAmount).gte(available)) {
       // less than balance
-      setCheckList((list: any) => {
-        return { ...list, amount: false }
-      })
-      setErrorInfo(() => insufficientText)
+      updateAddressStatus(false, insufficientText)
     } else if (new BN(inputAmount).gte(totalSupply) && pairInfo?.limitStatus) {
       // less than supply
-      setCheckList((list: any) => {
-        return { ...list, amount: false }
-      })
-      setErrorInfo(() => insufficienBridgeText)
-    } else if (new BN(inputAmount).lt(new BN(pairInfo?.min as any)) && pairInfo?.limitStatus) {
+      updateAddressStatus(false, insufficienBridgeText)
+    } else if (pairInfo?.limitStatus && new BN(input).lt(new BN(pairInfo?.min as any))) {
       // check min
-      setCheckList((list: any) => {
-        return { ...list, amount: false }
-      })
-      setErrorInfo(() => minAmountText)
-    } else if (maxLimit && new BN(inputAmount).gt(new BN(pairInfo?.max as any)) && pairInfo?.limitStatus) {
-      // check min
-      setCheckList((list: any) => {
-        return { ...list, amount: false }
-      })
-      setErrorInfo(() => maxAmountText)
+      updateAddressStatus(false, minAmountText)
+    } else if (pairInfo?.limitStatus && maxLimit && new BN(input).gt(new BN(pairInfo?.max as any))) {
+      // check max
+      updateAddressStatus(false, maxAmountText)
     } else {
-      setCheckList((list: any) => {
-        return { ...list, amount: true }
-      })
+      updateAddressStatus(true)
     }
-    setAmount(e.target.value)
+    setAmount(input)
   }
 
   return (

@@ -40,7 +40,7 @@ export interface TransferOrder {
   currency: Currency
   srcId: number
   distId: number
-  amount: number
+  amount: string
   fee: number
   from: string
   receiver: string
@@ -138,7 +138,7 @@ const initOrder = {
   pairId: 0,
   srcId: 0,
   distId: 0,
-  amount: 0,
+  amount: '',
   fee: 0,
   from: '',
   receiver: '',
@@ -279,12 +279,20 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
   /**
    * @description init the asset selected
    */
-  //PREF  for UE
   React.useEffect(() => {
     if (currency.symbol === '' && tokenList.length) {
       dispatch(updateCurrentCurrency({ currency: tokenList[0] }))
     }
   }, [tokenList])
+
+  /**
+   * @descriptionSelect choose the user selected token last time
+   */
+  React.useEffect(() => {
+    if (currency.symbol !== '') {
+      setSelectedCurrency(currency)
+    }
+  }, [])
 
   const selectedNetworkInfo = React.useMemo(() => {
     return getNetworkInfo(selectedPairInfo?.srcChainInfo.chainId as any)
@@ -480,7 +488,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
       from: account as string,
       receiver: receiveAddress,
       fee: 0,
-      amount: new BN(amount).multipliedBy(Math.pow(10, selectedPairInfo?.srcChainInfo.decimals)).toNumber(),
+      amount: new BN(amount).multipliedBy(Math.pow(10, selectedPairInfo?.srcChainInfo.decimals)).toString(),
       timestamp: '',
       currency: currency,
     }
