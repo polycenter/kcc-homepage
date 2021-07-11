@@ -18,6 +18,7 @@ export const BridgeOrderConfirm = lazy(
 )
 
 import './App.less'
+import { clearConfirmAndOutdateOrder } from './utils/task'
 
 function RouteWithSubRoutes(route: { path: string; component: any; routes: any }) {
   return (
@@ -56,6 +57,18 @@ export default function App() {
       ],
     },
   ]
+
+  let timer: any = null
+  //  task for clear unconfirm & outdate order
+  clearConfirmAndOutdateOrder()
+  React.useEffect(() => {
+    timer = window.setInterval(() => {
+      clearConfirmAndOutdateOrder()
+    }, 1000 * 10 * 60)
+    return () => {
+      clearInterval(timer)
+    }
+  }, [])
 
   return (
     <Suspense fallback={<FullLoading />}>

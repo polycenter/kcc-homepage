@@ -178,7 +178,7 @@ const BridgeDetailPage: React.FunctionComponent<BridgeDetailPageProps> = (props)
         break
       case 'CANCELLED':
         setPercent1(() => 100)
-        setPercent2(() => 1)
+        setPercent2(() => 0)
         setCurrent(() => 1)
         break
       case 'VERIFIED':
@@ -260,7 +260,7 @@ const BridgeDetailPage: React.FunctionComponent<BridgeDetailPageProps> = (props)
                 <NetworkName>{network.dist.fullName}</NetworkName>
               </CenterRow>
               <StatusText style={{ color: current > 1 ? '#31D7A0' : '#01081E' }}>
-                {current > 1 ? t('Completed') : t(`Process`)}
+                {current > 1 ? t('Completed') : t(`Process`) + '...'}
               </StatusText>
             </BetweenBox>
             <Progress
@@ -288,7 +288,7 @@ const BridgeDetailPage: React.FunctionComponent<BridgeDetailPageProps> = (props)
                 <StatusText style={{ color: '#31D7A0' }}>{t(`Success`)}!</StatusText>
               </>
             ) : (
-              <StatusText>{t(`${order.status}`)}...</StatusText>
+              <StatusText>{t(`${order.status}`)}</StatusText>
             )}
           </CenterRow>
         </StepsWrap>

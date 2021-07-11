@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import ChainBridge from '../../components/ChainBridge'
 import { BaseButton } from '../../components/TransferButton'
 import ConfirmItem from '../../components/ConfirmItem'
-import { TransferOrder, TransferWrap } from './transfer'
+import { ListType, TransferOrder, TransferWrap } from './transfer'
 import { useHistory } from 'react-router'
 import { Tooltip } from 'antd'
 import BridgeTitlePanel from '../../components/BridgeTitlePanel/index'
@@ -14,6 +14,9 @@ import { useWeb3React } from '@web3-react/core'
 import { updateBridgeLoading } from '../../state/application/actions'
 import { useDispatch } from 'react-redux'
 import BN from 'bignumber.js'
+import useLocalStorageState from 'react-use-localstorage'
+import { UnconfirmOrderKey } from '../../utils/task'
+import { PairInfo } from '../../state/bridge/reducer'
 
 export enum ChainBridgeType {
   'DISPLAY',
@@ -65,6 +68,8 @@ const Text = styled.div`
   color: #fff;
 `
 
+export type UnconfirmOrderListType = TransferOrder & { saveTime: number; saveHash: string }
+
 const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () => {
   const { t } = useTranslation()
 
@@ -74,24 +79,9 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
 
   const [swapFee, setSwapFee] = React.useState<number>(0)
 
-  /*  const [order, setOrder] = React.useState<TransferOrder>({
-    pairId: 0,
-    srcId: 0,
-    distId: 0,
-    amount: 0,
-    fee: 0,
-    from: '',
-    receiver: '',
-    timestamp: '',
-    currency: {
-      name: '',
-      symbol: '',
-      logoUrl: '',
-      decimals: 0,
-    },
-  }) */
-
   const history = useHistory()
+
+  const [unconfirmOrderList, setUnconfirmOrderList] = useLocalStorageState(UnconfirmOrderKey)
 
   let orderRaw: any = null
 
@@ -137,96 +127,115 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
 
   const receiveAmount = React.useMemo(() => {
     if (!selectedChainInfo?.srcChainInfo) return
-    let receiveAmount = 0
+    let receiveAmount = ''
     if (selectedChainInfo?.srcChainInfo.tag === 0) {
-      receiveAmount = order.amount - swapFee
+      receiveAmount = new BN(order.amount).minus(swapFee).toString()
       return new BN(receiveAmount).div(Math.pow(10, networkInfo.decimals)).toString()
     } else {
-      receiveAmount = order.amount
+      receiveAmount = new BN(order.amount).toString()
       return new BN(receiveAmount).div(Math.pow(10, selectedChainInfo?.srcChainInfo.decimals)).toString()
     }
   }, [swapFee, order])
 
+  const saveUnconfirmOrder = (order: TransferOrder, hash: string) => {
+    setUnconfirmOrderList(
+      JSON.stringify([...JSON.parse(unconfirmOrderList), { ...order, saveHash: hash, saveTime: new Date().getTime() }])
+    )
+  }
+
+  /**
+   * @description  transfer native token
+   */
+  const nativeTransfer = (contract: any, selectedChainInfo: PairInfo) => {
+    const amount = new BN(order.amount).toString()
+    contract.methods
+      .depositNative(order.receiver, selectedChainInfo.dstChainInfo.chain.toLowerCase())
+      .send({
+        from: `${account}`,
+        value: amount,
+      })
+      .once('sending', () => {
+        dispatch(updateBridgeLoading({ visible: true, status: 0 }))
+      })
+      .once('transactionHash', (hash: string) => {
+        console.log('hash', hash)
+        localStorage.removeItem('PRESEND_ORDER')
+        saveUnconfirmOrder(order, hash)
+      })
+      .once('confirmation', (confirmations: number) => {
+        dispatch(updateBridgeLoading({ visible: true, status: 1 }))
+        setTimeout(() => {
+          dispatch(updateBridgeLoading({ visible: false, status: 0 }))
+          history.push('/bridge/list')
+        }, 2000)
+      })
+      .on('error', () => {
+        dispatch(updateBridgeLoading({ visible: false, status: 0 }))
+      })
+  }
+
+  const tokenTransfer = (contract: any, selectedChainInfo: PairInfo) => {
+    const tokenAddress = selectedChainInfo.srcChainInfo.contract
+    contract.methods
+      .depositToken(tokenAddress, `${order.amount}`, order.receiver, selectedChainInfo.dstChainInfo.chain.toLowerCase())
+      .send({
+        from: account,
+        value: `${swapFee}`,
+      })
+      .once('sending', () => {
+        dispatch(updateBridgeLoading({ visible: true, status: 0 }))
+      })
+      .once('transactionHash', (hash: string) => {
+        console.log('hash', hash)
+        localStorage.removeItem('PRESEND_ORDER')
+        saveUnconfirmOrder(order, hash)
+      })
+      .once('confirmation', (confirmations: number) => {
+        console.log(confirmations)
+        dispatch(updateBridgeLoading({ visible: true, status: 1 }))
+        setTimeout(() => {
+          dispatch(updateBridgeLoading({ visible: false, status: 0 }))
+          history.push('/bridge/list')
+        }, 2000)
+      })
+      .on('error', () => {
+        dispatch(updateBridgeLoading({ visible: false, status: 0 }))
+      })
+  }
+
+  /**
+   * @description some condition check before transfer
+   */
   const transfer = async () => {
     if (!selectedChainInfo?.srcChainInfo) return
     const contract = getBridgeContract(networkInfo.bridgeCoreAddress, library)
     if (selectedChainInfo)
       if (selectedChainInfo.srcChainInfo.tag === 0) {
-        // native token
-        const amount = new BN(order.amount).toString()
-        contract.methods
-          .depositNative(order.receiver, selectedChainInfo.dstChainInfo.chain.toLowerCase())
-          .send({
-            from: `${account}`,
-            value: amount,
-          })
-          .once('sending', () => {
-            dispatch(updateBridgeLoading({ visible: true, status: 0 }))
-          })
-          .once('transactionHash', (hash: string) => {
-            console.log('hash', hash)
-            localStorage.removeItem('PRESEND_ORDER')
-            // localStorage.setItem('hash',)
-          })
-          .once('confirmation', (confirmations: number) => {
-            console.log(confirmations)
-            dispatch(updateBridgeLoading({ visible: true, status: 1 }))
-            setTimeout(() => {
-              dispatch(updateBridgeLoading({ visible: false, status: 0 }))
-              history.push('/bridge/list')
-            }, 2000)
-          })
-          .on('error', () => {
-            dispatch(updateBridgeLoading({ visible: false, status: 0 }))
-          })
+        // native
+        nativeTransfer(contract, selectedChainInfo)
       } else {
-        const tokenAddress = selectedChainInfo.srcChainInfo.contract
-        contract.methods
-          .depositToken(
-            tokenAddress,
-            `${order.amount}`,
-            order.receiver,
-            selectedChainInfo.dstChainInfo.chain.toLowerCase()
-          )
-          .send({
-            from: account,
-            value: `${swapFee}`,
-          })
-          .once('sending', () => {
-            dispatch(updateBridgeLoading({ visible: true, status: 0 }))
-          })
-          .once('transactionHash', (hash: string) => {
-            console.log('hash', hash)
-            localStorage.removeItem('PRESEND_ORDER')
-          })
-          .once('confirmation', (confirmations: number) => {
-            console.log(confirmations)
-            dispatch(updateBridgeLoading({ visible: true, status: 1 }))
-            setTimeout(() => {
-              dispatch(updateBridgeLoading({ visible: false, status: 0 }))
-              history.push('/bridge/list')
-            }, 2000)
-          })
-          .on('error', () => {
-            dispatch(updateBridgeLoading({ visible: false, status: 0 }))
-          })
+        // token
+        tokenTransfer(contract, selectedChainInfo)
       }
   }
 
   return (
     <BridgeConfirmWrap>
       <TransferWrap>
-        <BridgeTitlePanel title="Transfer confirmation" iconEvent={back2transfer} />
+        <BridgeTitlePanel title={t('Transfer confirmation')} iconEvent={back2transfer} />
         <ChainBridge srcId={order.srcId} distId={order.distId} type={ChainBridgeType.DISPLAY} />
         <Box>
           <ConfirmItem
-            title="Amount"
+            title={t('Amount')}
             content={`${new BN(order.amount)
               .div(Math.pow(10, selectedChainInfo?.srcChainInfo.decimals as any))
               .toString()} ${order.currency.symbol.toUpperCase()}`}
           />
-          <ConfirmItem title="Amount received" content={`${receiveAmount} ${order.currency.symbol.toUpperCase()}`} />
-          <ConfirmItem title="Transfer fee">
+          <ConfirmItem
+            title={t('Amount received')}
+            content={`${receiveAmount} ${order.currency.symbol.toUpperCase()}`}
+          />
+          <ConfirmItem title={t('Transfer fee')}>
             <FeeAmmount>
               {`${new BN(swapFee)
                 .div(Math.pow(10, networkInfo.decimals))
@@ -241,7 +250,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
             </Tooltip>
           </ConfirmItem>
         </Box>
-        <ConfirmItem title="Receiving address" content={order.receiver} />
+        <ConfirmItem title={t('Receiving address')} content={order.receiver} />
         <BaseButton onClick={transfer} style={{ marginTop: '32px' }}>
           <ButtonText>{t(`Transfer`)}</ButtonText>
         </BaseButton>

@@ -13,6 +13,10 @@ import BN from 'bignumber.js'
 import { BridgeService } from '../../api/bridge'
 import { useWeb3React } from '@web3-react/core'
 import { Base64 } from '../../utils/base64'
+import { UnconfirmOrderKey } from '../../utils/task'
+import useLocalStorageState from 'react-use-localstorage'
+import { UnconfirmOrderListType } from './confirm'
+import { find } from 'lodash'
 
 export interface BridgeListPageProps {}
 
@@ -43,29 +47,59 @@ const HistoryListWrap = styled.div`
   overflow: scroll;
 `
 
-const Order = styled.div`
+const Order = styled.div<{ pending: boolean }>`
+  position: relative;
   height: 110px;
   padding: 17px 10px 0px 5px;
+
+  pointer-events: ${({ pending }) => {
+    if (pending) {
+      return 'none'
+    }
+    return ''
+  }};
 
   & + & {
     border-top: 1px solid rgba(1, 8, 30, 0.08);
   }
 
   &:hover {
-    cursor: pointer;
-    background: rgba(49, 215, 160, 0.08);
+    cursor: ${({ pending }) => {
+      if (pending) {
+        return 'not-allowed'
+      }
+      return 'pointer'
+    }};
+    background: ${({ pending }) => {
+      if (pending) {
+        return 'transparent'
+      }
+      return 'rgba(49, 215, 160, 0.08)'
+    }};
   }
 `
 
+const OrderMask = styled.div`
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 4;
+`
+
 const Number = styled.span`
-  padding-top: 2px;
   font-size: 20px;
   font-family: URWDIN-Bold, URWDIN;
   font-style: italic;
   font-weight: normal;
   color: rgba(0, 6, 33, 0.87);
   margin-right: 12px;
-  padding-top: 2px;
+  height: 18px;
+  line-height: 22px;
 `
 
 const NetworkWrap = styled.div`
@@ -223,6 +257,8 @@ export interface History {
   comment: string
 }
 
+type HistoryItemType = History | UnconfirmOrderListType
+
 const DirectionIcon = require('../../assets/images/bridge/to.png').default
 
 const BridgeListPage: React.FunctionComponent<BridgeListPageProps> = () => {
@@ -232,9 +268,22 @@ const BridgeListPage: React.FunctionComponent<BridgeListPageProps> = () => {
   const [loading, setLoading] = React.useState<boolean>(false)
   const [totalPage, setTotalPage] = React.useState<number>(0)
   const [currentPage, setCurrentPage] = React.useState<number>(1)
-  const [historyList, setHistoryList] = React.useState<History[]>([])
+  const [historyList, setHistoryList] = React.useState<any[]>([])
+
+  const [unconfirmOrderList, setUnconfirmOrderList] = useLocalStorageState(UnconfirmOrderKey)
 
   const history = useHistory()
+
+  const getUnconfirmedFromLocal = (list: History[], unconfirmOrderList: UnconfirmOrderListType[]) => {
+    // remove confirmed list
+    const unconfirmed: UnconfirmOrderListType[] = []
+    for (let i = 0; i < unconfirmOrderList.length; i++) {
+      if (!find(list, { srcTxHash: unconfirmOrderList[i].saveHash })) {
+        unconfirmed.push(unconfirmOrderList[i])
+      }
+    }
+    return unconfirmed
+  }
 
   const getHistoryList = async () => {
     if (!account) return
@@ -243,7 +292,10 @@ const BridgeListPage: React.FunctionComponent<BridgeListPageProps> = () => {
       const res = await BridgeService.transitionList(account, 1, currentPage, 50)
       const data = res.data.data
       if (data) {
-        setHistoryList(() => data.list)
+        // BUG need merge local unconfirm list
+        const unconfirm = getUnconfirmedFromLocal(data.list, JSON.parse(unconfirmOrderList))
+        setUnconfirmOrderList(JSON.stringify(unconfirm))
+        setHistoryList(() => [...unconfirm, ...data.list])
         setTotalPage(() => data.total / 50 + 1)
       }
     } finally {
@@ -271,12 +323,27 @@ const BridgeListPage: React.FunctionComponent<BridgeListPageProps> = () => {
 
   const list = historyList.map((transaction, index) => {
     const no = index + 1
-    const selectedPairInfo = getPairInfo(transaction.pairId) as PairInfo
-    const srcNetworkInfo = getNetworkInfo(selectedPairInfo.srcChainInfo.chainId)
-    const distNetworkInfo = getNetworkInfo(selectedPairInfo.dstChainInfo.chainId)
+
+    let selectedPairInfo, srcNetworkInfo, distNetworkInfo
+
+    if (transaction.id) {
+      selectedPairInfo = getPairInfo(transaction.pairId) as PairInfo
+      srcNetworkInfo = getNetworkInfo(selectedPairInfo.srcChainInfo.chainId)
+      distNetworkInfo = getNetworkInfo(selectedPairInfo.dstChainInfo.chainId)
+    } else {
+      selectedPairInfo = getPairInfo(transaction.pairId) as PairInfo
+      srcNetworkInfo = getNetworkInfo(transaction.srcId)
+      distNetworkInfo = getNetworkInfo(transaction.distId)
+      transaction.dstAmount = new BN(transaction.amount).div(Math.pow(10, transaction.currency.decimals)).toString()
+      transaction.srcFee = transaction.fee
+      transaction.status = t(`Pending`) + '...'
+      transaction.srcCurrency = transaction.currency.symbol
+      transaction.createTime = ''
+    }
 
     return (
-      <Order onClick={nav2detail.bind(null, transaction)} key={transaction.id}>
+      <Order onClick={nav2detail.bind(null, transaction)} key={no} pending={Boolean(transaction?.saveTime)}>
+        {Boolean(transaction?.saveTime) ? <OrderMask>{t(`Pending`)}...</OrderMask> : null}
         <CenterRow>
           <Number>{no < 10 ? `0${no}` : `${no}`}</Number>
           <NetworkIcon src={srcNetworkInfo.logo} />
@@ -289,6 +356,7 @@ const BridgeListPage: React.FunctionComponent<BridgeListPageProps> = () => {
           <Left>
             <OrderDetaiItem>
               <Title>{t(`Asset`)}:</Title>
+
               <Fee>{transaction.srcCurrency.toUpperCase()}</Fee>
             </OrderDetaiItem>
             <OrderDetaiItem>

@@ -109,7 +109,8 @@ service.interceptors.response.use(
     }
 
     if (error?.response) {
-      __emsg = error.response.data.message ? error.response?.data?.message : error.response?.data?.data
+      console.log(error?.response)
+      __emsg = error.response.data.message ?? error.response?.data
     }
     // timeout
     if (__emsg?.indexOf('timeout') >= 0) {

@@ -15,6 +15,7 @@ interface ChainCardProps {
   type: ChainBridgeType
   changeNetwork?: any
   oppsiteId?: ChainId
+  pairId?: number
   availableChainIds?: number[]
 }
 
@@ -127,25 +128,24 @@ const ChainCard: React.FunctionComponent<ChainCardProps> = ({
   changeNetwork,
   oppsiteId,
   direction,
+  pairId,
 }) => {
-  // console.log(networkIds)
-
   const network = React.useMemo(() => {
     return getNetworkInfo(networkId)
   }, [networkId])
 
   React.useEffect(() => {
-    /*  console.log('direction', direction)
-    console.log('availableChainIds', availableChainIds) */
     if (type === ChainBridgeType.DISPLAY) {
       return
     }
-
     if (availableChainIds?.length === 0) {
       changeNetwork(() => 0)
-    }
-    if (direction === ChainDirection.To && availableChainIds?.length) {
-      changeNetwork(() => availableChainIds[0])
+    } else if (direction === ChainDirection.To && availableChainIds?.length) {
+      if (oppsiteId === 0) {
+        changeNetwork(() => 0)
+      } else {
+        changeNetwork(() => availableChainIds[0])
+      }
     }
   }, [availableChainIds])
 

@@ -20,7 +20,6 @@ import { getErc20Contract } from '../../utils/contract'
 import { updateBridgeLoading } from '../../state/application/actions'
 import { getNetWorkConnect } from '../../connectors'
 import { useHistory } from 'react-router-dom'
-import { BridgeService } from '../../api/bridge'
 import {
   useTokenList,
   useCurrentCurrency,
@@ -41,7 +40,7 @@ export interface TransferOrder {
   currency: Currency
   srcId: number
   distId: number
-  amount: number
+  amount: string
   fee: number
   from: string
   receiver: string
@@ -139,7 +138,7 @@ const initOrder = {
   pairId: 0,
   srcId: 0,
   distId: 0,
-  amount: 0,
+  amount: '',
   fee: 0,
   from: '',
   receiver: '',
@@ -183,21 +182,67 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
 
   const [order, setOrder] = React.useState<TransferOrder>(initOrder)
 
+  const setSelectedCurrency = (currency: Currency) => {
+    dispatch(updateCurrentCurrency({ currency: currency }))
+  }
+
   const checkNetwork = (currentNetworkId: number, sendNetworkId: number) => {
     return currentNetworkId === sendNetworkId
   }
 
+  // get selectedPairInfo
+  const selectedPairInfo = React.useMemo(() => {
+    if (currentPairId !== -1) {
+      setCheckList((list) => {
+        return {
+          ...list,
+          pair: currentPairId !== -1,
+        }
+      })
+      return getPairInfo(currentPairId)
+    }
+  }, [currentPairId])
+
+  /* React.useEffect(() => {
+    if (!selectedPairInfo) return
+    if (currentPairId !== -1) {
+      //update pari status
+      setCheckList((list) => {
+        return {
+          ...list,
+          pair: true,
+        }
+      })
+
+      // update currency
+      const src = selectedPairInfo?.srcChainInfo
+      const currency: Currency = {
+        symbol: src.currency,
+        name: src?.name,
+        logoUrl: src.logoUrl,
+        decimals: src.decimals,
+      }
+      setSelectedCurrency(currency)
+      // update src chain
+      changeSrcId(selectedPairInfo?.srcChainInfo.chainId)
+      // update dist chain
+      changeSrcId(selectedPairInfo?.dstChainInfo.chainId)
+    } else {
+      if (srcChainIds.length && srcId === 0) {
+        changeSrcId(srcChainIds[0])
+      }
+    }
+  }, [currentPairId, selectedPairInfo, srcChainIds, currency]) */
+
   /**
    * @description init select network
    */
+
   React.useEffect(() => {
-    if (srcChainIds.length && srcId === 0) {
+    if (srcChainIds.length && srcId === 0 && currentPairId === -1) {
       changeSrcId(srcChainIds[0])
     }
-    if (distChainIds.length && distId === 0) {
-      changeSrcId(distChainIds[0])
-    }
-  }, [srcChainIds, distChainIds])
+  }, [srcChainIds, distChainIds, currentPairId])
 
   /**
    * @description update receiver address
@@ -234,32 +279,24 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
   /**
    * @description init the asset selected
    */
-  //PREF  for UE
   React.useEffect(() => {
     if (currency.symbol === '' && tokenList.length) {
       dispatch(updateCurrentCurrency({ currency: tokenList[0] }))
     }
   }, [tokenList])
 
-  const selectedPairInfo = React.useMemo(() => {
-    if (currentPairId !== -1) {
-      setCheckList((list) => {
-        return {
-          ...list,
-          pair: true,
-        }
-      })
-      return getPairInfo(currentPairId)
+  /**
+   * @descriptionSelect choose the user selected token last time
+   */
+  React.useEffect(() => {
+    if (currency.symbol !== '') {
+      setSelectedCurrency(currency)
     }
-  }, [currentPairId])
+  }, [])
 
   const selectedNetworkInfo = React.useMemo(() => {
     return getNetworkInfo(selectedPairInfo?.srcChainInfo.chainId as any)
   }, [selectedPairInfo])
-
-  const setSelectedCurrency = (currency: Currency) => {
-    dispatch(updateCurrentCurrency({ currency: currency }))
-  }
 
   // update selected pairId
   React.useEffect(() => {
@@ -274,11 +311,21 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
           distChainInfo.chainId === distId
         ) {
           dispatch(updateCurrentPairId(chain.id))
-          break
+          return
         }
+      }
+      if (srcChainIds.length) {
+        changeSrcId(srcChainIds[0])
+      } else {
+        changeSrcId(() => 0)
       }
     } else {
       dispatch(updateCurrentPairId(-1))
+      if (srcChainIds.length) {
+        changeSrcId(srcChainIds[0])
+      } else {
+        changeSrcId(() => 0)
+      }
     }
   }, [srcId, distId, currency.name])
 
@@ -335,10 +382,10 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
 
       return (
         <>
-          <ReceiveText style={{ marginLeft: '10px' }}>Available:</ReceiveText>
+          <ReceiveText style={{ marginLeft: '10px' }}>{t(`Available`)}:</ReceiveText>
           <ReceiveText style={{ marginLeft: '10px' }}>
-            {t(`Switch Network`)}
-            {` ${srcChainInfo.name}`}
+            {t(`Switch`)}
+            {` ${srcChainInfo?.fullName}`}
           </ReceiveText>
         </>
       )
@@ -392,7 +439,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
    * when pair whiteListStatus is false, no check for whiteList
    */
   React.useEffect(() => {
-    if (account && receiveAddress) {
+    if (account && receiveAddress && checkList.address) {
       const cb = async () => {
         // check whiteList first
         if (selectedPairInfo?.whiteListStatus === false) {
@@ -419,12 +466,12 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
         // when isTransferToSelf
         if (isTransferToSelf) {
           setCheckList((list) => {
-            return { ...list, senderBlack: senderStatus, receiverBlack: senderStatus }
+            return { ...list, senderBlack: !senderStatus, receiverBlack: !senderStatus }
           })
         } else {
           const receiverStatus = await checkAddress(receiveAddress, ListType.BLACK)
           setCheckList((list) => {
-            return { ...list, senderBlack: senderStatus, receiverBlack: receiverStatus }
+            return { ...list, senderBlack: !senderStatus, receiverBlack: !receiverStatus }
           })
         }
       }
@@ -441,7 +488,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
       from: account as string,
       receiver: receiveAddress,
       fee: 0,
-      amount: new BN(amount).multipliedBy(Math.pow(10, selectedPairInfo?.srcChainInfo.decimals)).toNumber(),
+      amount: new BN(amount).multipliedBy(Math.pow(10, selectedPairInfo?.srcChainInfo.decimals)).toString(),
       timestamp: '',
       currency: currency,
     }
@@ -508,7 +555,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
     }
   }, [selectedPairInfo?.limitStatus])
 
-  // componentdidmount
+  // component did mount
   React.useEffect(() => {
     const result = checkNetwork(chainId as number, selectedPairInfo?.srcChainInfo.chainId as number)
     setCheckList((list) => {
@@ -530,6 +577,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
         <BridgeTitle>{t(`Asset`)}</BridgeTitle>
         <SelectToken list={tokenList} setCurrency={setSelectedCurrency} currency={currency} />
         <ChainBridge
+          pairId={currentPairId}
           srcId={srcId}
           distId={distId}
           changeDistId={changeDistId}
