@@ -30,6 +30,7 @@ import {
 import Web3 from 'web3'
 import { BridgeService } from '../../api/bridge'
 import { formatNumber } from '../../utils/index'
+import { ConsoleView } from 'react-device-detect'
 
 export enum ListType {
   'WHITE',
@@ -123,7 +124,9 @@ const NoticeText = styled.div`
 `
 
 const statusList = {
-  totolSupply: true,
+  swapFee: false,
+  totolSupply: false,
+  available: false,
   pair: false,
   amount: false,
   address: false,
@@ -219,7 +222,22 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
       setSwapFeeLoading(() => true)
       try {
         const fee = await getSwapFee(selectedPairInfo, library, isSelectedNetwork)
+        console.log('fee', fee)
         setSwapFee(() => new BN(fee).toNumber().toString())
+        setCheckList((list) => {
+          return {
+            ...list,
+            swapFee: true,
+          }
+        })
+      } catch {
+        setSwapFee(() => t('Failed'))
+        setCheckList((list) => {
+          return {
+            ...list,
+            swapFee: false,
+          }
+        })
       } finally {
         setSwapFeeLoading(() => false)
       }
@@ -353,7 +371,20 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
               setAvailableLoading(() => false)
             })
         }
+        setCheckList((list) => {
+          return {
+            ...list,
+            available: true,
+          }
+        })
       } catch {
+        setAvailable(() => t('Failed'))
+        setCheckList((list) => {
+          return {
+            ...list,
+            available: false,
+          }
+        })
         setAvailableLoading(() => false)
       }
     }
@@ -517,10 +548,21 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
     callback()
       .then((res) => {
         setTotalSupply(() => new BN(res).toString())
+        setCheckList((list) => {
+          return {
+            ...list,
+            totolSupply: true,
+          }
+        })
       })
-      .catch((err) => {
-        console.log(err)
-        setTotalSupply(() => '0')
+      .catch(() => {
+        setCheckList((list) => {
+          return {
+            ...list,
+            totolSupply: false,
+          }
+        })
+        setTotalSupply(() => t('Failed'))
       })
       .finally(() => {
         setSupplyLoading(() => false)
@@ -547,10 +589,10 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
             <ReceiveText style={{ marginLeft: '10px' }}>{t(`Available`)}: </ReceiveText>
             {!availableLoading ? (
               <ReceiveAmountText>
-                {formatNumber(
-                  new BN(available).div(Math.pow(10, selectedPairInfo?.srcChainInfo.decimals as any)).toString(),
-                  18
-                )}
+                {new BN(available)
+                  .div(Math.pow(10, selectedPairInfo?.srcChainInfo.decimals as any))
+                  .toNumber()
+                  .toString()}
                 {currency.symbol.toUpperCase()}
               </ReceiveAmountText>
             ) : (
@@ -569,7 +611,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
             <ReceiveText style={{ marginLeft: '10px' }}>{t(`Transfer fee`)}: </ReceiveText>
             {!swapFeeLoading ? (
               <ReceiveAmountText>
-                {new BN(swapFee).div(Math.pow(10, selectedNetworkInfo?.decimals)).toString()}
+                {new BN(swapFee).div(Math.pow(10, selectedNetworkInfo?.decimals)).toNumber().toString()}
                 {selectedNetworkInfo?.symbol.toUpperCase()}
               </ReceiveAmountText>
             ) : (
