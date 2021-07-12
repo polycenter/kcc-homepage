@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import ChainBridge from '../../components/ChainBridge'
 import { BaseButton } from '../../components/TransferButton'
 import ConfirmItem from '../../components/ConfirmItem'
-import { ListType, TransferOrder, TransferWrap } from './transfer'
+import { TransferOrder, TransferWrap } from './transfer'
 import { useHistory } from 'react-router'
 import { Tooltip } from 'antd'
 import BridgeTitlePanel from '../../components/BridgeTitlePanel/index'
@@ -77,16 +77,14 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
 
   const router = useHistory()
 
-  const [swapFee, setSwapFee] = React.useState<number>(0)
-
   const history = useHistory()
 
   const [unconfirmOrderList, setUnconfirmOrderList] = useLocalStorageState(UnconfirmOrderKey)
 
-  let orderRaw: any = null
+  let orderRaw: TransferOrder
 
   try {
-    orderRaw = JSON.parse(localStorage.getItem('PRESEND_ORDER') as any)
+    orderRaw = JSON.parse(localStorage.getItem('PRESEND_ORDER') as any) as TransferOrder
   } catch {
     history.push('/bridge/transfer')
     return null
@@ -107,18 +105,6 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
     }
   }, [])
 
-  const initFee = async () => {
-    if (!selectedChainInfo?.srcChainInfo) return
-    const networkInfo = getNetworkInfo(selectedChainInfo.srcChainInfo.chainId)
-    const contract = getBridgeContract(networkInfo.bridgeCoreAddress, library)
-    const swapFee = await contract.methods.swapFee().call()
-    setSwapFee(() => swapFee)
-  }
-
-  React.useEffect(() => {
-    initFee()
-  }, [])
-
   const dispatch = useDispatch()
 
   const back2transfer = () => {
@@ -129,13 +115,13 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
     if (!selectedChainInfo?.srcChainInfo) return
     let receiveAmount = ''
     if (selectedChainInfo?.srcChainInfo.tag === 0) {
-      receiveAmount = new BN(order.amount).minus(swapFee).toString()
+      receiveAmount = new BN(order.amount).minus(order.fee).toString()
       return new BN(receiveAmount).div(Math.pow(10, networkInfo.decimals)).toString()
     } else {
       receiveAmount = new BN(order.amount).toString()
       return new BN(receiveAmount).div(Math.pow(10, selectedChainInfo?.srcChainInfo.decimals)).toString()
     }
-  }, [swapFee, order])
+  }, [order.fee, order])
 
   const saveUnconfirmOrder = (order: TransferOrder, hash: string) => {
     setUnconfirmOrderList(
@@ -180,7 +166,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
       .depositToken(tokenAddress, `${order.amount}`, order.receiver, selectedChainInfo.dstChainInfo.chain.toLowerCase())
       .send({
         from: account,
-        value: `${swapFee}`,
+        value: `${order.fee}`,
       })
       .once('sending', () => {
         dispatch(updateBridgeLoading({ visible: true, status: 0 }))
@@ -237,7 +223,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
           />
           <ConfirmItem title={t('Transfer fee')}>
             <FeeAmmount>
-              {`${new BN(swapFee)
+              {`${new BN(order.fee)
                 .div(Math.pow(10, networkInfo.decimals))
                 .toString()} ${networkInfo.symbol.toUpperCase()}`}
             </FeeAmmount>
