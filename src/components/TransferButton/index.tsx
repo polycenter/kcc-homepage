@@ -99,11 +99,6 @@ const TransferButton: React.FunctionComponent<TransferButtonProps> = ({
     return true
   }, [checkList])
 
-  React.useEffect(() => {
-    console.log(allStatus)
-    console.log(checkList)
-  }, [checkList])
-
   const switchNetwork = async () => {
     console.log(selectedNetworkInfo)
     try {

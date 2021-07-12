@@ -4,7 +4,7 @@ import { PairInfo } from '../state/bridge/reducer'
 import store from '../state'
 import BN from 'bignumber.js'
 import web3 from 'web3'
-import { getErc20Contract } from './contract'
+import { getBridgeContract, getErc20Contract } from './contract'
 import { ListType } from '../pages/bridge/transfer'
 import { BridgeService } from '../api/bridge'
 
@@ -55,4 +55,28 @@ export const checkAddress = async (address: string, type: ListType): Promise<boo
   } catch {
     return false
   }
+}
+
+export async function getSwapFee(selectedChainInfo: PairInfo, library: any) {
+  if (!selectedChainInfo?.srcChainInfo) return
+  const networkInfo = getNetworkInfo(selectedChainInfo.srcChainInfo.chainId)
+  const contract = getBridgeContract(networkInfo.bridgeCoreAddress, library)
+  const swapFee = await contract.methods.swapFee().call()
+  return swapFee
+}
+
+/**
+ * getDecimals
+ */
+export function getDecimals(amount: string) {
+  if (!amount.includes('.')) {
+    return 0
+  } else {
+    const [interger, decimal] = amount.split('.')
+    return decimal.length ?? 0
+  }
+}
+
+export function formatNumber(number: any, precision = 6) {
+  return new BN(new BN(number).toFixed(precision)).toNumber().toString()
 }

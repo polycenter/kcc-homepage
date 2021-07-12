@@ -1,13 +1,14 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
-import { Progress } from 'antd'
 import BN from 'bignumber.js'
-import { Currency } from '../../state/bridge/reducer'
+import { LoadingOutlined } from '@ant-design/icons'
+import { NetworkType } from '../../constants/networks'
+import { formatNumber } from '../../utils'
 export interface TransferLimitProps {
+  loading: boolean
   available: string
-  currency: Currency
-  style: any
+  distNetworkInfo: NetworkType
 }
 
 const TransferLimitWrap = styled.div`
@@ -25,25 +26,26 @@ const Title = styled.div`
   line-height: 22px;
 `
 
-const TransferLimit: React.FunctionComponent<TransferLimitProps> = ({ style, available, currency }) => {
+const TransferLimit: React.FunctionComponent<TransferLimitProps> = ({ loading, available, distNetworkInfo }) => {
   const { t } = useTranslation()
   return (
-    <TransferLimitWrap style={{ ...style }}>
+    <TransferLimitWrap>
       <Title>
-        {t(`Available Balance`)}: {`${new BN(available).div(Math.pow(10, currency.decimals)).toString()}`}
+        {t(`Available Balance`)}:
+        {loading && !distNetworkInfo ? (
+          <LoadingOutlined
+            style={{
+              margin: '4px 10px 0px 10px',
+              width: '12px',
+              height: '12px',
+              color: '#000',
+              fontSize: '10px',
+            }}
+          />
+        ) : (
+          <span>{formatNumber(new BN(available).div(Math.pow(10, distNetworkInfo?.decimals)))}</span>
+        )}
       </Title>
-      {/* <Progress
-        percent={percent}
-        type="line"
-        showInfo={false}
-        strokeWidth={4}
-        style={{ width: '150px' }}
-        status="active"
-        strokeColor={{
-          '0%': '#00FFA8',
-          '100%': '#31D7A0',
-        }}
-      /> */}
     </TransferLimitWrap>
   )
 }
