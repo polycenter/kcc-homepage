@@ -29,6 +29,7 @@ import {
 } from '../../state/bridge/hooks'
 import Web3 from 'web3'
 import { BridgeService } from '../../api/bridge'
+import { formatNumber } from '../../utils/index'
 
 export enum ListType {
   'WHITE',
@@ -217,14 +218,14 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
       if (!selectedPairInfo) return
       setSwapFeeLoading(() => true)
       try {
-        const fee = await getSwapFee(selectedPairInfo, library)
+        const fee = await getSwapFee(selectedPairInfo, library, isSelectedNetwork)
         setSwapFee(() => new BN(fee).toNumber().toString())
       } finally {
         setSwapFeeLoading(() => false)
       }
     }
     initFee()
-  }, [selectedPairInfo])
+  }, [selectedPairInfo, currentPairId])
 
   /**
    * @description init select network
@@ -252,6 +253,8 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
   }, [account])
 
   const isSelectedNetwork = React.useMemo(() => {
+    console.log(chainId, srcId)
+    console.log(selectedPairInfo)
     return chainId === srcId
   }, [chainId, srcId])
 
@@ -329,9 +332,10 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
    * @description get available status
    */
   React.useEffect(() => {
-    if (chainId && isSelectedNetwork && account && currentPairId && currency.symbol && currentPairId !== -1) {
+    if (chainId && account && currency.symbol && currentPairId !== -1) {
       const selectedSrcChainInfo = selectedPairInfo?.srcChainInfo as PairChainInfo
-      const contract = getErc20Contract(selectedSrcChainInfo.contract, library)
+      const lib = isSelectedNetwork ? library : getNetWorkConnect(selectedSrcChainInfo?.chainId)
+      const contract = getErc20Contract(selectedSrcChainInfo.contract, lib)
       setAvailableLoading(() => true)
       // chain token
       try {
@@ -537,82 +541,50 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
   const amountText = () => {
     const srcChainInfo = getNetworkInfo(srcId as any)
     if (account) {
-      if (isSelectedNetwork) {
-        return (
-          <>
-            <Box>
-              <ReceiveText style={{ marginLeft: '10px' }}>{t(`Available`)}: </ReceiveText>
-              {!availableLoading ? (
-                <ReceiveAmountText>
-                  {new BN(available)
-                    .div(Math.pow(10, selectedPairInfo?.srcChainInfo.decimals as any))
-                    .toNumber()
-                    .toString()}
-                  {currency.symbol.toUpperCase()}
-                </ReceiveAmountText>
-              ) : (
-                <LoadingOutlined
-                  style={{
-                    margin: '4px 10px 0px 10px',
-                    width: '12px',
-                    height: '12px',
-                    color: '#000',
-                    fontSize: '10px',
-                  }}
-                />
-              )}
-            </Box>
-
-            <Box style={{ textAlign: 'right' }}>
-              <ReceiveText style={{ marginLeft: '10px' }}>{t(`Transfer fee`)}: </ReceiveText>
-              {!swapFeeLoading ? (
-                <ReceiveAmountText>
-                  {new BN(swapFee).div(Math.pow(10, selectedNetworkInfo?.decimals)).toString()}
-                  {currency.symbol.toUpperCase()}
-                </ReceiveAmountText>
-              ) : (
-                <LoadingOutlined
-                  style={{
-                    margin: '4px 10px 0px 10px',
-                    width: '12px',
-                    height: '12px',
-                    color: '#000',
-                    fontSize: '10px',
-                  }}
-                />
-              )}
-            </Box>
-          </>
-        )
-      }
-
       return (
-        <Box>
-          <ReceiveText style={{ marginLeft: '10px' }}>{t(`Available`)}: </ReceiveText>
-          {/*  <ReceiveText style={{ marginLeft: '10px' }}>
-            {t(`Switch`)}
-            {` ${srcChainInfo?.fullName}`}
-          </ReceiveText> */}
-          {!availableLoading ? (
-            <ReceiveAmountText>
-              {new BN(available)
-                .div(Math.pow(10, selectedPairInfo?.srcChainInfo.decimals as any))
-                .toNumber()
-                .toString()}
-              {` ${currency.symbol.toUpperCase()}`}
-            </ReceiveAmountText>
-          ) : (
-            <LoadingOutlined
-              style={{
-                margin: '4px 10px 0px 10px',
-                width: '12px',
-                height: '12px',
-                color: '#000',
-                fontSize: '10px',
-              }}
-            />
-          )}
-        </Box>
+        <>
+          <Box>
+            <ReceiveText style={{ marginLeft: '10px' }}>{t(`Available`)}: </ReceiveText>
+            {!availableLoading ? (
+              <ReceiveAmountText>
+                {formatNumber(
+                  new BN(available).div(Math.pow(10, selectedPairInfo?.srcChainInfo.decimals as any)).toString(),
+                  18
+                )}
+                {currency.symbol.toUpperCase()}
+              </ReceiveAmountText>
+            ) : (
+              <LoadingOutlined
+                style={{
+                  margin: '4px 10px 0px 10px',
+                  width: '12px',
+                  height: '12px',
+                  color: '#000',
+                  fontSize: '10px',
+                }}
+              />
+            )}
+          </Box>
+          <Box style={{ textAlign: 'right' }}>
+            <ReceiveText style={{ marginLeft: '10px' }}>{t(`Transfer fee`)}: </ReceiveText>
+            {!swapFeeLoading ? (
+              <ReceiveAmountText>
+                {new BN(swapFee).div(Math.pow(10, selectedNetworkInfo?.decimals)).toString()}
+                {selectedNetworkInfo?.symbol.toUpperCase()}
+              </ReceiveAmountText>
+            ) : (
+              <LoadingOutlined
+                style={{
+                  margin: '4px 10px 0px 10px',
+                  width: '12px',
+                  height: '12px',
+                  color: '#000',
+                  fontSize: '10px',
+                }}
+              />
+            )}
+          </Box>
+        </>
       )
     }
 

@@ -101,7 +101,6 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
     if (!pairInfo || !account) return
 
     // chekc send  type first,native or token
-    console.log('library', library)
     if (pairInfo.srcChainInfo.tag === 0) {
       inputAmount = new BN(inputAmount).plus(swapFee).toString()
     } else {
@@ -149,7 +148,7 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
     if (!account) {
       // no check
       updateAddressStatus(true)
-    } else if (input[0] === '0' || input === '' || input[0] === '.' || numberAmount <= 0) {
+    } else if (input === '' || input[0] === '.' || numberAmount <= 0) {
       // invalid number format
       updateAddressStatus(false, errorFormatText)
     } else if (decimalsLimit && decimal > decimalsLimit) {
