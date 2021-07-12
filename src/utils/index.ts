@@ -1,5 +1,5 @@
 import { networks, NetworkType } from '../constants/networks'
-import { ChainId } from '../connectors/index'
+import { ChainId, getNetWorkConnect } from '../connectors/index'
 import { PairInfo } from '../state/bridge/reducer'
 import store from '../state'
 import BN from 'bignumber.js'
@@ -57,10 +57,11 @@ export const checkAddress = async (address: string, type: ListType): Promise<boo
   }
 }
 
-export async function getSwapFee(selectedChainInfo: PairInfo, library: any) {
-  if (!selectedChainInfo?.srcChainInfo) return
+export async function getSwapFee(selectedChainInfo: PairInfo, library: any, isSelectedNetwork: boolean) {
+  if (!selectedChainInfo) return
   const networkInfo = getNetworkInfo(selectedChainInfo.srcChainInfo.chainId)
-  const contract = getBridgeContract(networkInfo.bridgeCoreAddress, library)
+  const lib = isSelectedNetwork ? library : getNetWorkConnect(networkInfo.chain_id as any)
+  const contract = getBridgeContract(networkInfo.bridgeCoreAddress, lib)
   const swapFee = await contract.methods.swapFee().call()
   return swapFee
 }
