@@ -31,7 +31,7 @@ const TransferLimit: React.FunctionComponent<TransferLimitProps> = ({ loading, a
   return (
     <TransferLimitWrap>
       <Title>
-        {t(`Available Balance`)}:
+        {t(`Available Bridge Balance`)}:
         {loading && !distNetworkInfo ? (
           <LoadingOutlined
             style={{

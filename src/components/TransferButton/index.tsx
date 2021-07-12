@@ -10,7 +10,6 @@ import { useHistory } from 'react-router'
 import { CheckListType } from '../../pages/bridge/transfer'
 import { getPairInfo, getNetworkInfo, web3Utils } from '../../utils/index'
 import { message } from 'antd'
-import useAuth from '../../hooks/useAuth'
 
 export interface TransferButtonProps {
   applyApprove: any
@@ -159,7 +158,7 @@ const TransferButton: React.FunctionComponent<TransferButtonProps> = ({
     )
   }
 
-  // not connect
+  // not select pair
   if (pairId === -1) {
     return (
       <TransferButtonWrap>
@@ -193,7 +192,7 @@ const TransferButton: React.FunctionComponent<TransferButtonProps> = ({
   if (!allStatus) {
     let key = ''
     if (amount === '' || !checkList.amount) {
-      key = `Invalid amount`
+      key = `Invalid number`
     } else if (!checkList.address) {
       key = `Invalid address`
     } else if (!checkList.senderWhite) {
@@ -204,6 +203,12 @@ const TransferButton: React.FunctionComponent<TransferButtonProps> = ({
       key = `Sender is in blackList`
     } else if (!checkList.receiverBlack) {
       key = `Receiver is in blackList`
+    } else if (!checkList.totolSupply) {
+      key = `Get bridge balance failed`
+    } else if (!checkList.swapFee) {
+      key = `Get transfer fee failed`
+    } else if (!checkList.available) {
+      key = `Get account available balance failed`
     } else {
       key = `Follow the tips`
     }
