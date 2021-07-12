@@ -31,6 +31,7 @@ import Web3 from 'web3'
 import { BridgeService } from '../../api/bridge'
 import { formatNumber } from '../../utils/index'
 import { ConsoleView } from 'react-device-detect'
+import { isNumber } from '../../utils/bignumber'
 
 export enum ListType {
   'WHITE',
@@ -76,6 +77,10 @@ export const BridgeTitle = styled.div`
   font-family: URWDIN-Regular, URWDIN;
   font-weight: 400;
   color: rgba(1, 8, 30, 0.6);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 200px;
 `
 const ReceiveText = styled.span`
   height: 14px;
@@ -148,8 +153,11 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
   const [receiveAddress, setReceiveAddress] = React.useState<any>(account)
   const [amount, setAmount] = React.useState<string>('0')
   const [available, setAvailable] = React.useState<string>('0')
+  const [totalSupply, setTotalSupply] = React.useState<string>('0')
   const [swapFee, setSwapFee] = React.useState<string>('0')
+
   const [availableLoading, setAvailableLoading] = React.useState<boolean>(false)
+
   const [supplyLoading, setSupplyLoading] = React.useState<boolean>(false)
   const [swapFeeLoading, setSwapFeeLoading] = React.useState<boolean>(false)
   const [bridgeStatusLoading, setBridgeStatusLoading] = React.useState<boolean>(false)
@@ -160,8 +168,6 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
   const currency = useCurrentCurrency()
 
   const history = useHistory()
-
-  const [totalSupply, setTotalSupply] = React.useState<string>('0')
 
   const { srcChainIds, distChainIds } = useTokenSupporChain()
 
@@ -222,7 +228,6 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
       setSwapFeeLoading(() => true)
       try {
         const fee = await getSwapFee(selectedPairInfo, library, isSelectedNetwork)
-        console.log('fee', fee)
         setSwapFee(() => new BN(fee).toNumber().toString())
         setCheckList((list) => {
           return {
@@ -231,7 +236,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
           }
         })
       } catch {
-        setSwapFee(() => t('Failed'))
+        setSwapFee(() => t('0'))
         setCheckList((list) => {
           return {
             ...list,
@@ -239,7 +244,9 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
           }
         })
       } finally {
-        setSwapFeeLoading(() => false)
+        setTimeout(() => {
+          setSwapFeeLoading(() => false)
+        }, 500)
       }
     }
     initFee()
@@ -271,8 +278,6 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
   }, [account])
 
   const isSelectedNetwork = React.useMemo(() => {
-    console.log(chainId, srcId)
-    console.log(selectedPairInfo)
     return chainId === srcId
   }, [chainId, srcId])
 
@@ -350,45 +355,58 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
    * @description get available status
    */
   React.useEffect(() => {
-    if (chainId && account && currency.symbol && currentPairId !== -1) {
-      const selectedSrcChainInfo = selectedPairInfo?.srcChainInfo as PairChainInfo
-      const lib = isSelectedNetwork ? library : getNetWorkConnect(selectedSrcChainInfo?.chainId)
-      const contract = getErc20Contract(selectedSrcChainInfo.contract, lib)
-      setAvailableLoading(() => true)
-      // chain token
-      try {
-        if (selectedSrcChainInfo.tag === 0) {
-          library.getBalance(account).then((res: any) => {
-            setAvailable(() => res.toString())
-            setAvailableLoading(() => false)
-          })
-        } else {
-          contract.methods
-            .balanceOf(account)
-            .call()
-            .then((r: any) => {
-              setAvailable(() => r.toString())
-              setAvailableLoading(() => false)
+    async function callback() {
+      if (account && currency.symbol && selectedPairInfo) {
+        setAvailableLoading(() => true)
+        const selectedSrcChainInfo = selectedPairInfo?.srcChainInfo as PairChainInfo
+        const lib =
+          chainId === selectedSrcChainInfo.chainId ? library : getNetWorkConnect(selectedSrcChainInfo?.chainId)
+        // debugger
+        // chain token
+        let timer: any = null
+        try {
+          if (selectedSrcChainInfo.tag === 0) {
+            const web3 = new Web3(lib.provider)
+            await web3.eth.getBalance(account).then(async (res: any) => {
+              console.log('native available', res)
+              await setTimeout(() => {
+                setAvailable(() => new BN(res).toString(10))
+              }, 500)
             })
+          } else {
+            const contract = getErc20Contract(selectedSrcChainInfo.contract, lib)
+            await contract.methods
+              .balanceOf(account)
+              .call()
+              .then((r: any) => {
+                console.log('token available', r)
+                setAvailable(() => r.toString())
+              })
+          }
+
+          setCheckList((list) => {
+            return {
+              ...list,
+              available: true,
+            }
+          })
+        } catch {
+          setAvailable(() => t('0'))
+          setCheckList((list) => {
+            return {
+              ...list,
+              available: false,
+            }
+          })
+        } finally {
+          setTimeout(() => {
+            setAvailableLoading(() => false)
+          }, 500)
         }
-        setCheckList((list) => {
-          return {
-            ...list,
-            available: true,
-          }
-        })
-      } catch {
-        setAvailable(() => t('Failed'))
-        setCheckList((list) => {
-          return {
-            ...list,
-            available: false,
-          }
-        })
-        setAvailableLoading(() => false)
       }
     }
-  }, [isSelectedNetwork, account, chainId, selectedPairInfo?.id, currency, currentPairId, distId, srcId])
+    callback()
+  }, [chainId, account, selectedPairInfo, currency])
 
   /**
    * @description get approve status of pairInfo
@@ -562,7 +580,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
             totolSupply: false,
           }
         })
-        setTotalSupply(() => t('Failed'))
+        setTotalSupply(() => t('0'))
       })
       .finally(() => {
         setSupplyLoading(() => false)
@@ -579,64 +597,6 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
       }
     })
   }, [chainId, selectedPairInfo?.srcChainInfo.chainId])
-
-  const amountText = () => {
-    const srcChainInfo = getNetworkInfo(srcId as any)
-    if (account) {
-      return (
-        <>
-          <Box>
-            <ReceiveText style={{ marginLeft: '10px' }}>{t(`Available`)}: </ReceiveText>
-            {!availableLoading ? (
-              <ReceiveAmountText>
-                {new BN(available)
-                  .div(Math.pow(10, selectedPairInfo?.srcChainInfo.decimals as any))
-                  .toNumber()
-                  .toString()}
-                {currency.symbol.toUpperCase()}
-              </ReceiveAmountText>
-            ) : (
-              <LoadingOutlined
-                style={{
-                  margin: '4px 10px 0px 10px',
-                  width: '12px',
-                  height: '12px',
-                  color: '#000',
-                  fontSize: '10px',
-                }}
-              />
-            )}
-          </Box>
-          <Box style={{ textAlign: 'right' }}>
-            <ReceiveText style={{ marginLeft: '10px' }}>{t(`Transfer fee`)}: </ReceiveText>
-            {!swapFeeLoading ? (
-              <ReceiveAmountText>
-                {new BN(swapFee).div(Math.pow(10, selectedNetworkInfo?.decimals)).toNumber().toString()}
-                {selectedNetworkInfo?.symbol.toUpperCase()}
-              </ReceiveAmountText>
-            ) : (
-              <LoadingOutlined
-                style={{
-                  margin: '4px 10px 0px 10px',
-                  width: '12px',
-                  height: '12px',
-                  color: '#000',
-                  fontSize: '10px',
-                }}
-              />
-            )}
-          </Box>
-        </>
-      )
-    }
-
-    return (
-      <>
-        <ReceiveText>{t(`You will receive`)}</ReceiveText>
-        <ReceiveAmountText>{t(` ≈ ${amount} ${selectedNetworkInfo?.symbol.toUpperCase()}`)}</ReceiveAmountText>
-      </>
-    )
-  }
 
   return (
     <BridgeTransferWrap>
@@ -665,10 +625,56 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
           swapFee={swapFee}
         />
         <Row style={{ marginTop: '9px', justifyContent: 'space-between' }}>
-          {amountText()}
-          {/*   <ChainTag>
-            <ChainText>{selectedNetworkInfo?.standard}</ChainText>
-          </ChainTag> */}
+          {account ? (
+            <>
+              <Box>
+                <ReceiveText style={{ marginLeft: '10px' }}>{t(`Available`)}: </ReceiveText>
+                {!availableLoading ? (
+                  <ReceiveAmountText>
+                    {new BN(available)
+                      .div(Math.pow(10, selectedPairInfo?.srcChainInfo.decimals as any))
+                      .toNumber()
+                      .toString()}
+                    {currency.symbol.toUpperCase()}
+                  </ReceiveAmountText>
+                ) : (
+                  <LoadingOutlined
+                    style={{
+                      margin: '4px 10px 0px 10px',
+                      width: '12px',
+                      height: '12px',
+                      color: '#000',
+                      fontSize: '10px',
+                    }}
+                  />
+                )}
+              </Box>
+              <Box style={{ textAlign: 'right' }}>
+                <ReceiveText style={{ marginLeft: '10px' }}>{t(`Transfer fee`)}: </ReceiveText>
+                {!swapFeeLoading ? (
+                  <ReceiveAmountText>
+                    {new BN(swapFee).div(Math.pow(10, selectedNetworkInfo?.decimals)).toNumber().toString()}
+                    {selectedNetworkInfo?.symbol.toUpperCase()}
+                  </ReceiveAmountText>
+                ) : (
+                  <LoadingOutlined
+                    style={{
+                      margin: '4px 10px 0px 10px',
+                      width: '12px',
+                      height: '12px',
+                      color: '#000',
+                      fontSize: '10px',
+                    }}
+                  />
+                )}
+              </Box>
+            </>
+          ) : (
+            <>
+              <ReceiveText>{t(`You will receive`)}</ReceiveText>
+              <ReceiveAmountText>{t(` ≈ ${amount} ${selectedNetworkInfo?.symbol.toUpperCase()}`)}</ReceiveAmountText>
+            </>
+          )}
         </Row>
         <ReceiveAddressWrap>
           <TextWrap>

@@ -116,6 +116,7 @@ const StatusText = styled.span`
   font-family: URWDIN-Regular, URWDIN;
   font-weight: 400;
   color: #01081e;
+  white-space: nowrap;
 `
 
 const LinkText = styled(StatusText)`
@@ -183,7 +184,7 @@ const BridgeDetailPage: React.FunctionComponent<BridgeDetailPageProps> = (props)
         break
       case 'VERIFIED':
         setPercent1(() => 100)
-        setPercent2(() => 10)
+        setPercent2(() => 0)
         setCurrent(() => 1)
         break
 

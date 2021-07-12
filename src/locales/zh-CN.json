@@ -150,7 +150,7 @@
   "Input amount is bigger than bridge available balance": "输入金额大于当前可承兑金额",
   "CREATED": "已创建订单",
   "CANCELLED": "验证不通过",
-  "VERIFIED": "成功",
+  "VERIFIED": "处理中",
   "PROCESSING": "处理中",
   "CONFIRMED": "系统确认",
   "No record": "没有记录",

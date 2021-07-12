@@ -82,6 +82,7 @@ const Order = styled.div<{ pending: boolean }>`
 const OrderMask = styled.div`
   position: absolute;
   top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   display: flex;
@@ -188,6 +189,7 @@ const OrderDetailWrap = styled.div`
   flex-flow: row nowrap;
   justify-content: space-between;
   align-items: center;
+  margin-top: 10px;
 `
 
 const Left = styled.div`
@@ -332,8 +334,10 @@ const BridgeListPage: React.FunctionComponent<BridgeListPageProps> = () => {
       selectedPairInfo = getPairInfo(transaction.pairId) as PairInfo
       srcNetworkInfo = getNetworkInfo(transaction.srcId)
       distNetworkInfo = getNetworkInfo(transaction.distId)
-      transaction.dstAmount = new BN(transaction.amount).div(Math.pow(10, transaction.currency.decimals)).toString()
-      transaction.srcFee = transaction.fee
+      transaction.dstAmount = new BN(transaction.amount)
+        .div(Math.pow(10, selectedPairInfo.srcChainInfo.decimals))
+        .toString()
+      transaction.srcFee = new BN(transaction.fee).div(Math.pow(10, srcNetworkInfo.decimals)).toString()
       transaction.status = t(`Pending`) + '...'
       transaction.srcCurrency = transaction.currency.symbol
       transaction.createTime = ''
