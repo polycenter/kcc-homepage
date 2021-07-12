@@ -123,7 +123,7 @@ const NoticeBar: React.FunctionComponent<NoticeBarProps> = () => {
   const cnRiskAnnouncement = {
     title:
       '<风险提示> KCC官方不会发布任何Swap项目，因为所有项目都是由社区开发的，所以KCC对这些项目造成的问题不承担任何责任。此外，KCC不为相关项目提供客户服务。',
-    pubDate: '',
+    pubDate: '2021-06-16 20:00:00',
     link: 'https://docs.kcc.io/#/zh-cn/?id=%e9%a3%8e%e9%99%a9%e6%8f%90%e7%a4%ba',
   }
 
@@ -158,7 +158,7 @@ const NoticeBar: React.FunctionComponent<NoticeBarProps> = () => {
       console.log('arr', arr)
       setAnnoucementList(() => arr)
     } catch {
-      message.error(t(`Get Announcement Faied.`))
+      message.error(t(`Get Announcement Faied`))
     }
   }
 

@@ -257,8 +257,6 @@ export interface History {
   comment: string
 }
 
-type HistoryItemType = History | UnconfirmOrderListType
-
 const DirectionIcon = require('../../assets/images/bridge/to.png').default
 
 const BridgeListPage: React.FunctionComponent<BridgeListPageProps> = () => {
