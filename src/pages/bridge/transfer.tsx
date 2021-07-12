@@ -28,6 +28,7 @@ import {
   useCurrentPairId,
 } from '../../state/bridge/hooks'
 import Web3 from 'web3'
+import { BridgeService } from '../../api/bridge'
 
 export enum ListType {
   'WHITE',
@@ -147,9 +148,10 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
   const [availableLoading, setAvailableLoading] = React.useState<boolean>(false)
   const [supplyLoading, setSupplyLoading] = React.useState<boolean>(false)
   const [swapFeeLoading, setSwapFeeLoading] = React.useState<boolean>(false)
+  const [bridgeStatusLoading, setBridgeStatusLoading] = React.useState<boolean>(false)
 
   // important state
-  const [bridgeStatus, setBridgeStatus] = React.useState<boolean>(true)
+  const [bridgeStatus, setBridgeStatus] = React.useState<boolean>(false)
 
   const currency = useCurrentCurrency()
 
@@ -174,6 +176,25 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
   const checkNetwork = (currentNetworkId: number, sendNetworkId: number) => {
     return currentNetworkId === sendNetworkId
   }
+
+  // get bridgeStatus
+  const initBridgeStatus = async () => {
+    try {
+      setBridgeStatusLoading(() => true)
+      const fusingResponse = await BridgeService.getBridgeStatus()
+      if (fusingResponse?.data.data.status === 0) {
+        setBridgeStatus(() => true)
+      } else {
+        setBridgeStatus(() => false)
+      }
+    } catch {
+      setBridgeStatusLoading(() => false)
+    }
+  }
+
+  React.useEffect(() => {
+    initBridgeStatus()
+  }, [])
 
   // get selectedPairInfo
   const selectedPairInfo = React.useMemo(() => {

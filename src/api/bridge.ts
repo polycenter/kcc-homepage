@@ -47,4 +47,11 @@ export class BridgeService {
       },
     })
   }
+
+  static getBridgeStatus(): Promise<HttpResponse<any>> {
+    return Axios({
+      method: 'get',
+      url: '/fusing',
+    })
+  }
 }
