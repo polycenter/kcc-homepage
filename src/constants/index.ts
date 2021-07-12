@@ -6,17 +6,17 @@ export const KCC = {
   FAUCET: 'https://faucet-testnet.kcc.network/',
   DOCS_URL: 'https://docs.kcc.io/#/',
   GITHUB_URL: 'https://github.com/kcc-community',
-  DAPP_URL: 'https://github.com/kucoin-community-chain/awesome-dApps',
+  DAPP_URL: 'https://github.com/kcc-community/awesome-dApps',
   DISCORD_URL: 'https://discord.com/invite/H5ucJydSyd',
   MEDIA_URL: 'https://kucoincommunitychain.medium.com',
-  MEDIA_API: 'https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@kucoincommunitychain',
+  MEDIA_API: 'https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@kccofficial',
   MAIL_SUBSCRIBE_PROXY: 'https://mailsubscribe.kcc.io/mailchimp-subscribe',
   TWITTER: 'https://twitter.com/KCCOfficialTW',
   TELEGRAM: 'https://t.me/KCCOfficialEnglishCommunity',
   RISK_STATMENT: 'id=risk-statement',
   DISCLAIMER: 'id=disclaimers',
   FAQ: 'id=faq',
-  GRANTS: 'https://github.com/kucoin-community-chain/kcc-grants',
+  GRANTS: 'https://github.com/kcc-community/kcc-grants',
   CONTACT_LIST: [
     {
       app: 'Twitter',
@@ -31,7 +31,7 @@ export const KCC = {
     {
       app: 'Github',
       icon: require('../assets/images/Icons/app/github-logo@2x.png').default,
-      route: 'https://github.com/kucoin-community-chain',
+      route: 'https://github.com/kcc-community',
     },
     {
       app: 'Discord',
