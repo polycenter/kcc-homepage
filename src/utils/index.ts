@@ -58,10 +58,11 @@ export const checkAddress = async (address: string, type: ListType): Promise<boo
 }
 
 export async function getSwapFee(selectedChainInfo: PairInfo, library: any, isSelectedNetwork: boolean) {
-  if (!selectedChainInfo) return
   const networkInfo = getNetworkInfo(selectedChainInfo.srcChainInfo.chainId)
+  const distNetworkInfo = getNetworkInfo(selectedChainInfo.dstChainInfo.chainId)
   const lib = isSelectedNetwork ? library : getNetWorkConnect(networkInfo.chain_id as any)
-  const contract = getBridgeContract(networkInfo.bridgeCoreAddress, lib)
+  const address = isSelectedNetwork ? networkInfo.bridgeCoreAddress : distNetworkInfo.bridgeCoreAddress
+  const contract = getBridgeContract(address, lib)
   const swapFee = await contract.methods.swapFee().call()
   return swapFee
 }
