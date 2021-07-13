@@ -283,8 +283,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
 
   const changeReceiveAddress = (e: any) => {
     const address = e.target.value.trim()
-    const isAddress = web3Utils.isAddress(address)
-    console.log(isAddress)
+    const isAddress = web3Utils.isAddress(address) && address !== '0x0000000000000000000000000000000000000000'
     setCheckList((list) => {
       return {
         ...list,
@@ -542,27 +541,26 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
   // get dist chain available
   React.useEffect(() => {
     const callback = async (): Promise<any> => {
-      if (selectedPairInfo?.status) {
-        const chain = getNetworkInfo(selectedPairInfo.dstChainInfo.chainId)
-        const connector = getNetWorkConnect(selectedPairInfo.dstChainInfo.chainId)
-        const contract = getErc20Contract(selectedPairInfo.dstChainInfo.contract, connector)
-        // const supply = await contract.methods.totalSupply().call()
-        let supply = '0'
-        // navitve
-        if (selectedPairInfo.dstChainInfo.tag === 0) {
-          console.log('check the dist chain native available')
-          const web3 = new Web3(connector.provider as any)
-          supply = await web3.eth.getBalance(chain.bridgeCoreAddress)
-        } else {
-          // token
-          console.log('check the dist chain token available')
-          supply = await contract.methods.balanceOf(chain.bridgeCoreAddress).call()
-        }
-        return supply
+      setSupplyLoading(() => true)
+      if (!selectedPairInfo) return 0
+      const chain = getNetworkInfo(selectedPairInfo.dstChainInfo.chainId)
+      const connector = getNetWorkConnect(selectedPairInfo.dstChainInfo.chainId)
+      const contract = getErc20Contract(selectedPairInfo.dstChainInfo.contract, connector)
+      // const supply = await contract.methods.totalSupply().call()
+      let supply = '0'
+      // navitve
+      if (selectedPairInfo.dstChainInfo.tag === 0) {
+        console.log('check the dist chain native available')
+        const web3 = new Web3(connector.provider as any)
+        supply = await web3.eth.getBalance(chain.bridgeCoreAddress)
+      } else {
+        // token
+        console.log('check the dist chain token available')
+        supply = await contract.methods.balanceOf(chain.bridgeCoreAddress).call()
       }
+      return supply
     }
 
-    setSupplyLoading(() => true)
     callback()
       .then((res) => {
         setTotalSupply(() => new BN(res).toString())
@@ -580,7 +578,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
             totolSupply: false,
           }
         })
-        setTotalSupply(() => t('0'))
+        setTotalSupply(() => '0')
       })
       .finally(() => {
         setSupplyLoading(() => false)

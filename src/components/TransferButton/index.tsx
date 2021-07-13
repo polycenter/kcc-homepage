@@ -172,7 +172,7 @@ const TransferButton: React.FunctionComponent<TransferButtonProps> = ({
     return (
       <TransferButtonWrap>
         <BaseButton onClick={switchNetwork}>
-          {t(`Switch`)} {selectedNetworkInfo?.fullName}
+          {t(`Switch Network`)} {selectedNetworkInfo?.fullName}
         </BaseButton>
         <HistoryText onClick={() => history.push('/bridge/list')}>{t(`Transaction History`)}</HistoryText>
       </TransferButtonWrap>

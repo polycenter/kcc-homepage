@@ -5,7 +5,7 @@ import { TransferWrap } from './transfer'
 import { useHistory } from 'react-router-dom'
 import { CenterRow } from '../../components/Row'
 import { RightOutlined } from '@ant-design/icons'
-import { Spin } from 'antd'
+import { Button, Pagination, Spin } from 'antd'
 import { getNetworkInfo, getPairInfo } from '../../utils/index'
 import { PairInfo } from '../../state/bridge/reducer'
 import { useTranslation } from 'react-i18next'
@@ -17,6 +17,9 @@ import { UnconfirmOrderKey } from '../../utils/task'
 import useLocalStorageState from 'react-use-localstorage'
 import { UnconfirmOrderListType } from './confirm'
 import { find } from 'lodash'
+import moment from 'moment'
+import { theme } from '../../constants/theme'
+import { ColumnCenter } from '../../components/Column/index'
 
 export interface BridgeListPageProps {}
 
@@ -32,7 +35,7 @@ const BridgeListWrap = styled.div`
 
 const HistoryWrap = styled(TransferWrap)`
   background: linear-gradient(180deg, #f5fffc 0%, #feffff 100%);
-  height: 520px;
+  height: 600px;
   display: flex;
   flex-flow: column nowrap;
   justify-content: flex-start;
@@ -41,10 +44,28 @@ const HistoryWrap = styled(TransferWrap)`
 
 const HistoryListWrap = styled.div`
   width: 100%;
-  height: 400px;
+  height: 450px;
   margin-bottom: 0px;
   margin-top: 24px;
-  overflow: scroll;
+  /* overflow-y: hidden;
+  &:hover {
+    overflow-y: auto;
+  }
+  ::-webkit-scrollbar {
+    width: 3px;
+    height: 3px;
+    background-color: #f9f9f9;
+  }
+  ::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    background-color: #f9f9f9;
+  }
+  ::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: ${theme.colors.bridgePrimay};
+  } */
 `
 
 const Order = styled.div<{ pending: boolean }>`
@@ -99,8 +120,8 @@ const Number = styled.span`
   font-weight: normal;
   color: rgba(0, 6, 33, 0.87);
   margin-right: 12px;
-  height: 18px;
-  line-height: 22px;
+  /*   height: 18px;
+  line-height: 22px; */
 `
 
 const NetworkWrap = styled.div`
@@ -189,7 +210,6 @@ const OrderDetailWrap = styled.div`
   flex-flow: row nowrap;
   justify-content: space-between;
   align-items: center;
-  margin-top: 10px;
 `
 
 const Left = styled.div`
@@ -285,18 +305,29 @@ const BridgeListPage: React.FunctionComponent<BridgeListPageProps> = () => {
     return unconfirmed
   }
 
+  const pageSize = 4
+
   const getHistoryList = async () => {
     if (!account) return
     try {
       setLoading(() => true)
-      const res = await BridgeService.transitionList(account, 1, currentPage, 50)
+      const res = await BridgeService.transitionList(account, 1, currentPage, pageSize)
       const data = res.data.data
       if (data) {
-        // BUG need merge local unconfirm list
+        //  need merge local unconfirm list
+        data.list.map((item: any) => {
+          item.createTime = moment(item.createTime).format('YYYY-MM-DD HH:MM:SS')
+        })
         const unconfirm = getUnconfirmedFromLocal(data.list, JSON.parse(unconfirmOrderList))
         setUnconfirmOrderList(JSON.stringify(unconfirm))
-        setHistoryList(() => [...unconfirm, ...data.list])
-        setTotalPage(() => data.total / 50 + 1)
+
+        if (unconfirm.length > 0 && currentPage === 1) {
+          setHistoryList(() => [...unconfirm, ...data.list])
+        } else {
+          setHistoryList(() => [...unconfirm, ...data.list.slice(0, pageSize - unconfirm.length)])
+        }
+
+        setTotalPage(() => data.total)
       }
     } finally {
       setLoading(() => false)
@@ -305,11 +336,11 @@ const BridgeListPage: React.FunctionComponent<BridgeListPageProps> = () => {
 
   React.useEffect(() => {
     getHistoryList()
-  }, [])
+  }, [currentPage])
 
-  React.useEffect(() => {
-    getHistoryList()
-  }, [account])
+  const pageNumberChange = (pageNumber: number) => {
+    setCurrentPage(() => pageNumber)
+  }
 
   const nav2transfer = () => {
     history.push('/bridge/transfer')
@@ -340,12 +371,11 @@ const BridgeListPage: React.FunctionComponent<BridgeListPageProps> = () => {
       transaction.srcFee = new BN(transaction.fee).div(Math.pow(10, srcNetworkInfo.decimals)).toString()
       transaction.status = t(`Pending`) + '...'
       transaction.srcCurrency = transaction.currency.symbol
-      transaction.createTime = ''
+      transaction.createTime = moment(transaction.saveTime).format('YYYY-MM-DD HH:MM:SS')
     }
 
     return (
       <Order onClick={nav2detail.bind(null, transaction)} key={no} pending={Boolean(transaction?.saveTime)}>
-        {Boolean(transaction?.saveTime) ? <OrderMask>{t(`Pending`)}...</OrderMask> : null}
         <CenterRow>
           <Number>{no < 10 ? `0${no}` : `${no}`}</Number>
           <NetworkIcon src={srcNetworkInfo.logo} />
@@ -392,7 +422,12 @@ const BridgeListPage: React.FunctionComponent<BridgeListPageProps> = () => {
         <BridgeTitlePanel title={t(`Transaction History`)} iconEvent={nav2transfer} />
         <Spin spinning={loading}>
           {historyList.length ? (
-            <HistoryListWrap>{list}</HistoryListWrap>
+            <>
+              <HistoryListWrap>{list}</HistoryListWrap>
+              <ColumnCenter style={{ width: '100%' }}>
+                <Pagination current={currentPage} total={totalPage} onChange={pageNumberChange} />
+              </ColumnCenter>
+            </>
           ) : (
             <EmptyParentWrap>
               {account ? (

@@ -233,7 +233,7 @@ const BridgeDetailPage: React.FunctionComponent<BridgeDetailPageProps> = (props)
                 <NetworkName>{network.src.fullName}</NetworkName>
               </CenterRow>
               <StatusText style={{ color: current > 0 ? '#31D7A0' : '#01081E' }}>
-                {current > 0 ? t('Completed') : t(`Process`) + '...'}
+                {current > 0 ? t('Completed') : t(`Pending`) + '...'}
               </StatusText>
             </BetweenBox>
             <Progress

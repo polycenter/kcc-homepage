@@ -2694,10 +2694,10 @@
   resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-8.3.1.tgz#1a32969cf8f0364b3d8c8af9cc3555b7805df14f"
   integrity sha512-Y2mHTRAbqfFkpjldbkHGY8JIzRN6XqYRliG8/24FcHm2D2PwW24fl5xMRTVGdrb7iMrwCaIEbLWerGIkXuFWVg==
 
-"@types/webpack-env@^1.16.0":
+"@types/webpack-env@^1.16.2":
   version "1.16.2"
-  resolved "https://registry.yarnpkg.com/@types/webpack-env/-/webpack-env-1.16.2.tgz#8db514b059c1b2ae14ce9d7bb325296de6a9a0fa"
-  integrity sha512-vKx7WNQNZDyJveYcHAm9ZxhqSGLYwoyLhrHjLBOkw3a7cT76sTdjgtwyijhk1MaHyRIuSztcVwrUOO/NEu68Dw==
+  resolved "https://registry.nlark.com/@types/webpack-env/download/@types/webpack-env-1.16.2.tgz?cache=0&sync_timestamp=1625255761540&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40types%2Fwebpack-env%2Fdownload%2F%40types%2Fwebpack-env-1.16.2.tgz#8db514b059c1b2ae14ce9d7bb325296de6a9a0fa"
+  integrity sha1-jbUUsFnBsq4Uzp17syUpbeapoPo=
 
 "@types/webpack-sources@*":
   version "2.1.1"
@@ -17352,7 +17352,7 @@ webpack-dev-server@3.11.1:
 
 webpack-env@^0.8.0:
   version "0.8.0"
-  resolved "https://registry.yarnpkg.com/webpack-env/-/webpack-env-0.8.0.tgz#97771b39ccd0e532db1c87d459379c9d7cd887dc"
+  resolved "https://registry.nlark.com/webpack-env/download/webpack-env-0.8.0.tgz#97771b39ccd0e532db1c87d459379c9d7cd887dc"
   integrity sha1-l3cbOczQ5TLbHIfUWTecnXzYh9w=
   dependencies:
     webpack "^1.12.2"

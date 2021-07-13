@@ -9,7 +9,7 @@ module.exports = {
           lessOptions: {
             // config less variable here
             modifyVars: {
-              '@primary-color': '#49FFA1',
+              '@primary-color': '#31D7A0',
               '@link-color': '#0fcd8c',
               '@logo-color': '#39E1A4',
             },

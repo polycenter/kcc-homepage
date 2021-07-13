@@ -1,5 +1,6 @@
 import Axios, { AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios'
 import { message } from 'antd'
+import i18next from 'i18next'
 
 export interface HttpResponse<T> {
   status: number
@@ -116,7 +117,7 @@ service.interceptors.response.use(
     if (__emsg?.indexOf('timeout') >= 0) {
       __emsg = 'timeout'
     }
-    message.error(__emsg)
+    message.error(i18next.t(__emsg))
     return Promise.reject(new Error(__emsg))
   }
 )
