@@ -141,19 +141,19 @@ const TransferButton: React.FunctionComponent<TransferButtonProps> = ({
     }
   }
 
-  if (!bridgeStatus) {
-    return (
-      <TransferButtonWrap>
-        <DisabledButton>{t(`KCC bridge under maintenance`)}</DisabledButton>
-      </TransferButtonWrap>
-    )
-  }
-
   // not connect
   if (!account) {
     return (
       <TransferButtonWrap>
         <BaseButton onClick={connect}>{t(`Connect your wallet`)}</BaseButton>
+      </TransferButtonWrap>
+    )
+  }
+
+  if (!bridgeStatus) {
+    return (
+      <TransferButtonWrap>
+        <DisabledButton>{t(`KCC bridge under maintenance`)}</DisabledButton>
       </TransferButtonWrap>
     )
   }
