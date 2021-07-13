@@ -32,7 +32,7 @@ export const networks = {
     symbol: 'ETH',
     browser: 'https://rinkeby.etherscan.io',
     logo: 'https://cdn.jsdelivr.net/gh/kucoin-community-chain/tokens-info@main/icons/chain-1.png',
-    bridgeCoreAddress: '0x6b9862e7e0203f7D2640E246A15EA961737489b0',
+    bridgeCoreAddress: '0xA976440272c709C69970A40cb9249BfAa4759A7A',
     standard: 'ERC20',
   },
   321: {
@@ -56,7 +56,7 @@ export const networks = {
     symbol: 'KCS',
     browser: 'https://scan-testnet.kucoin.one',
     logo: 'https://cdn.jsdelivr.net/gh/kucoin-community-chain/tokens-info@main/icons/chain-321.png',
-    bridgeCoreAddress: '0x6b9862e7e0203f7D2640E246A15EA961737489b0',
+    bridgeCoreAddress: '0xA976440272c709C69970A40cb9249BfAa4759A7A',
     standard: 'KRC20',
   },
 }

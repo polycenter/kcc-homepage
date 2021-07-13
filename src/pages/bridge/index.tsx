@@ -206,7 +206,7 @@ const BridgePage: React.FunctionComponent<BridgePageProps> = ({ children }) => {
             {loading ? (
               <Success>{t('Loading')}...</Success>
             ) : (
-              <Success>{status !== 0 ? t(`Success`) + '!' : t('Waiting for confirmation')}</Success>
+              <Success>{status !== 0 ? t(`SUCCESS`) + '!' : t('Waiting for confirmation')}</Success>
             )}
           </LoadingBg>
         ) : (
