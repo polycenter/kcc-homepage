@@ -54,7 +54,7 @@ export const networks = {
     chain_id: 322,
     decimals: 18,
     symbol: 'KCS',
-    browser: 'https://scan-testnet.kucoin.one',
+    browser: 'https://scan-testnet.kcc.network',
     logo: 'https://cdn.jsdelivr.net/gh/kucoin-community-chain/tokens-info@main/icons/chain-321.png',
     bridgeCoreAddress: '0xA976440272c709C69970A40cb9249BfAa4759A7A',
     standard: 'KRC20',

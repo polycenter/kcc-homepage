@@ -106,7 +106,6 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
       updateAddressStatus(false, insufficientFeeText)
       return false
     }
-
     // chekc send  type first,native or token
     if (pairInfo.srcChainInfo.tag === 0) {
       inputAmount = new BN(inputAmount).plus(swapFee).toString()
@@ -114,8 +113,8 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
       // check transfer fee
       const web3 = new Web3(library.provider)
       const balance = await web3.eth.getBalance(account)
-      console.log(balance)
-      if (new BN(balance).gte(swapFee)) {
+      console.log(balance, swapFee)
+      if (swapFee && new BN(swapFee).gte(balance)) {
         updateAddressStatus(false, insufficientFeeText)
         return
       }

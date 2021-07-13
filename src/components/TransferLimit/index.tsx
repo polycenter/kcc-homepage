@@ -3,8 +3,6 @@ import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import BN from 'bignumber.js'
 import { LoadingOutlined } from '@ant-design/icons'
-import { NetworkType } from '../../constants/networks'
-import { formatNumber } from '../../utils'
 import { getPairInfo } from '../../utils/index'
 export interface TransferLimitProps {
   loading: boolean
