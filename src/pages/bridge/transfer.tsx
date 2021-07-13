@@ -29,9 +29,6 @@ import {
 } from '../../state/bridge/hooks'
 import Web3 from 'web3'
 import { BridgeService } from '../../api/bridge'
-import { formatNumber } from '../../utils/index'
-import { ConsoleView } from 'react-device-detect'
-import { isNumber } from '../../utils/bignumber'
 
 export enum ListType {
   'WHITE',
@@ -235,8 +232,9 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
             swapFee: true,
           }
         })
-      } catch {
-        setSwapFee(() => t('0'))
+      } catch (e) {
+        console.log(e)
+        setSwapFee(() => '0')
         setCheckList((list) => {
           return {
             ...list,
@@ -321,6 +319,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
 
   // update selected pairId
   React.useEffect(() => {
+    console.log('currency', currency)
     if (srcId && distId && currency.name) {
       for (let i = 0; i < pairList?.length; i++) {
         const chain = pairList[i]
@@ -335,6 +334,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
           return
         }
       }
+
       if (srcChainIds.length) {
         changeSrcId(srcChainIds[0])
       } else {
@@ -390,7 +390,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
             }
           })
         } catch {
-          setAvailable(() => t('0'))
+          setAvailable(() => '0')
           setCheckList((list) => {
             return {
               ...list,
@@ -632,7 +632,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
                     {new BN(available)
                       .div(Math.pow(10, selectedPairInfo?.srcChainInfo.decimals as any))
                       .toNumber()
-                      .toString()}
+                      .toString() ?? 0}
                     {currency.symbol.toUpperCase()}
                   </ReceiveAmountText>
                 ) : (
@@ -651,7 +651,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
                 <ReceiveText style={{ marginLeft: '10px' }}>{t(`Transfer fee`)}: </ReceiveText>
                 {!swapFeeLoading ? (
                   <ReceiveAmountText>
-                    {new BN(swapFee).div(Math.pow(10, selectedNetworkInfo?.decimals)).toNumber().toString()}
+                    {new BN(swapFee).div(Math.pow(10, selectedNetworkInfo?.decimals)).toNumber().toString() ?? '0'}
                     {selectedNetworkInfo?.symbol.toUpperCase()}
                   </ReceiveAmountText>
                 ) : (

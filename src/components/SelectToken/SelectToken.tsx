@@ -87,7 +87,7 @@ const TokenDescriptionWrap = styled.div`
 
 const ListWrap = styled.div`
   height: 500px;
-  overflow: scroll;
+  overflow-y: scroll;
 `
 const SelectItem = styled(TokenWrap)`
   padding: 0 14px;

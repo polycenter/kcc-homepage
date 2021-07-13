@@ -43,7 +43,7 @@ const TransferLimit: React.FunctionComponent<TransferLimitProps> = ({ loading, a
             }}
           />
         ) : (
-          <span>{formatNumber(new BN(available).div(Math.pow(10, distNetworkInfo?.decimals)))}</span>
+          <span>{new BN(available).div(Math.pow(10, distNetworkInfo?.decimals)).toNumber().toString() ?? 0}</span>
         )}
       </Title>
     </TransferLimitWrap>

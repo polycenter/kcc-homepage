@@ -140,6 +140,8 @@ const BridgePage: React.FunctionComponent<BridgePageProps> = ({ children }) => {
     try {
       const res = await BridgeService.pairList()
 
+      console.log(res.data.data)
+
       const list: PairInfo[] = []
 
       for (let i = 0; i < res.data.data.length; i++) {
