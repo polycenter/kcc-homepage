@@ -7,7 +7,7 @@ export class BridgeService {
    * @description get pair list
    * @return {HttpResponse} result
    */
-  static pairList(): Promise<HttpResponse<any>> {
+  static pairList(): Promise<any> {
     return Axios({
       method: 'get',
       url: '/pair/list',
