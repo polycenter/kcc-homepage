@@ -5,10 +5,11 @@ import BN from 'bignumber.js'
 import { LoadingOutlined } from '@ant-design/icons'
 import { NetworkType } from '../../constants/networks'
 import { formatNumber } from '../../utils'
+import { getPairInfo } from '../../utils/index'
 export interface TransferLimitProps {
   loading: boolean
   available: string
-  distNetworkInfo: NetworkType
+  pairId: number
 }
 
 const TransferLimitWrap = styled.div`
@@ -26,13 +27,16 @@ const Title = styled.div`
   line-height: 22px;
 `
 
-const TransferLimit: React.FunctionComponent<TransferLimitProps> = ({ loading, available, distNetworkInfo }) => {
+const TransferLimit: React.FunctionComponent<TransferLimitProps> = ({ loading, available, pairId }) => {
   const { t } = useTranslation()
+
+  const selectedPairInfo = getPairInfo(pairId)
+
   return (
     <TransferLimitWrap>
       <Title>
         {t(`Available Bridge Balance`)}:
-        {loading && !distNetworkInfo ? (
+        {loading ? (
           <LoadingOutlined
             style={{
               margin: '4px 10px 0px 10px',
@@ -43,7 +47,9 @@ const TransferLimit: React.FunctionComponent<TransferLimitProps> = ({ loading, a
             }}
           />
         ) : (
-          <span>{new BN(available).div(Math.pow(10, distNetworkInfo?.decimals)).toNumber().toString() ?? 0}</span>
+          <span>
+            {new BN(available).div(Math.pow(10, selectedPairInfo?.dstChainInfo.decimals as number)).toString()}
+          </span>
         )}
       </Title>
     </TransferLimitWrap>
