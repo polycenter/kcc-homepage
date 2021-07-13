@@ -68,35 +68,18 @@ const HistoryListWrap = styled.div`
   } */
 `
 
-const Order = styled.div<{ pending: boolean }>`
+const Order = styled.div`
   position: relative;
   height: 110px;
   padding: 17px 10px 0px 5px;
-
-  pointer-events: ${({ pending }) => {
-    if (pending) {
-      return 'none'
-    }
-    return ''
-  }};
 
   & + & {
     border-top: 1px solid rgba(1, 8, 30, 0.08);
   }
 
   &:hover {
-    cursor: ${({ pending }) => {
-      if (pending) {
-        return 'not-allowed'
-      }
-      return 'pointer'
-    }};
-    background: ${({ pending }) => {
-      if (pending) {
-        return 'transparent'
-      }
-      return 'rgba(49, 215, 160, 0.08)'
-    }};
+    cursor: pointer;
+    background: rgba(49, 215, 160, 0.08);
   }
 `
 
@@ -322,9 +305,12 @@ const BridgeListPage: React.FunctionComponent<BridgeListPageProps> = () => {
         setUnconfirmOrderList(JSON.stringify(unconfirm))
 
         if (unconfirm.length > 0 && currentPage === 1) {
-          setHistoryList(() => [...unconfirm, ...data.list])
+          setHistoryList(() => [
+            ...unconfirm,
+            ...data.list.slice(0, pageSize - unconfirm.length <= 4 ? pageSize - unconfirm.length : 0),
+          ])
         } else {
-          setHistoryList(() => [...unconfirm, ...data.list.slice(0, pageSize - unconfirm.length)])
+          setHistoryList(() => [...data.list])
         }
 
         setTotalPage(() => data.total)
@@ -369,13 +355,13 @@ const BridgeListPage: React.FunctionComponent<BridgeListPageProps> = () => {
         .div(Math.pow(10, selectedPairInfo.srcChainInfo.decimals))
         .toString()
       transaction.srcFee = new BN(transaction.fee).div(Math.pow(10, srcNetworkInfo.decimals)).toString()
-      transaction.status = t(`Pending`) + '...'
+      transaction.status = `Pending`
       transaction.srcCurrency = transaction.currency.symbol
       transaction.createTime = moment(transaction.saveTime).format('YYYY-MM-DD HH:MM:SS')
     }
 
     return (
-      <Order onClick={nav2detail.bind(null, transaction)} key={no} pending={Boolean(transaction?.saveTime)}>
+      <Order onClick={nav2detail.bind(null, transaction)} key={no}>
         <CenterRow>
           <Number>{no < 10 ? `0${no}` : `${no}`}</Number>
           <NetworkIcon src={srcNetworkInfo.logo} />
