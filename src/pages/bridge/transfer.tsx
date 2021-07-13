@@ -313,10 +313,6 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
     return getNetworkInfo(selectedPairInfo?.srcChainInfo.chainId as any)
   }, [selectedPairInfo])
 
-  const selectedDistNetworkInfo = React.useMemo(() => {
-    return getNetworkInfo(selectedPairInfo?.dstChainInfo.chainId as any)
-  }, [selectedPairInfo])
-
   // update selected pairId
   React.useEffect(() => {
     console.log('currency', currency)
@@ -539,10 +535,11 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
   }
 
   // get dist chain available
-  React.useEffect(() => {
-    const callback = async (): Promise<any> => {
+
+  const getTotalSupply = async (): Promise<any> => {
+    try {
       setSupplyLoading(() => true)
-      if (!selectedPairInfo) return 0
+      if (!selectedPairInfo) return
       const chain = getNetworkInfo(selectedPairInfo.dstChainInfo.chainId)
       const connector = getNetWorkConnect(selectedPairInfo.dstChainInfo.chainId)
       const contract = getErc20Contract(selectedPairInfo.dstChainInfo.contract, connector)
@@ -556,34 +553,33 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
       } else {
         // token
         console.log('check the dist chain token available')
+        console.log(selectedPairInfo.dstChainInfo.contract, chain.bridgeCoreAddress)
+        console.log(selectedPairInfo.dstChainInfo.chainId)
         supply = await contract.methods.balanceOf(chain.bridgeCoreAddress).call()
       }
-      return supply
-    }
-
-    callback()
-      .then((res) => {
-        setTotalSupply(() => new BN(res).toString())
-        setCheckList((list) => {
-          return {
-            ...list,
-            totolSupply: true,
-          }
-        })
-      })
-      .catch(() => {
-        setCheckList((list) => {
-          return {
-            ...list,
-            totolSupply: false,
-          }
-        })
-        setTotalSupply(() => '0')
-      })
-      .finally(() => {
+      setTotalSupply(() => String(supply))
+      setTimeout(() => {
         setSupplyLoading(() => false)
+      }, 1000)
+      setCheckList((list) => {
+        return {
+          ...list,
+          totolSupply: true,
+        }
       })
-  }, [selectedPairInfo?.limitStatus])
+    } catch {
+      setCheckList((list) => {
+        return {
+          ...list,
+          totolSupply: false,
+        }
+      })
+    }
+  }
+
+  React.useEffect(() => {
+    getTotalSupply()
+  }, [selectedPairInfo?.limitStatus, currentPairId])
 
   // component did mount
   React.useEffect(() => {
@@ -599,7 +595,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
   return (
     <BridgeTransferWrap>
       <TransferWrap>
-        <TransferLimit distNetworkInfo={selectedDistNetworkInfo} available={totalSupply} loading={supplyLoading} />
+        <TransferLimit pairId={currentPairId} available={totalSupply} loading={supplyLoading} />
         <BridgeTitle>{t(`Asset`)}</BridgeTitle>
         <SelectToken list={tokenList} setCurrency={setSelectedCurrency} currency={currency} />
         <ChainBridge

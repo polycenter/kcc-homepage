@@ -100,6 +100,13 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
   const checkAmount = async (inputAmount: string, input: string) => {
     if (!pairInfo || !account) return
 
+    console.log(inputAmount, swapFee)
+
+    if (new BN(inputAmount).lte(swapFee)) {
+      updateAddressStatus(false, insufficientFeeText)
+      return false
+    }
+
     // chekc send  type first,native or token
     if (pairInfo.srcChainInfo.tag === 0) {
       inputAmount = new BN(inputAmount).plus(swapFee).toString()
@@ -108,7 +115,7 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
       const web3 = new Web3(library.provider)
       const balance = await web3.eth.getBalance(account)
       console.log(balance)
-      if (new BN(swapFee).gte(balance)) {
+      if (new BN(balance).gte(swapFee)) {
         updateAddressStatus(false, insufficientFeeText)
         return
       }
@@ -136,9 +143,11 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
   }
 
   const changeAmount = (e: any) => {
+    if (!pairInfo?.srcChainInfo) return
+
     const input = typeof e === 'string' ? e : e.target.value.trim()
-    const numberAmount = new BN(input).multipliedBy(Math.pow(10, currency.decimals)).toNumber()
-    const inputAmount = new BN(input).multipliedBy(Math.pow(10, currency.decimals)).toString()
+    const numberAmount = new BN(input).multipliedBy(Math.pow(10, pairInfo?.srcChainInfo.decimals)).toNumber()
+    const inputAmount = new BN(input).multipliedBy(Math.pow(10, pairInfo?.srcChainInfo.decimals)).toString()
 
     const decimal = getDecimals(input)
 
