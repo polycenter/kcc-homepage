@@ -97,7 +97,7 @@ service.interceptors.response.use(
       return Promise.resolve(response)
     } else {
       const __text = getErrorCode2text(response)
-      message.error(__text)
+      message.error(i18next.t(__text))
       return Promise.reject(new Error(__text))
     }
   },
