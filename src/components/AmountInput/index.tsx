@@ -102,26 +102,26 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
 
     console.log(inputAmount, swapFee)
 
-    if (new BN(inputAmount).lte(swapFee)) {
+    /*  if (new BN(inputAmount).lte(swapFee)) {
       updateAddressStatus(false, insufficientFeeText)
       return false
-    }
+    } */
     // chekc send  type first,native or token
     if (pairInfo.srcChainInfo.tag === 0) {
       inputAmount = new BN(inputAmount).plus(swapFee).toString()
     } else {
-      // check transfer fee
+      // check transfer fee    ====>  token check
       const web3 = new Web3(library.provider)
       const balance = await web3.eth.getBalance(account)
       console.log(balance, swapFee)
-      if (swapFee && new BN(swapFee).gte(balance)) {
+      if (swapFee && new BN(swapFee).gt(balance)) {
         updateAddressStatus(false, insufficientFeeText)
         return
       }
     }
     // debugger
 
-    if (new BN(inputAmount).gte(available)) {
+    if (new BN(inputAmount).gt(available)) {
       //BUG  need to check is token or native
       // less than balance
       updateAddressStatus(false, insufficientText)
