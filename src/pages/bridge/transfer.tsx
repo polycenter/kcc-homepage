@@ -680,7 +680,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
             {!checkList.address && account ? <ErrorText> * {t(`Invalid address`)}</ErrorText> : null}
           </TextWrap>
           <Input value={receiveAddress} onChange={changeReceiveAddress} placeholder={t(`Destination address`)} />
-          {!isSelectedNetwork ? <NoticeText>{t(`Switch Correct Network`)}</NoticeText> : null}
+          <NoticeText>{t(`Invalid address notice`)}</NoticeText>
         </ReceiveAddressWrap>
         <TransferButton
           pairId={currentPairId}
