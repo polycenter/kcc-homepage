@@ -155,7 +155,9 @@ const BridgeDetailPage: React.FunctionComponent<BridgeDetailPageProps> = (props)
   }
   const [current, setCurrent] = React.useState<number>(0)
   const [percent1, setPercent1] = React.useState<number>(0)
+  const [statusText1, setStatusText1] = React.useState<string>('')
   const [percent2, setPercent2] = React.useState<number>(0)
+  const [statusText2, setStatusText2] = React.useState<string>('')
 
   const history = useHistory()
 
@@ -171,6 +173,14 @@ const BridgeDetailPage: React.FunctionComponent<BridgeDetailPageProps> = (props)
   }, [query])
 
   React.useEffect(() => {
+    // 1.first check success status
+    /*   if (order.status === 'SUCCESS') {
+      setPercent1(() => 100)
+      setStatusText1(() => 'Completed')
+       setPercent2(() => 100)
+      setCurrent(() => 3)
+    } */
+
     switch (order.status) {
       case 'CREATED':
         setPercent1(() => 100)
