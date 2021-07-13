@@ -162,7 +162,7 @@ const TransferButton: React.FunctionComponent<TransferButtonProps> = ({
   if (pairId === -1) {
     return (
       <TransferButtonWrap>
-        <BaseButton onClick={connect}>{t(`No Available Network`)}</BaseButton>
+        <DisabledButton>{t(`No Available Network`)}</DisabledButton>
       </TransferButtonWrap>
     )
   }

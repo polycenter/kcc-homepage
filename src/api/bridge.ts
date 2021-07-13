@@ -1,4 +1,3 @@
-import { AxiosPromise } from 'axios'
 import Axios, { HttpResponse } from './axios'
 
 // bridge-list
