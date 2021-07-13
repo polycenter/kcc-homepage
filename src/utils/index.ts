@@ -48,8 +48,9 @@ export const checkAddress = async (address: string, type: ListType): Promise<boo
   const checkApi = type === ListType.BLACK ? BridgeService.inBlackList : BridgeService.inWhiteList
   try {
     const res = await checkApi(address)
-    if (res.data?.data) {
-      return Boolean(res.data.data)
+    console.log(res.data.data)
+    if (res.data.data.status) {
+      return Boolean(res.data?.data.status)
     }
     return false
   } catch {
