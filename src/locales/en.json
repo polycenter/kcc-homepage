@@ -80,12 +80,12 @@
   "Enter your email address": "Enter your email address",
   "Apply Now": "Apply Now",
   "Subscribe Title": "Subscribe to our Mailing List",
-  "Send Updaets Text": "We'll send you updates about KCC",
-  "Make History With KCC": "Make History With KCC",
+  "Send Updaets Text": "We'll send you updates about MomDoge",
+  "Make History With KCC": "Make History With MomDoge",
   "Project Type": "Project Type",
   "Directions": "Directions",
   "Milestone Titlle": "MileStones",
-  "Milestone Subtitlle": "Make History With KCC",
+  "Milestone Subtitlle": "Make History With MomDoge",
   "Milestone 1": "KCC (testnet) launched",
   "Milestone 2": "KCC launched",
   "Milestone 3": "Grant Program launched",
@@ -95,7 +95,7 @@
   "In Progress": "Ongoing",
   "View Event": "Learn more",
   "The Event Is Over": "Ended",
-  "KCC Ambassador Program": "KCC Ambassdor Program",
+  "KCC Ambassador Program": "MomDoge Ambassdor Program",
   "Back Home": "Back Home",
   "Sorry, the page you visited does not exist.": "Sorry, the page you visited does not exist.",
   "No Data": "No Data",
@@ -184,5 +184,5 @@
   "Get bridge balance failed": "Failed to get the bridge balance.",
   "Get transfer fee failed": "Failed to get the handling fee.",
   "Get account available balance failed": "Failed to get the available balance of the account",
-  "Available Bridge Balance": "KCC's Bridge Available Balance"
+  "Available Bridge Balance": "MomDoge's Bridge Available Balance"
 }
