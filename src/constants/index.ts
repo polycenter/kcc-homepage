@@ -4,7 +4,7 @@ export const KCC = {
   EXPLORER: 'https://explorer.kcc.io',
   TEST_EXPLORER: 'https://scan-testnet.kcc.network',
   FAUCET: 'https://faucet-testnet.kcc.network/',
-  DOCS_URL: 'https://docs.kcc.io/#/',
+  DOCS_URL: 'https://app.momdoge.finance',
   GITHUB_URL: 'https://github.com/kcc-community',
   DAPP_URL: 'https://github.com/kcc-community/awesome-dApps',
   DISCORD_URL: 'https://discord.com/invite/H5ucJydSyd',
