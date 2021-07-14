@@ -354,8 +354,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
       if (account && currency.symbol && selectedPairInfo) {
         setAvailableLoading(() => true)
         const selectedSrcChainInfo = selectedPairInfo?.srcChainInfo as PairChainInfo
-        const lib =
-          chainId === selectedSrcChainInfo.chainId ? library : getNetWorkConnect(selectedSrcChainInfo?.chainId)
+        const lib = getNetWorkConnect(selectedSrcChainInfo?.chainId) as any
         // debugger
         // chain token
         let timer: any = null
@@ -378,6 +377,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
                 setAvailable(() => r.toString())
               })
           }
+          // debugger
 
           setCheckList((list) => {
             return {
@@ -401,7 +401,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
       }
     }
     callback()
-  }, [chainId, account, selectedPairInfo, currency])
+  }, [chainId, account, selectedPairInfo])
 
   /**
    * @description get approve status of pairInfo
@@ -630,7 +630,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
                   <ReceiveAmountText>
                     {new BN(available)
                       .div(Math.pow(10, selectedPairInfo?.srcChainInfo.decimals as any))
-                      .toNumber()
+                      .toFixed(6)
                       .toString() ?? 0}
                     {currency.symbol.toUpperCase()}
                   </ReceiveAmountText>
