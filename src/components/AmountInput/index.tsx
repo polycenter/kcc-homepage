@@ -221,7 +221,7 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
     if (!account) {
       // no check
       updateAddressStatus(true)
-    } else if (input[0] === '.' || input.indexOf('-') !== -1) {
+    } else if (input[0] === '.') {
       // invalid number format
       updateAddressStatus(false, setErrorInfoPrehandle('errorFormatText'))
     } else if (decimalsLimit && decimal > decimalsLimit) {
@@ -250,6 +250,12 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
     supplyLoading,
   ])
 
+  const keyPress = (e: any) => {
+    if (e.key === '-') {
+      e.preventDefault()
+    }
+  }
+
   return (
     <AmountInputWrap>
       <TextWrap>
@@ -264,6 +270,7 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
         type="number"
         min={0}
         onInput={changeAmount}
+        onKeyPress={keyPress}
         style={{ background: '#F5F5F6' }}
         suffix={<SuffixText>{currency.symbol.toUpperCase()}</SuffixText>}
       />
