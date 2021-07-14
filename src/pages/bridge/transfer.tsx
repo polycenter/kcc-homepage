@@ -617,6 +617,9 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
           setCheckList={setCheckList}
           pairId={currentPairId}
           swapFee={swapFee}
+          supplyLoading={supplyLoading}
+          availabelLoading={availableLoading}
+          swapFeeLoading={swapFeeLoading}
         />
         <Row style={{ marginTop: '9px', justifyContent: 'space-between' }}>
           {account ? (
