@@ -20,6 +20,7 @@ import { find } from 'lodash'
 import moment from 'moment'
 import { theme } from '../../constants/theme'
 import { ColumnCenter } from '../../components/Column/index'
+import { useInterval } from '../../hooks/useInterval'
 
 export interface BridgeListPageProps {}
 
@@ -290,10 +291,10 @@ const BridgeListPage: React.FunctionComponent<BridgeListPageProps> = () => {
 
   const pageSize = 4
 
-  const getHistoryList = async () => {
+  const getHistoryList = async (needLoading?: boolean) => {
     if (!account) return
     try {
-      setLoading(() => true)
+      needLoading && setLoading(() => true)
       const res = await BridgeService.transitionList(account, 1, currentPage, pageSize)
       const data = res.data.data
       if (data) {
@@ -321,11 +322,14 @@ const BridgeListPage: React.FunctionComponent<BridgeListPageProps> = () => {
   }
 
   React.useEffect(() => {
-    getHistoryList()
-  }, [currentPage])
+    getHistoryList(true)
+  }, [])
+
+  const autoFresh = useInterval(getHistoryList, 1000 * 10)
 
   const pageNumberChange = (pageNumber: number) => {
     setCurrentPage(() => pageNumber)
+    getHistoryList(true)
   }
 
   const nav2transfer = () => {

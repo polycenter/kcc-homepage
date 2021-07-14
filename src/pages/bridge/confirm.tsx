@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import ChainBridge from '../../components/ChainBridge'
 import { BaseButton } from '../../components/TransferButton'
 import ConfirmItem from '../../components/ConfirmItem'
-import { TransferOrder, TransferWrap } from './transfer'
+import { NoFeeText, TransferOrder, TransferWrap } from './transfer'
 import { useHistory } from 'react-router'
 import { Tooltip } from 'antd'
 import BridgeTitlePanel from '../../components/BridgeTitlePanel/index'
@@ -223,6 +223,7 @@ const BridgeTransferPage: React.FunctionComponent<BridgeTransferPageProps> = () 
           />
           <ConfirmItem title={t('Transfer fee')}>
             <FeeAmmount>
+              {networkInfo?.fee ? <NoFeeText>{networkInfo?.fee}</NoFeeText> : null}
               {`${new BN(order.fee)
                 .div(Math.pow(10, networkInfo.decimals))
                 .toString()} ${networkInfo.symbol.toUpperCase()}`}
