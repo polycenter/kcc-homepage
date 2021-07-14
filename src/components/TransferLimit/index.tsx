@@ -4,14 +4,20 @@ import { useTranslation } from 'react-i18next'
 import BN from 'bignumber.js'
 import { LoadingOutlined } from '@ant-design/icons'
 import { getPairInfo } from '../../utils/index'
+import { PairInfo } from '../../state/bridge/reducer'
 export interface TransferLimitProps {
   loading: boolean
   available: string
   pairId: number
 }
 
-const TransferLimitWrap = styled.div`
-  display: flex;
+const TransferLimitWrap = styled.div<{ show: boolean }>`
+  display: ${({ show }) => {
+    if (show) {
+      return 'flex'
+    }
+    return 'none'
+  }};
   flex-flow: column nowrap;
   align-items: center;
   justify-content: center;
@@ -28,10 +34,12 @@ const Title = styled.div`
 const TransferLimit: React.FunctionComponent<TransferLimitProps> = ({ loading, available, pairId }) => {
   const { t } = useTranslation()
 
-  const selectedPairInfo = getPairInfo(pairId)
+  const selectedPairInfo = React.useMemo(() => {
+    return getPairInfo(pairId)
+  }, [pairId])
 
   return (
-    <TransferLimitWrap>
+    <TransferLimitWrap show={Boolean(selectedPairInfo?.limitStatus)}>
       <Title>
         {t(`Available Bridge Balance`)}:
         {loading ? (

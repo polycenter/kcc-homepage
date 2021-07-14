@@ -4,7 +4,7 @@ import { BridgeTitle, CheckListType } from '../../pages/bridge/transfer'
 import { useTranslation } from 'react-i18next'
 import { Input } from 'antd'
 import { CenterRow } from '../Row/index'
-import { Currency } from '../../state/bridge/reducer'
+import { Currency, PairInfo } from '../../state/bridge/reducer'
 import BN from 'bignumber.js'
 import { getPairInfo, getDecimals } from '../../utils/index'
 import { useWeb3React } from '@web3-react/core'
@@ -97,48 +97,80 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
     text && setErrorInfo(() => text)
   }
 
-  const checkAmount = async (inputAmount: string, input: string) => {
-    if (!pairInfo || !account) return
-
-    console.log(inputAmount, swapFee)
-
-    /*  if (new BN(inputAmount).lte(swapFee)) {
-      updateAddressStatus(false, insufficientFeeText)
-      return false
-    } */
-    // chekc send  type first,native or token
+  const hasSufficientSwapFee = () => {
+    if (!account || !pairInfo) return false
+    console.log('swapfee', swapFee)
+    console.log('available', available)
+    // native check
     if (pairInfo.srcChainInfo.tag === 0) {
-      inputAmount = new BN(inputAmount).plus(swapFee).toString()
+      if (new BN(swapFee).gte(available)) {
+        return false
+      }
+    }
+    // token check
+    if (new BN(swapFee).gt(available)) {
+      return false
+    }
+
+    return true
+  }
+
+  const transferFeeToDistFee = (pair: PairInfo) => {
+    if (pair.srcChainInfo.decimals === pair.dstChainInfo.decimals) {
+      return swapFee
     } else {
-      // check transfer fee    ====>  token check
-      const web3 = new Web3(library.provider)
-      const balance = await web3.eth.getBalance(account)
-      console.log(balance, swapFee)
-      if (swapFee && new BN(swapFee).gt(balance)) {
-        updateAddressStatus(false, insufficientFeeText)
+      // pair token decimal is not equal
+      return new BN(swapFee)
+        .div(Math.pow(10, pair.srcChainInfo.decimals))
+        .multipliedBy(Math.pow(10, pair.dstChainInfo.decimals))
+        .toString()
+    }
+  }
+
+  const checkAmountOverflow = (inputAmount: string, input: string, pair: PairInfo) => {
+    // check swapFee
+    if (!hasSufficientSwapFee()) {
+      updateAddressStatus(false, insufficientFeeText)
+      return
+    }
+
+    // check native
+    if (pair.srcChainInfo.tag === 0) {
+      if (new BN(inputAmount).plus(swapFee).gt(available)) {
+        updateAddressStatus(false, insufficientText)
         return
       }
     }
-    // debugger
 
-    if (new BN(inputAmount).gt(available)) {
-      //BUG  need to check is token or native
-      // less than balance
-      updateAddressStatus(false, insufficientText)
-    } else if (pairInfo?.limitStatus && new BN(inputAmount).gte(totalSupply)) {
-      // less than supply
-      updateAddressStatus(false, insufficienBridgeText)
-    } else if (new BN(input).lt(new BN(pairInfo?.min as any))) {
-      //BUG (min= amount - swapfee)
-      // check min
-      updateAddressStatus(false, minAmountText)
-    } else if (maxLimit && new BN(input).gt(new BN(pairInfo?.max as any))) {
-      //BUG (min = amount - swapfee)
-      // check max
-      updateAddressStatus(false, maxAmountText)
-    } else {
-      updateAddressStatus(true)
+    // check token
+    if (pair.srcChainInfo.tag === 1) {
+      if (new BN(inputAmount).gt(available)) {
+        updateAddressStatus(false, insufficientText)
+        return
+      }
     }
+
+    // check supply
+    if (pair.limitStatus) {
+      if (new BN(input).multipliedBy(Math.pow(10, pair.dstChainInfo.decimals)).gt(totalSupply)) {
+        updateAddressStatus(false, insufficienBridgeText)
+        return
+      }
+    }
+
+    // check min
+    if (new BN(input).lt(new BN(pair.min as any))) {
+      updateAddressStatus(false, minAmountText)
+      return
+    }
+
+    // check max
+    if (maxLimit && new BN(input).gt(new BN(pair.max as any))) {
+      updateAddressStatus(false, maxAmountText)
+      return
+    }
+
+    updateAddressStatus(true, '')
   }
 
   const changeAmount = (e: any) => {
@@ -163,7 +195,7 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
       // invalid decimal
       updateAddressStatus(false, decimalErrorText + decimalsLimit)
     } else {
-      checkAmount(inputAmount, input)
+      checkAmountOverflow(inputAmount, input, pairInfo)
     }
 
     setAmount(() => input)
