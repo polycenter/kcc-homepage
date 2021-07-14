@@ -8,7 +8,7 @@ import { Currency, PairInfo } from '../../state/bridge/reducer'
 import BN from 'bignumber.js'
 import { getPairInfo, getDecimals } from '../../utils/index'
 import { useWeb3React } from '@web3-react/core'
-import Web3 from 'web3'
+import { debounce } from 'lodash'
 
 export interface AmountInputProps {
   amount: string
@@ -20,6 +20,9 @@ export interface AmountInputProps {
   available: string
   pairId: number
   swapFee: string
+  supplyLoading: boolean
+  availabelLoading: boolean
+  swapFeeLoading: boolean
 }
 
 const AmountInputWrap = styled.div`
@@ -64,12 +67,17 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
   available,
   pairId,
   swapFee,
+  supplyLoading,
+  availabelLoading,
+  swapFeeLoading,
 }) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { account, chainId, library } = useWeb3React()
   const [errorInfo, setErrorInfo] = React.useState<string>('Invalid number')
 
-  const pairInfo = getPairInfo(pairId)
+  const pairInfo = React.useMemo(() => {
+    return getPairInfo(pairId)
+  }, [pairId])
 
   /* get info from chain */
   const maxLimit = new BN(pairInfo?.max as any).toNumber() === 0 ? false : true
@@ -82,13 +90,26 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
       : pairInfo?.srcChainInfo.decimals
   }, [pairId, pairInfo])
 
-  const errorFormatText = t(`Invalid number`)
-  const decimalErrorText = t(`The decimal point cannot exceed `)
-  const insufficientText = t(`Insufficient available balance`)
-  const insufficientFeeText = t(`Insufficient transfer fee`)
-  const minAmountText = t(`The minimum exchange quantity is`) + ' ' + new BN(pairInfo?.min ?? 0).toNumber().toString()
-  const maxAmountText = t(`The maximum exchange quantity is`) + ' ' + new BN(pairInfo?.max ?? 0).toNumber().toString()
-  const insufficienBridgeText = t(`Input amount is bigger than bridge available balance`)
+  const setErrorInfoPrehandle = (key: string): string => {
+    switch (key) {
+      case 'errorFormatText':
+        return t(`Invalid number`)
+      case 'decimalErrorText':
+        return t(`The decimal point cannot exceed`)
+      case 'insufficientText':
+        return t(`Insufficient available balance`)
+      case 'insufficientFeeText':
+        return t(`Insufficient transfer fee`)
+      case 'minAmountText':
+        return t(`The minimum exchange quantity is`) + ' ' + new BN(pairInfo?.min ?? 0).toNumber().toString()
+      case 'insufficienBridgeText':
+        return t(`Input amount is bigger than bridge available balance`)
+      case 'lessThanFeeText':
+        return t(`Input amount should bigger than transfer fee`)
+      default:
+        return t('Invalid amount')
+    }
+  }
 
   const updateAddressStatus = (status: boolean, text?: string) => {
     setCheckList((list: any) => {
@@ -111,7 +132,6 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
     if (new BN(swapFee).gt(available)) {
       return false
     }
-
     return true
   }
 
@@ -130,22 +150,29 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
   const checkAmountOverflow = (inputAmount: string, input: string, pair: PairInfo) => {
     // check swapFee
     if (!hasSufficientSwapFee()) {
-      updateAddressStatus(false, insufficientFeeText)
+      updateAddressStatus(false, setErrorInfoPrehandle('insufficientFeeText'))
       return
     }
 
     // check native
     if (pair.srcChainInfo.tag === 0) {
+      // available > input + fee
       if (new BN(inputAmount).plus(swapFee).gt(available)) {
-        updateAddressStatus(false, insufficientText)
+        updateAddressStatus(false, setErrorInfoPrehandle('insufficientText'))
+        return
+      }
+
+      // input > fee
+      if (new BN(inputAmount).lte(swapFee)) {
+        updateAddressStatus(false, setErrorInfoPrehandle('lessThanFeeText'))
         return
       }
     }
 
-    // check token
+    // check token availble
     if (pair.srcChainInfo.tag === 1) {
       if (new BN(inputAmount).gt(available)) {
-        updateAddressStatus(false, insufficientText)
+        updateAddressStatus(false, setErrorInfoPrehandle('insufficientText'))
         return
       }
     }
@@ -153,20 +180,20 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
     // check supply
     if (pair.limitStatus) {
       if (new BN(input).multipliedBy(Math.pow(10, pair.dstChainInfo.decimals)).gt(totalSupply)) {
-        updateAddressStatus(false, insufficienBridgeText)
+        updateAddressStatus(false, setErrorInfoPrehandle('insufficienBridgeText'))
         return
       }
     }
 
     // check min
     if (new BN(input).lt(new BN(pair.min as any))) {
-      updateAddressStatus(false, minAmountText)
+      updateAddressStatus(false, setErrorInfoPrehandle('minAmountText'))
       return
     }
 
     // check max
     if (maxLimit && new BN(input).gt(new BN(pair.max as any))) {
-      updateAddressStatus(false, maxAmountText)
+      updateAddressStatus(false, setErrorInfoPrehandle('maxAmountText'))
       return
     }
 
@@ -188,12 +215,12 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
     if (!account) {
       // no check
       updateAddressStatus(true)
-    } else if (input === '' || input[0] === '.' || numberAmount <= 0) {
+    } else if (input[0] === '.' || numberAmount <= 0) {
       // invalid number format
-      updateAddressStatus(false, errorFormatText)
+      updateAddressStatus(false, setErrorInfoPrehandle('errorFormatText'))
     } else if (decimalsLimit && decimal > decimalsLimit) {
       // invalid decimal
-      updateAddressStatus(false, decimalErrorText + decimalsLimit)
+      updateAddressStatus(false, setErrorInfoPrehandle('decimalErrorText') + decimalsLimit)
     } else {
       checkAmountOverflow(inputAmount, input, pairInfo)
     }
@@ -202,14 +229,28 @@ const AmountInput: React.FunctionComponent<AmountInputProps> = ({
   }
 
   React.useEffect(() => {
-    changeAmount(amount)
-  }, [chainId, pairInfo])
+    if (!swapFeeLoading && !supplyLoading && !swapFeeLoading) {
+      changeAmount(String(amount))
+    }
+  }, [
+    pairInfo,
+    i18n.language,
+    pairId,
+    available,
+    swapFee,
+    totalSupply,
+    swapFeeLoading,
+    availabelLoading,
+    supplyLoading,
+  ])
 
   return (
     <AmountInputWrap>
       <TextWrap>
         <BridgeTitle>{t(`Amount`)}</BridgeTitle>
-        {!checkList.amount && account ? <ErrorText> * {t(`${errorInfo}`)}</ErrorText> : null}
+        {!checkList.amount && account && !swapFeeLoading && !supplyLoading && !availabelLoading ? (
+          <ErrorText> * {errorInfo}</ErrorText>
+        ) : null}
       </TextWrap>
       <Input
         value={amount}
