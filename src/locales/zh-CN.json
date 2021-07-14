@@ -148,6 +148,7 @@
   "Switch Network": "请先切换到",
   "Approved": "授权",
   "Can not swap": "该币种暂不支持交换当前两种网络",
+  "Input amount should bigger than transfer fee": "输入金额应该大于手续费",
   "Input amount is bigger than bridge available balance": "输入金额大于当前可承兑金额",
   "CREATED": "处理中",
   "CANCELLED": "失败",
@@ -175,12 +176,12 @@
   "View hash": "查看详情",
   "Completed": "已完成",
   "Process": "处理中",
-  "The decimal point cannot exceed ": "小数点位数不能超过",
+  "The decimal point cannot exceed": "小数点位数不能超过",
   "Insufficient transfer fee": "手续费不足",
   "Get Announcement Faied": "获取公告失败",
   "Failed": "获取失败",
   "Get bridge balance failed": "获取可承兑余额失败",
   "Get transfer fee failed": "获取手续费失败",
   "Get account available balance failed": "获取账户可用余额失败",
-  "Available Bridge Balance": "可承兑余额"
+  "Available Bridge Balance": "跨链桥当日可承兑余额"
 }
