@@ -41,7 +41,7 @@ export const KCC = {
   ],
   MILESTONES: [
     {
-      date: '2021-04-28',
+      date: '2021-05-28',
       title: 'Milestone 1',
     },
     {
@@ -50,12 +50,12 @@ export const KCC = {
       icon: require('../assets/images/home/milestone-icon@2x.png').default,
     },
     {
-      date: '2021-06-18',
+      date: '2021-07-18',
       title: 'Milestone 3',
       icon: require('../assets/images/home/milestone-icon@2x.png').default,
     },
     {
-      date: '2021-06-25',
+      date: '2021-08-25',
       title: 'KCC Ambassador Program',
       icon: require('../assets/images/home/milestone-icon@2x.png').default,
     },
