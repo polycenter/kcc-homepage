@@ -2,8 +2,6 @@ export const KCC = {
   FULLNAME: 'MomDoge Community Chain',
   ABBR: 'KCC',
   EXPLORER: 'https://explorer.kcc.io',
-  TEST_EXPLORER: '/',
-  FAUCET: '/',
   DOCS_URL: 'https://app.momdoge.finance',
   GITHUB_URL: 'https://github.com/MomDoge',
   DAPP_URL: 'https://github.com/MomDoge',
