@@ -68,7 +68,7 @@ export const KCC = {
     {
       name: 'KuCoin',
       logo: require('../assets/images/home/kucoin.png').default,
-      route: 'https://www.kucoin.com/',
+      route: 'https://bscscan.com/',
     },
     {
       name: 'TokenView',
