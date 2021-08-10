@@ -2,7 +2,7 @@ export const KCC = {
   FULLNAME: 'LegendDoge Community Chain',
   ABBR: 'BSC',
   EXPLORER: 'https://bscscan.com/',
-  TEST_EXPLORER: 'https://testnet.binance.org/faucet-smart',
+  TEST_EXPLORER: 'https://poocoin.app/tokens/',
   FAUCET: 'https://testnet.binance.org/faucet-smart',
   DOCS_URL: '/',
   GITHUB_URL: 'https://github.com/LegendDoge',
@@ -11,7 +11,7 @@ export const KCC = {
   MEDIA_URL: 'https://medium.com/@LegendDogeCommunity',
   MEDIA_API: 'https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/@MomDogeFinance',
   MAIL_SUBSCRIBE_PROXY: 'https://mailsubscribe.LegendDoge.com/mailchimp-subscribe',
-  TWITTER: 'https://twitter.com/LegendDoge',
+  TWITTER: 'https://twitter.com/LegendDogeCom',
   TELEGRAM: 'https://t.me/LegendDogeCommunity',
   RISK_STATMENT: '/',
   DISCLAIMER: '/',
@@ -21,7 +21,7 @@ export const KCC = {
     {
       app: 'Twitter',
       icon: require('../assets/images/Icons/app/twitter-logo@2x.png').default,
-      route: 'https://twitter.com/LegendDoge',
+      route: 'https://twitter.com/LegendDogeCom',
     },
     {
       app: 'Telegram',
@@ -41,21 +41,21 @@ export const KCC = {
   ],
   MILESTONES: [
     {
-      date: '2021-05-28',
+      date: '2021-08-29',
       title: 'Milestone 1',
     },
     {
-      date: '2021-06-16',
+      date: '2021-09-16',
       title: 'Milestone 2',
       icon: require('../assets/images/home/milestone-icon@2x.png').default,
     },
     {
-      date: '2021-07-18',
+      date: '2021-11-18',
       title: 'Milestone 3',
       icon: require('../assets/images/home/milestone-icon@2x.png').default,
     },
     {
-      date: '2021-08-25',
+      date: '2021-12-25',
       title: 'KCC Ambassador Program',
       icon: require('../assets/images/home/milestone-icon@2x.png').default,
     },
