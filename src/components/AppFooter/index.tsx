@@ -160,7 +160,7 @@ const AppFooter: React.FunctionComponent<AppFooterProps> = () => {
         <MobileView style={{ padding: '0 24px' }}>
           <MFooter />
         </MobileView>
-        <CopyRightText>CopyRight © 2021 - {`${new Date().getFullYear()}`} legenddoge.com All Rights Reserved.</CopyRightText>
+        <CopyRightText>CopyRight © {`${new Date().getFullYear()}`} legenddoge.com All Rights Reserved.</CopyRightText>
       </AppFooterContentWrap>
     </AppFooterWrap>
   )
