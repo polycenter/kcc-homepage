@@ -95,9 +95,9 @@ const ActivitiesPage: React.FunctionComponent<GrantsPageProps> = () => {
       thumbnail_en: require('../../assets/images/activity/activity-1-en.png').default,
       deadline: '2022-01-07 10:57:33',
       url_ch:
-        'https://legenddoge.medium.com/',
+        'https://t.me/LegendDogeCommunity',
       url_en:
-        'https://legenddoge.medium.com/',
+        'https://t.me/LegendDogeCommunity',
     },
   ]
 
