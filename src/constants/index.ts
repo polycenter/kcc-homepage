@@ -13,9 +13,9 @@ export const KCC = {
   MAIL_SUBSCRIBE_PROXY: 'https://mailsubscribe.LegendDoge.com/mailchimp-subscribe',
   TWITTER: 'https://twitter.com/LegendDoge',
   TELEGRAM: 'https://t.me/LegendDogeCommunity',
-  RISK_STATMENT: 'id=risk-statement',
-  DISCLAIMER: 'id=disclaimers',
-  FAQ: 'id=faq',
+  RISK_STATMENT: '/',
+  DISCLAIMER: '/',
+  FAQ: '/',
   GRANTS: 'https://github.com/LegendDoge',
   CONTACT_LIST: [
     {
