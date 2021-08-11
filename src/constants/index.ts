@@ -3,7 +3,7 @@ export const KCC = {
   ABBR: 'MATIC',
   EXPLORER: 'https://polygonscan.com/',
   TEST_EXPLORER: 'https://poocoin.app/tokens/',
-  FAUCET: 'https://testnet.binance.org/faucet-smart',
+  FAUCET: 'https://testnet.legenddoge.com/',
   DOCS_URL: '/',
   GITHUB_URL: 'https://github.com/LegendDoge',
   DAPP_URL: '',
@@ -68,7 +68,7 @@ export const KCC = {
     {
       name: 'KuCoin',
       logo: require('../assets/images/home/kucoin.png').default,
-      route: 'https://bscscan.com/',
+      route: 'https://polygonscan.com/',
     },
     {
       name: 'TokenView',
